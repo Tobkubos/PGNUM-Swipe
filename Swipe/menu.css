@@ -1,0 +1,28 @@
+.menu-btn{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 125px;
+    margin: 10px auto;
+    padding: 10px;
+    font-size: 24px;
+    border: none;
+    background-color: transparent;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.start-btn {
+    background-color: #008CBA;
+    color: white;
+}
+
+.btn-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0;
+}

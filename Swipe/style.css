@@ -1,0 +1,73 @@
+/* poppins-regular - latin */
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 400;
+    src: url('./fonts/poppins-v24-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 700;
+    src: url('./fonts/poppins-v24-latin-700.woff2') format('woff2');
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    background-color: #222;
+    color: white;
+    font-family: sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#game-container {
+    position: relative;
+    width: 512px;
+    height: 768px;
+    max-width: 95vw;
+    max-height: 90vh;
+    margin: auto;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    border-radius: 8px;
+    overflow: hidden;
+}
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background-color: aquamarine;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+    text-align: center;
+    z-index: 10;
+}
+
+@media (max-width: 768px), (pointer: coarse) {
+    #game-container {
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        max-height: none;
+        margin: 0;
+        border-radius: 0;
+    }
+}
