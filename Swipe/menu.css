@@ -1,28 +1,79 @@
+
+
+.btn-icon {
+	width: 40px;
+	height: 40px;
+}
+
+.menu-game-name{
+    position: absolute;
+    margin-top: 65%;
+    font-size: 48px;
+    color: #e4e4e4;
+    width: 100%;
+    text-align: center;
+}
+.menu-info-score{
+    position: absolute;
+    margin-top: 80%;
+    font-size: 36px;
+    color: #bcbcbc;
+    width: 100%;
+    text-align: center;
+}
+
 .menu-btn{
+    position: absolute;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 125px;
-    margin: 10px auto;
-    padding: 10px;
-    font-size: 24px;
+    background: none;
     border: none;
-    background-color: transparent;
-    font-family: 'Poppins', sans-serif;
-    color: white;
-    border-radius: 5px;
+    color: #333;
+    font-size: 18px;
     cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    width: 100px;
+    height: 100px;
+}
+
+#menu {
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }
 
 .start-btn {
-    background-color: #008CBA;
-    color: white;
+    left: 50%;
+    transform: translateX(-50%);
+     position: absolute;
+     bottom: 200px;
+     margin: 0;
+     z-index: 10;
 }
 
-.btn-icon {
-    width: 64px;
-    height: 64px;
-    margin: 0;
+.skins-btn {
+    right: 60px;
+    bottom: 30px;
+}
+
+.effects-btn {
+    left: 60px;
+    bottom: 30px;
+}
+
+.exit-btn {
+    left: 30px;
+    top: 5%;
+}
+
+.options-btn {
+    right: 30px;
+    top: 5%;
+}
+
+.highscore-btn {
+    right: 30px;
+    top: 15%;
 }

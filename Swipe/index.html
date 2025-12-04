@@ -1,35 +1,53 @@
 <!DOCTYPE html>
 <html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Swipe the game</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="menu.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#222222">
-</head>
-<body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+		/>
+		<title>Swipe the game</title>
+		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="menu.css" />
+		<link rel="manifest" href="manifest.json" />
+		<meta name="theme-color" content="#222222" />
+	</head>
+	<body>
+		<div id="game-container">
+			<div id="ui-layer">
+				<div id="menu">
+					<h1 class="menu-game-name">Swipe the game</h1>
+					<h1 class="menu-info-score">Score</h1>
+					<button class="menu-btn start-btn">
+						<img src="icons/play.png" alt="" class="btn-icon" />
+						<span>Start</span>
+					</button>
+					<button class="menu-btn highscore-btn">
+						<img src="icons/trophy.png" alt="" class="btn-icon" />
+						<span>Highscores</span>
+					</button>
+					<button class="menu-btn options-btn">
+						<img src="icons/gear.png" alt="" class="btn-icon" />
+						<span>Options</span>
+					</button>
+					<button class="menu-btn skins-btn">
+						<img src="icons/play.png" alt="" class="btn-icon" />
+						<span>Skins</span>
+					</button>
+					<button class="menu-btn effects-btn">
+						<img src="icons/star.png" alt="" class="btn-icon" />
+						<span>Effects</span>
+					</button>
+					<button class="menu-btn exit-btn">
+						<img src="icons/logout.png" alt="" class="btn-icon" />
+						<span>Exit</span>
+					</button>
+				</div>
+			</div>
+			<canvas id="gameCanvas"></canvas>
+		</div>
 
-    <div id="game-container">
-        <div id="ui-layer">
-            <div id="menu">
-                <h1     class="menu-game-name">Swipe the game</h1>
-                <h1     class='menu-info-score'>Score</h1>
-                <button class='menu-btn start-btn'>
-                    <img src="icons/play.png" alt="" class="btn-icon">
-                    <span>Start</span>
-                </button>
-                <button class='menu-btn'>Options</button>
-                <button class='menu-btn'>Skins</button>
-                <button class='menu-btn'>Effects</button>
-                <button class='menu-btn exit-btn'>Exit</button>
-            </div>
-        </div>
-        <canvas id="gameCanvas"></canvas>
-    </div>
-
-    <script src="script.js"></script>
-    <!--<script src="menuManager.js"></script> -->
-</body>
+		<script src="script.js"></script>
+		<!--<script src="menuManager.js"></script> -->
+	</body>
 </html>

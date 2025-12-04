@@ -41,24 +41,6 @@ body {
     margin: auto;
     box-shadow: 0 8px 30px rgba(0,0,0,0.6);
     border-radius: 8px;
-    overflow: hidden;
-}
-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    background-color: aquamarine;
-}
-
-#ui-layer {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: auto;
-    text-align: center;
-    z-index: 10;
 }
 
 @media (max-width: 768px), (pointer: coarse) {
@@ -71,3 +53,19 @@ canvas {
         border-radius: 0;
     }
 }
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background-color: aquamarine;
+}
+
+#ui-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
