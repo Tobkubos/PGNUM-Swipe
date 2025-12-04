@@ -2,9 +2,10 @@ const CACHE_NAME = 'Swipe the Game v1';
 const ASSETS = [
     './',
     './index.html',
-    './style.css',
-    './menu.css',
+    './styles/style.css',
+    './styles/menu.css',
     './script.js',
+    './utils/colorSetter.js',
     './menuManager.js',
     './manifest.json',
     './icons/icon-192.png',
