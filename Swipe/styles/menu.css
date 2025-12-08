@@ -6,9 +6,10 @@
 .menu-game-name{
     position: absolute;
     top: 10%;
-    font-size: 48px;
+    font-size: 4rem;
     width: 100%;
     text-align: center;
+    font-family: 'Permanent Marker';
 }
 
 .menu-info-score{
