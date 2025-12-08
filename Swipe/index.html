@@ -1,51 +1,93 @@
 <!DOCTYPE html>
 <html lang="pl">
-	<head>
-		<meta charset="UTF-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-		/>
-		<title>Swipe the game</title>
-		<link rel="stylesheet" href="styles/style.css" />
-		<link rel="stylesheet" href="styles/menu.css" />
-		<link rel="manifest" href="manifest.json" />
-	</head>
-	<body>
-		<div id="game-container">
-			<div id="ui-layer">
-				<div id="menu">
-					<h1 class="menu-game-name">SWIPE</h1>
-					<h1 class="menu-info-score">Highscore</h1>
-					<h1 class="menu-info-highscore">0</h1>
-					<button class="menu-btn start-btn">
-						<img src="icons/play.png" alt="" class="btn-icon" />
-						<span>Start</span>
-					</button>
-					<button class="menu-btn highscore-btn small-btn">
-						<img src="icons/trophy.png" alt="" class="btn-icon small-icon"/>
-						<span>Highscores</span>
-					</button>
-					<button class="menu-btn options-btn small-btn">
-						<img src="icons/gear.png" alt="" class="btn-icon small-icon" />
-						<span>Options</span>
-					</button>
-					<button class="menu-btn skins-btn small-btn" >
-						<img src="icons/star.png" alt="" class="btn-icon small-icon" />
-						<span>Skins</span>
-					</button>
-					<button class="menu-btn effects-btn small-btn">
-						<img src="icons/star.png" alt="" class="btn-icon small-icon" />
-						<span>Effects</span>
-					</button>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>Swipe the game</title>
+	<link rel="stylesheet" href="styles/style.css" />
+	<link rel="stylesheet" href="styles/popups.css" />
+	<link rel="stylesheet" href="styles/menu.css" />
+	<link rel="manifest" href="config/manifest.json" />
+	<link rel="icon" href="images/icon-192.png">
+</head>
+
+<body>
+	<div id="game-container">
+		<div id="ui-layer">
+			<div id="menu">
+				<h1 class="menu-game-name">SWIPE</h1>
+				<h1 class="menu-info-score">Highscore</h1>
+				<h1 class="menu-info-highscore">0</h1>
+				<button class="menu-btn start-btn">
+					<img src="icons/play.png" alt="" class="btn-icon" />
+					<span>Start</span>
+				</button>
+				<button class="menu-btn highscore-btn small-btn">
+					<img src="icons/trophy.png" alt="" class="btn-icon small-icon" />
+					<span>Highscores</span>
+				</button>
+				<button class="menu-btn options-btn small-btn">
+					<img src="icons/gear.png" alt="" class="btn-icon small-icon" />
+					<span>Options</span>
+				</button>
+				<button class="menu-btn skins-btn small-btn">
+					<img src="icons/star.png" alt="" class="btn-icon small-icon" />
+					<span>Skins</span>
+				</button>
+				<button class="menu-btn effects-btn small-btn">
+					<img src="icons/star.png" alt="" class="btn-icon small-icon" />
+					<span>Effects</span>
+				</button>
+				<button class="menu-btn how-to-play-btn small-btn">
+					<img src="icons/question-sign.png" alt="" class="btn-icon small-icon" />
+					<span>How to Play</span>
+				</button>
+				<div id="how-to-play-panel" style="display:none;">
+					<div id="how-to-play-content-panel">
+						<button class="close-how-to-play close-btn">
+							<img src="icons/close.png" alt="" class="btn-icon small-icon" />
+						</button>
+						<br>
+						<h2 id="center-horizontal">How to play?</h2>
+						<br>
+						<span>Its easy for everyone! Just swipe your finger from left to right to avoid falling
+							obstacles! Speed will increase by time played!</span>
+					</div>
+				</div>
+				<div id="highscores-panel" style="display:none;">
+					<div id="highscores-content-panel">
+						<button class="close-highscores close-btn">
+							<img src="icons/close.png" alt="" class="btn-icon small-icon" />
+						</button>
+						<br>
+						<h2 id="center-horizontal">Highscores</h2>
+						<br>
+						<div class="highscores-top10"></div>
+						<div class="highscores-yourPlace"></div>
+					</div>
+				</div>
+				<div id="options-panel" style="display:none;">
+					<div id="options-content-panel">
+						<button class="close-options close-btn">
+							<img src="icons/close.png" alt="" class="btn-icon small-icon" />
+						</button>
+						<br>
+						<h2 id="center-horizontal">Options</h2>
+						<br>
+						<div>login to save or load progress</div>
+						<div class=>login</div>
+					</div>
 				</div>
 			</div>
-			<canvas id="gameCanvas"></canvas>
 		</div>
+		<canvas id="gameCanvas"></canvas>
+	</div>
 
-		<script src="script.js" type="module"></script>
-		<script src="utils/serviceWorker.js" type="module"></script>
-		<script src="utils/colorSetter.js" type="module"></script>
-		<!--<script src="menuManager.js"></script> -->
-	</body>
+	<script src="script.js" type="module"></script>
+	<script src="menuManager.js" type="module"></script>
+	<script src="utils/colorSetter.js" type="module"></script>
+	<script src="player.js" type="module"></script>
+</body>
+
 </html>
