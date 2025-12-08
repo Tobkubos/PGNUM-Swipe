@@ -4,7 +4,7 @@ const gameScoreText = document.getElementById("score-display");
 export class ObstacleManager {
     constructor() {
         this.obstacles = [];
-        this.speed = 2;
+        this.speed = 3;
         this.color = "#ff0000";
         this.score = 0;
     }
@@ -12,7 +12,7 @@ export class ObstacleManager {
     spawnRandomObstacle() {
 
 
-        //możliwe typy przeszkód: 1 -pojedyńcza kolumna, 2 - podwójna kolumna, wszystkie kombinacje 3 kolumn
+        //możliwe typy przeszkód: 1 -pojedyńcza kolumna, 2 - podwójna kolumna (wszystkie kombinacje 3 kolumn)
         // x1
         // x2
         // x3
