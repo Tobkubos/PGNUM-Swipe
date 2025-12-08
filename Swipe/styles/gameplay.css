@@ -1,0 +1,16 @@
+.pause-btn{
+    position: absolute;
+    top: 2%;
+    left: -2%;
+}
+
+#score-display{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1000%;
+    font-family: 'Poppins', sans-serif;
+    z-index: 1;
+    pointer-events: none;
+}

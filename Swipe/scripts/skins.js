@@ -1,0 +1,5 @@
+const particles = [];
+
+class Skin {
+
+}

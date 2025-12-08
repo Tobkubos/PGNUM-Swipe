@@ -10,3 +10,16 @@ export function hexToRgba(hex, alpha = 1) {
     const b = parseInt(hex.slice(5, 7), 16);
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
+
+
+const obstacleColors = {
+        1: "#ff4d4d",
+        2: "#4dff88",
+        3: "#4d88ff"
+};
+
+const backgroundColors = {
+        1: "#be2525ff",
+        2: "#20aa4eff",
+        3: "#1b49a7ff"
+};

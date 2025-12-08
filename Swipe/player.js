@@ -6,4 +6,8 @@ export class Player{
         this.selectedSkin = selectedSkin;
         this.selectedEffect = selectedEffect;
     }
+    draw(ctx) {
+        ctx.fillStyle = "white";
+        ctx.fillRect(this.x, this.y, this.baseSize, this.baseSize);
+    }
 }

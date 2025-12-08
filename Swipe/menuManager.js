@@ -1,4 +1,4 @@
-import { state, gameLoop } from "./script.js";
+import { state,} from "./script.js";
 import { UIManager } from "./uiManager.js";
 
 //----------------------------------------------------
@@ -7,7 +7,6 @@ document.querySelector(".start-btn").addEventListener("click", () => {
     state.playerScene = state.scenes.Game;
     console.log("Game Started");
     UIManager();
-    gameLoop();
 });
 
 //how to play button
@@ -17,7 +16,6 @@ const closeHowTo = document.querySelector(".close-how-to-play");
 
 howToBtn.addEventListener("click", () => {
     if (howToPanel) howToPanel.style.display = "block";
-    gameLoop();
 });
 
 closeHowTo?.addEventListener("click", () => {
@@ -35,7 +33,6 @@ highscoresBtn.addEventListener("click", () => {
     const highscoresYourPlace = document.querySelector(".highscores-yourPlace");
     highscoresTop10.innerHTML = "TOP 10";
     highscoresYourPlace.innerHTML = "Your Place: 15th";
-    gameLoop();
 });
 
 closeHighscores?.addEventListener("click", () => {
@@ -48,7 +45,6 @@ const optionsPanel = document.getElementById("options-panel");
 const closeOptions = document.querySelector(".close-options");
 optionsBtn.addEventListener("click", () => {
     if (optionsPanel) optionsPanel.style.display = "block";
-    gameLoop();
 }
 );
 

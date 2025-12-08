@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="styles/style.css" />
 	<link rel="stylesheet" href="styles/popups.css" />
 	<link rel="stylesheet" href="styles/menu.css" />
+	<link rel="stylesheet" href="styles/gameplay.css" />
 	<link rel="manifest" href="config/manifest.json" />
 	<link rel="icon" href="images/icon-192.png">
 </head>
@@ -80,11 +81,21 @@
 					</div>
 				</div>
 			</div>
+			<div id="gameplay" style="display:none;">
+				<div>
+					<div id="score-display">0</div>
+					<button class="menu-btn pause-btn small-btn">
+						<img src="icons/pause.png" alt="" class="btn-icon small-icon" />
+						<span>Pause</span>
+					</button>
+				</div>
+			</div>
 		</div>
 		<canvas id="gameCanvas"></canvas>
 	</div>
 
 	<script src="script.js" type="module"></script>
+	<script src="utils/resizer.js" type="module"></script>
 	<script src="menuManager.js" type="module"></script>
 	<script src="utils/colorSetter.js" type="module"></script>
 	<script src="player.js" type="module"></script>
