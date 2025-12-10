@@ -56,5 +56,18 @@ closeOptions?.addEventListener("click", () => {
 });
 //----------------------------------------------------
 const loginBtn = document.querySelector(".login-btn");
-const statusDiv = document.getElementById("user-status");
 loginBtn.addEventListener("click", async () => { await loginAndCreateProfile(); });
+
+
+
+const title = document.querySelector(".menu-game-name");
+if (title && !title.querySelector("span")) {
+    const text = title.innerText;
+    title.innerHTML = "";
+    [...text].forEach((char, index) => {
+        const span = document.createElement("span");
+        span.innerText = char;
+        span.style.setProperty("--i", index + 1);
+        title.appendChild(span);
+    });
+}

@@ -9,7 +9,47 @@
     font-size: 4rem;
     width: 100%;
     text-align: center;
-    font-family: 'Permanent Marker';
+    font-family: 'Permanent Marker', cursive;
+
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.menu-game-name span {
+    display: inline-block;
+    animation: jump 4s infinite ease-in-out;
+    animation-delay: calc(0.05s * var(--i));
+}
+
+@keyframes jump {
+    0% {
+        transform: translateX(0);
+    }
+
+    10% {
+        transform: translateX(30px);
+    }
+
+    30% {
+        transform: translateX(30px);
+    }
+
+    40% {
+        transform: translateX(-30px);
+    }
+
+    60% {
+        transform: translateX(-30px);
+    }
+
+    70% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }
 
 .menu-info-score {
