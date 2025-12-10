@@ -36,7 +36,7 @@ const ctx = canvas.getContext("2d");
 const off = new OffscreenCanvas(canvas.width, canvas.height);
 const offCtx = off.getContext("2d");
 
-const player = new Player(0, 0, 50, 1, 1);
+const player = new Player(0, 0, 50, 18, 12);
 const obstacleManager = new ObstacleManager();
 let gameStarted = false;
 
