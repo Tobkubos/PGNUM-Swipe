@@ -6,18 +6,20 @@
     overflow-y: auto;
 }
 
-#how-to-play-content-panel, #highscores-content-panel, #options-content-panel{
+#content-panel, #highscores-content-panel, #options-content-panel, #how-to-play-content-panel{
     position: absolute;
     width: 80%;
-    height: 40%;
+    height: 50%;
     top: 50%;
     transform: translateY(-50%);
     left: 10%;
-    padding: 10%;
+    padding: 5%;
     z-index: 30;
     border-radius: 10px;
     overflow-y: auto;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .close-how-to-play, .close-highscores, .close-options{
@@ -30,6 +32,14 @@
     cursor: pointer;
 }
 
-#highscores-content-panel{
-    height: 70%;
+.popup-header-info {
+    justify-content: center;
+    text-align: center;
+    font-size: 2rem;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 1rem;
+}
+.popup-content{
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
 }

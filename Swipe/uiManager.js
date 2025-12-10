@@ -8,5 +8,11 @@ export function UIManager() {
         const gameplayElement = document.getElementById("gameplay");
         gameplayElement.style.display = "block";
     }
+    if (state.playerScene === state.scenes.Menu) {
+        const menuElement = document.getElementById("menu");
+        menuElement.style.display = "block";
+        const gameplayElement = document.getElementById("gameplay");
+        gameplayElement.style.display = "none";
+    }
 }
 

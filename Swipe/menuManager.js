@@ -1,5 +1,6 @@
-import { state,} from "./script.js";
+import { state, } from "./script.js";
 import { UIManager } from "./uiManager.js";
+import { getUserHighscore, loginAndCreateProfile } from "./db/DatabaseConfig.js";
 
 //----------------------------------------------------
 //start button
@@ -8,6 +9,8 @@ document.querySelector(".start-btn").addEventListener("click", () => {
     console.log("Game Started");
     UIManager();
 });
+//highscore info
+export const highscoreText = document.querySelector(".menu-info-highscore");
 
 //how to play button
 const howToBtn = document.querySelector(".how-to-play-btn");
@@ -52,4 +55,6 @@ closeOptions?.addEventListener("click", () => {
     if (optionsPanel) optionsPanel.style.display = "none";
 });
 //----------------------------------------------------
-
+const loginBtn = document.querySelector(".login-btn");
+const statusDiv = document.getElementById("user-status");
+loginBtn.addEventListener("click", async () => { await loginAndCreateProfile(); });

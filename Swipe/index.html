@@ -49,10 +49,8 @@
 						<button class="close-how-to-play close-btn">
 							<img src="icons/close.png" alt="" class="btn-icon small-icon" />
 						</button>
-						<br>
-						<h2 id="center-horizontal">How to play?</h2>
-						<br>
-						<span>Its easy for everyone! Just swipe your finger from left to right to avoid falling
+						<div class="popup-header-info">How to play?</div>
+						<span class="popup-content">Its easy for everyone! Just swipe your finger from left to right to avoid falling
 							obstacles! Speed will increase by time played!</span>
 					</div>
 				</div>
@@ -61,11 +59,9 @@
 						<button class="close-highscores close-btn">
 							<img src="icons/close.png" alt="" class="btn-icon small-icon" />
 						</button>
-						<br>
-						<h2 id="center-horizontal">Highscores</h2>
-						<br>
-						<div class="highscores-top10"></div>
-						<div class="highscores-yourPlace"></div>
+						<div class="popup-header-info">Highscores</div>
+						<div class="highscores-top10 popup-content"></div>
+						<div class="highscores-yourPlace popup-content"></div>
 					</div>
 				</div>
 				<div id="options-panel" style="display:none;">
@@ -73,13 +69,17 @@
 						<button class="close-options close-btn">
 							<img src="icons/close.png" alt="" class="btn-icon small-icon" />
 						</button>
-						<br>
-						<h2 id="center-horizontal">Options</h2>
-						<br>
-						<div>login to save or load progress</div>
-						<div class="menu-btn">
+						<div class="popup-header-info">Options</div>
+						<div class="popup-content">Use Google account to Login to save progress or load your data.</div>
+						<button class="menu-btn login-btn">
+							<img src="icons/google.svg" alt="" class="btn-icon" />
+						</button>
+
+						<button class="menu-btn logout-btn" style="display:none;">
 							<img src="icons/login-avatar.png" alt="" class="btn-icon" />
-						</div>
+							<span>Logout</span>
+						</button>
+						<div id="user-status" class="popup-content">Data unlinked - not logged in</div>
 					</div>
 				</div>
 			</div>
@@ -101,6 +101,7 @@
 	<script src="menuManager.js" type="module"></script>
 	<script src="utils/colorSetter.js" type="module"></script>
 	<script src="player.js" type="module"></script>
+	<script src="db/DatabaseConfig.js" type="module"></script>
 </body>
 
 </html>

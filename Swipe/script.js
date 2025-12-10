@@ -2,8 +2,12 @@
 //----------------------------------------------------
 import { Player } from "./player.js";
 import { handleEffects } from "./scripts/effects.js";
+import { handleSkins } from "./scripts/skins.js";
 import { checkScreenSizeForOptimalGameplayMenu, checkScreenSizeForOptimalGameplayGame } from "./utils/resizer.js";
 import { ObstacleManager } from "./scripts/obstacles.js";
+import { UIManager } from "./uiManager.js";
+import { getUserHighscore, updateUserHighscore } from "./db/DatabaseConfig.js";
+import { highscoreText } from "./menuManager.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -32,7 +36,7 @@ const ctx = canvas.getContext("2d");
 const off = new OffscreenCanvas(canvas.width, canvas.height);
 const offCtx = off.getContext("2d");
 
-const player = new Player(0, 0, 50, 0, 1);
+const player = new Player(0, 0, 50, 1, 1);
 const obstacleManager = new ObstacleManager();
 let gameStarted = false;
 
@@ -59,7 +63,7 @@ function handleGesture() {
 }
 
 function lerp(start, end, t) {
-    return start * (1 - t) + end * t;
+	return start * (1 - t) + end * t;
 }
 //MOBILE
 document.addEventListener('touchstart', e => {
@@ -98,20 +102,36 @@ function isColliding(player, obstacle, squareSize) {
 			width: squareSize,
 			height: squareSize
 		};
-		if (rectsOverlap(playerRect, obsRect)) {
+		if (obstaclesOverlap(playerRect, obsRect)) {
+			console.log("Game Over!");
+			state.playerScene = state.scenes.Menu;
+			gameStarted = false;
+			player.lane = 1;
+
+			const currentScore = obstacleManager.score;
+			obstacleManager.reset();
+
+			updateUserHighscore(currentScore)
+				.then(() => {
+					return getUserHighscore();
+				})
+				.then((highscore) => {
+					console.log("Aktualny Highscore:", highscore);
+					const scoreText = document.querySelector(".menu-info-highscore");
+					if (scoreText) scoreText.innerText = highscore;
+				});
+
+			UIManager();
 			return true;
 		}
 	}
-	return false;
 }
-function rectsOverlap(rect1, rect2) {
+function obstaclesOverlap(rect1, rect2) {
 	return !(rect1.x > rect2.x + rect2.width ||
 		rect1.x + rect1.width < rect2.x ||
 		rect1.y > rect2.y + rect2.height ||
 		rect1.y + rect1.height < rect2.y);
 }
-
-
 
 //----------------------------------------------------
 
@@ -141,8 +161,8 @@ function menuAnimationAndSkinPreview() {
 	player.baseSize = playerInMenuSize;
 	setPlayerPosition((canvas.clientWidth / 2) - (player.baseSize / 2), (canvas.clientHeight / 2) - (player.baseSize / 2));
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-	player.draw(ctx);
 	handleEffects(ctx, player);
+	handleSkins(ctx, player);
 	gameLoop()
 }
 
@@ -155,8 +175,8 @@ function game() {
 	const targetX = gridStartX + (player.lane * squareSize) + (squareSize - playerSize) / 2;
 	const targetY = canvas.clientHeight - player.baseSize - 100;
 
-	player.x = lerp(player.x, targetX, 0.2); 
-    player.y = targetY;
+	player.x = lerp(player.x, targetX, 0.2);
+	player.y = targetY;
 
 	if (!gameStarted) {
 		obstacleManager.spawnRandomObstacle();
@@ -176,7 +196,7 @@ function game() {
 	}
 
 	handleEffects(ctx, player);
-	player.draw(ctx);
+	handleSkins(ctx, player);
 
 	obstacleManager.update(canvas.clientHeight);
 	obstacleManager.draw(ctx, gridStartX, squareSize);
@@ -197,7 +217,9 @@ export function gameLoop() {
 
 	if ((state.playerScene === state.scenes.Pause)) { }
 
-	if ((state.playerScene === state.scenes.GameOver)) { }
+	if ((state.playerScene === state.scenes.GameOver)) {
+		requestAnimationFrame(menuAnimationAndSkinPreview);
+	}
 }
 gameLoop();
 

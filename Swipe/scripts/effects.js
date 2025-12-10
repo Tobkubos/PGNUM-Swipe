@@ -8,13 +8,16 @@ class Particle {
         this.opacity = 1;
         this.type = type;
 
-        if (this.type === 1) {
+        switch (this.type) {
+        case 1: // Efekt 1: Białe kwadraty opadające w dół
             this.speedY = Math.random() * 0.1 + 0.75;
             this.speedX = (Math.random() - 0.5) * 1;
             this.fadeSpeed = Math.random() * 0.05 + 0.005;
             this.color = "white";
-        } 
-        //else if (this.type === 2) { }
+            break;
+        default:
+            break;
+        }
     }
 
     update() {

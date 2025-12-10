@@ -1,9 +1,9 @@
 .btn-icon {
-	width: 75px;
-	height: 75px;
+    width: 75px;
+    height: 75px;
 }
 
-.menu-game-name{
+.menu-game-name {
     position: absolute;
     top: 10%;
     font-size: 4rem;
@@ -12,7 +12,7 @@
     font-family: 'Permanent Marker';
 }
 
-.menu-info-score{
+.menu-info-score {
     position: absolute;
     top: 20%;
     font-size: 15px;
@@ -20,7 +20,7 @@
     text-align: center;
 }
 
-.menu-info-highscore{
+.menu-info-highscore {
     position: absolute;
     top: 25%;
     font-size: 30px;
@@ -28,7 +28,7 @@
     text-align: center;
 }
 
-.menu-btn{
+.menu-btn {
     position: absolute;
     z-index: 10;
     display: flex;
@@ -53,9 +53,9 @@
 .start-btn {
     left: 50%;
     transform: translateX(-50%);
-     position: absolute;
-     bottom: 10%;
-     z-index: 10;
+    position: absolute;
+    bottom: 10%;
+    z-index: 10;
 }
 
 .skins-btn {
@@ -94,4 +94,22 @@
 .small-icon {
     width: 35px;
     height: 35px;
+}
+
+.login-btn,
+.logout-btn {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.above-icon {
+    position: absolute;
+    bottom: 30%;
+    width: 100%;
+    font-size: 16px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+
 }

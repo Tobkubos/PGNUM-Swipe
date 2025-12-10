@@ -14,9 +14,4 @@ export class Player {
         if (this.lane < 0) this.lane = 0;
         if (this.lane > 2) this.lane = 2;
     }
-
-    draw(ctx) {
-        ctx.fillStyle = "white";
-        ctx.fillRect(this.x, this.y, this.baseSize, this.baseSize);
-    }
 }

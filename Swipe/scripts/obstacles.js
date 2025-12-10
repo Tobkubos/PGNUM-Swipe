@@ -62,11 +62,8 @@ export class ObstacleManager {
         this.obstacles = [];
         this.score = 0;
         if (gameScoreText) gameScoreText.innerText = "0";
-        this.spawnRandomObstacle();
     }
 }
-
-
 
 export class Obstacle {
     constructor(y, activeLanes, speed, color) {
