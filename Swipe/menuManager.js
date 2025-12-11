@@ -9,9 +9,11 @@ document.querySelector(".start-btn").addEventListener("click", () => {
     console.log("Game Started");
     UIManager();
 });
+//----------------------------------------------------
 //highscore info
 export const highscoreText = document.querySelector(".menu-info-highscore");
 
+//----------------------------------------------------
 //how to play button
 const howToBtn = document.querySelector(".how-to-play-btn");
 const howToPanel = document.getElementById("how-to-play-panel");
@@ -25,6 +27,7 @@ closeHowTo?.addEventListener("click", () => {
     if (howToPanel) howToPanel.style.display = "none";
 });
 
+//----------------------------------------------------
 //highscores button
 const highscoresBtn = document.querySelector(".highscore-btn");
 const highscoresPanel = document.getElementById("highscores-panel");
@@ -42,6 +45,7 @@ closeHighscores?.addEventListener("click", () => {
     if (highscoresPanel) highscoresPanel.style.display = "none";
 });
 
+//----------------------------------------------------
 //options button
 const optionsBtn = document.querySelector(".options-btn");
 const optionsPanel = document.getElementById("options-panel");
@@ -54,12 +58,12 @@ optionsBtn.addEventListener("click", () => {
 closeOptions?.addEventListener("click", () => {
     if (optionsPanel) optionsPanel.style.display = "none";
 });
-//----------------------------------------------------
+
 const loginBtn = document.querySelector(".login-btn");
 loginBtn.addEventListener("click", async () => { await loginAndCreateProfile(); });
 
-
-
+//----------------------------------------------------
+//title animation
 const title = document.querySelector(".menu-game-name");
 if (title && !title.querySelector("span")) {
     const text = title.innerText;
@@ -71,3 +75,18 @@ if (title && !title.querySelector("span")) {
         title.appendChild(span);
     });
 }
+
+//----------------------------------------------------
+const effectBtn = document.querySelector(".effects-btn");
+effectBtn.addEventListener("click", () => {
+    state.playerScene = state.scenes.EffectSelect;
+    console.log("Effect Select Opened");
+    UIManager();
+});
+
+const skinBtn = document.querySelector(".skins-btn");
+skinBtn.addEventListener("click", () => {
+    state.playerScene = state.scenes.SkinSelect;
+    console.log("Skin Select Opened");
+    UIManager();
+});

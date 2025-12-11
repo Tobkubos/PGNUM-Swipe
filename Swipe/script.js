@@ -1,19 +1,20 @@
-
 //----------------------------------------------------
 import { Player } from "./player.js";
 import { handleEffects } from "./scripts/effects.js";
 import { handleSkins } from "./scripts/skins.js";
-import { checkScreenSizeForOptimalGameplayMenu, checkScreenSizeForOptimalGameplayGame } from "./utils/resizer.js";
+import {
+	checkScreenSizeForOptimalGameplayMenu,
+	checkScreenSizeForOptimalGameplayGame,
+} from "./utils/resizer.js";
 import { ObstacleManager } from "./scripts/obstacles.js";
 import { UIManager } from "./uiManager.js";
 import { getUserHighscore, updateUserHighscore } from "./db/DatabaseConfig.js";
-import { highscoreText } from "./menuManager.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
 	window.addEventListener("load", () => {
 		navigator.serviceWorker
-			.register("../config/sw.js")
+			.register("./config/sw.js")
 			.then((reg) => console.log("Service Worker zarejestrowany!", reg))
 			.catch((err) => console.log("Błąd Service Workera:", err));
 	});
@@ -25,10 +26,12 @@ export const state = {
 	playerScene: "Menu",
 	scenes: {
 		Menu: "Menu",
+		SkinSelect: "SkinSelect",
+		EffectSelect: "EffectSelect",
 		Game: "Game",
 		Pause: "Pause",
 		GameOver: "GameOver",
-	}
+	},
 };
 
 const canvas = document.getElementById("gameCanvas");
@@ -36,12 +39,11 @@ const ctx = canvas.getContext("2d");
 const off = new OffscreenCanvas(canvas.width, canvas.height);
 const offCtx = off.getContext("2d");
 
-const player = new Player(0, 0, 50, 18, 12);
+const player = new Player(0, 0, 50, 1, 2);
 const obstacleManager = new ObstacleManager();
 let gameStarted = false;
 
 const buffer = 10;
-
 
 //----------------------------------------------------
 //MOVEMENT
@@ -66,21 +68,21 @@ function lerp(start, end, t) {
 	return start * (1 - t) + end * t;
 }
 //MOBILE
-document.addEventListener('touchstart', e => {
+document.addEventListener("touchstart", (e) => {
 	touchStartX = e.changedTouches[0].screenX;
 });
 
-document.addEventListener('touchend', e => {
+document.addEventListener("touchend", (e) => {
 	touchEndX = e.changedTouches[0].screenX;
 	handleGesture();
 });
 
 //PC
-document.addEventListener('mousedown', e => {
+document.addEventListener("mousedown", (e) => {
 	touchStartX = e.screenX;
 });
 
-document.addEventListener('mouseup', e => {
+document.addEventListener("mouseup", (e) => {
 	touchEndX = e.screenX;
 	handleGesture();
 });
@@ -92,15 +94,16 @@ function isColliding(player, obstacle, squareSize) {
 		x: player.x,
 		y: player.y,
 		width: player.baseSize,
-		height: player.baseSize
+		height: player.baseSize,
 	};
 	for (let laneIndex of obstacle.activeLanes) {
-		const obsX = ((canvas.clientWidth - (squareSize * 3)) / 2) + laneIndex * squareSize;
+		const obsX =
+			(canvas.clientWidth - squareSize * 3) / 2 + laneIndex * squareSize;
 		const obsRect = {
 			x: obsX,
 			y: obstacle.y,
 			width: squareSize,
-			height: squareSize
+			height: squareSize,
 		};
 		if (obstaclesOverlap(playerRect, obsRect)) {
 			console.log("Game Over!");
@@ -127,10 +130,12 @@ function isColliding(player, obstacle, squareSize) {
 	}
 }
 function obstaclesOverlap(rect1, rect2) {
-	return !(rect1.x > rect2.x + rect2.width ||
+	return !(
+		rect1.x > rect2.x + rect2.width ||
 		rect1.x + rect1.width < rect2.x ||
 		rect1.y > rect2.y + rect2.height ||
-		rect1.y + rect1.height < rect2.y);
+		rect1.y + rect1.height < rect2.y
+	);
 }
 
 //----------------------------------------------------
@@ -156,23 +161,53 @@ function setPlayerPosition(x, y) {
 }
 
 function menuAnimationAndSkinPreview() {
-
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	player.baseSize = playerInMenuSize;
-	setPlayerPosition((canvas.clientWidth / 2) - (player.baseSize / 2), (canvas.clientHeight / 2) - (player.baseSize / 2));
+	setPlayerPosition(
+		canvas.clientWidth / 2 - player.baseSize / 2,
+		canvas.clientHeight / 2 - player.baseSize / 2
+	);
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 	handleEffects(ctx, player);
 	handleSkins(ctx, player);
-	gameLoop()
+	gameLoop();
+}
+
+function skinsPreview() {
+	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
+	player.baseSize = playerInMenuSize;
+	setPlayerPosition(
+		canvas.clientWidth / 2 - player.baseSize / 2,
+		canvas.clientHeight / 2 - player.baseSize / 2
+	);
+	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+	handleSkins(ctx, player);
+	gameLoop();
+}
+
+function effectsPreview() {
+	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
+	player.baseSize = playerInMenuSize;
+	setPlayerPosition(
+		canvas.clientWidth / 2 - player.baseSize / 2,
+		canvas.clientHeight / 2 - player.baseSize / 2
+	);
+	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+	handleSkins(ctx, player);
+	gameLoop();
 }
 
 function game() {
-	const { squareSize, playerSize } = checkScreenSizeForOptimalGameplayGame(canvas, buffer);
+	const { squareSize, playerSize } = checkScreenSizeForOptimalGameplayGame(
+		canvas,
+		buffer
+	);
 	player.baseSize = playerSize;
 
 	const totalWidth = squareSize * 3;
 	const gridStartX = (canvas.clientWidth - totalWidth) / 2;
-	const targetX = gridStartX + (player.lane * squareSize) + (squareSize - playerSize) / 2;
+	const targetX =
+		gridStartX + player.lane * squareSize + (squareSize - playerSize) / 2;
 	const targetY = canvas.clientHeight - player.baseSize - 100;
 
 	player.x = lerp(player.x, targetX, 0.2);
@@ -204,22 +239,29 @@ function game() {
 	gameLoop();
 }
 
-
 // Game Loop
 export function gameLoop() {
-	if ((state.playerScene === state.scenes.Menu)) {
+	if (state.playerScene === state.scenes.Menu) {
 		requestAnimationFrame(menuAnimationAndSkinPreview);
 	}
 
-	if ((state.playerScene === state.scenes.Game)) {
+	if (state.playerScene === state.scenes.Game) {
 		requestAnimationFrame(game);
 	}
 
-	if ((state.playerScene === state.scenes.Pause)) { }
+	if (state.playerScene === state.scenes.SkinSelect) {
+		requestAnimationFrame(skinsPreview);
+	}
 
-	if ((state.playerScene === state.scenes.GameOver)) {
+	if (state.playerScene === state.scenes.EffectSelect) {
+		requestAnimationFrame(effectsPreview);
+	}
+
+	if (state.playerScene === state.scenes.Pause) {
+	}
+
+	if (state.playerScene === state.scenes.GameOver) {
 		requestAnimationFrame(menuAnimationAndSkinPreview);
 	}
 }
 gameLoop();
-
