@@ -85,12 +85,18 @@
 				</div>
 			</div>
 			<div id="gameplay" style="display:none;">
-				<div>
-					<div id="score-display">0</div>
-					<button class="menu-btn pause-btn small-btn">
-						<img src="icons/pause.png" alt="" class="btn-icon small-icon" />
-						<span>Pause</span>
-					</button>
+				<div id="score-display">0</div>
+				<button class="menu-btn pause-btn small-btn">
+					<img src="icons/pause.png" alt="" class="btn-icon small-icon" />
+					<span>Pause</span>
+				</button>
+				<div id="pause-panel" style="display:none;">
+					<div id="pause-content-panel">
+						<div class="popup-header-info">Game paused</div>
+						<button class="close-pause-btn close-btn">
+							<img src="icons/close.png" alt="" class="btn-icon small-icon" />
+						</button>
+					</div>
 				</div>
 			</div>
 
@@ -103,18 +109,11 @@
 			</div>
 
 			<div id="effects" style="display:none;">
-				<h1>Effects wardrobe</h1>
+				<h1>Effect wardrobe</h1>
 				<button class="close-effect-customization-btn">
 					<img src="icons/close.png" alt="" class="btn-icon small-icon" />
 				</button>
-				<button class="menu-btn change-previous small-btn">
-					<img src="icons/pause.png" alt="" class="btn-icon small-icon" />
-					<span>Previous</span>
-				</button>
-				<button class="menu-btn change-next small-btn">
-					<img src="icons/pause.png" alt="" class="btn-icon small-icon" />
-					<span>Next</span>
-				</button>
+				<div id="all-effects-container"></div>
 			</div>
 		</div>
 		<canvas id="gameCanvas"></canvas>

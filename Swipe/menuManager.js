@@ -9,6 +9,24 @@ document.querySelector(".start-btn").addEventListener("click", () => {
     console.log("Game Started");
     UIManager();
 });
+
+const pausePanel = document.getElementById("pause-panel");
+const pauseBtn = document.querySelector(".pause-btn");
+const resumeGameBtn = document.querySelector(".close-pause-btn");
+
+resumeGameBtn.addEventListener("click", () => {
+    state.playerScene = state.scenes.Game;
+    if(pausePanel) pausePanel.style.display = "none";
+    console.log("Game Resumed");
+    UIManager();
+});
+
+pauseBtn.addEventListener("click", () => {
+    state.playerScene = state.scenes.Pause;
+    if(pausePanel) pausePanel.style.display = "block";
+    console.log("Game Paused");
+    UIManager();
+});
 //----------------------------------------------------
 //highscore info
 export const highscoreText = document.querySelector(".menu-info-highscore");

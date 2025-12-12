@@ -6,8 +6,10 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 import {
-    getFirestore, doc, getDoc, setDoc, updateDoc, query, collection, orderBy, limit, getDocs
+    getFirestore, doc, getDoc, setDoc, updateDoc, query, collection, orderBy, limit, getDocs, onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+import { updateUI } from "../uiManager.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAZvIq7NCMfETcFTx0W0nENSsORxyQuSII",
@@ -25,64 +27,100 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
+export const currentUserState = {
+    user: null,   // AUTH
+    data: null,   // FIRESTORE
+    unsubscribe: null
+};
 
-function handleUserLogin(user) {
-    const statusDiv = document.getElementById("user-status");
-    const loginBtn = document.querySelector(".login-btn");
-    
-    if (statusDiv && loginBtn) {
-        statusDiv.innerText = `Logged as: ${user.displayName}`;
-        loginBtn.style.display = "none";
-    }
+export function setupAuthListener() {
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const userRef = doc(db, "users", user.uid);
+            const userSnap = await getDoc(userRef);
+            let userData = null;
 
-    //download user highscore
-    getUserHighscore().then(score => {
-        const scoreEl = document.querySelector(".menu-info-highscore");
-        if(scoreEl) scoreEl.innerText = score;
+            if (userSnap.exists()) {
+                userData = userSnap.data();
+            } else {
+                userData = {
+                    username: user.displayName,
+                    highScore: 0,
+                    coins: 0,
+                    unlockedSkins: [0],
+                    unlockedEffects: [0],
+                    createdAt: new Date().toISOString()
+                };
+                await setDoc(userRef, userData);
+            }
+
+            currentUserState.user = user;
+            currentUserState.data = userData;
+
+            if (typeof currentUserState.unsubscribe === "function") {
+                currentUserState.unsubscribe();
+            }
+            currentUserState.unsubscribe = listenToUserData(user.uid);
+
+        } else {
+            // user logged out
+            if (typeof currentUserState.unsubscribe === "function") {
+                currentUserState.unsubscribe();
+            }
+            currentUserState.user = null;
+            currentUserState.data = null;
+            console.log("Brak zalogowanego użytkownika");
+        }
+
+        updateUI();
     });
 }
+setupAuthListener();
 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        console.log("Wykryto sesję użytkownika:", user.displayName);
-        handleUserLogin(user);
-    } else {
-        console.log("Brak zalogowanego użytkownika.");
-    }
-});
+
+export function listenToUserData(userId) {
+    const userRef = doc(db, "users", userId);
+
+    const unsubscribe = onSnapshot(userRef, (docSnap) => {
+        if (docSnap.exists()) {
+            currentUserState.data = docSnap.data();
+            console.log("Aktualne dane użytkownika:", currentUserState.user.displayName, currentUserState.data);
+
+            updateUI();
+        }
+    });
+
+    return unsubscribe;
+}
+
 
 export async function loginAndCreateProfile() {
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-        
+
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 
+        let userData;
         if (!userSnap.exists()) {
-            const newUserData = {
+            userData = {
                 username: user.displayName,
-                email: user.email,
                 highScore: 0,
-                coins: 0,            
-                unlockedSkins: [0],   
+                coins: 0,
+                unlockedSkins: [0],
                 unlockedEffects: [0],
                 createdAt: new Date().toISOString()
             };
-            await setDoc(userRef, newUserData);
-
-            return {
-                user,
-                data: newUserData
-            };
+            await setDoc(userRef, userData);
+        } else {
+            userData = userSnap.data();
         }
 
-        const userData = userSnap.data();
+        currentUserState.user = user;
+        currentUserState.data = userData;
 
-        return {
-            user,
-            data: userData
-        };
+        return { user, data: userData };
 
     } catch (error) {
         console.error("Błąd logowania:", error);
@@ -101,40 +139,17 @@ export async function logoutUser() {
     }
 }
 
-export async function getUserHighscore() {
-    try {
-        const user = auth.currentUser;
-        if (!user) return 0; //if not logged in, return 0
-        
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
-        
-        if (userSnap.exists()) {
-            return Number(userSnap.data().highScore ?? 0);
-        }
-        return 0;
-    } catch (error) {
-        console.error("Błąd pobierania wyniku:", error);
-        return 0;
-    }
-}
-
 export async function updateUserHighscore(newHighScore) {
     try {
         const user = auth.currentUser;
         if (!user) return false;
-        
+
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-            const currentScore = userSnap.data().highScore || 0;
-            
-            if (newHighScore > currentScore) {
-                await updateDoc(userRef, { highScore: newHighScore });
-                console.log("Nowy rekord zapisany:", newHighScore);
-                return true;
-            }
+            await updateDoc(userRef, { highScore: newHighScore });
+            return true;
         }
         return false;
     } catch (error) {

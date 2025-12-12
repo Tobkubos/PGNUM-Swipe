@@ -13,8 +13,7 @@ import {
 import { ObstacleManager } from "./scripts/obstacles.js";
 //ui management
 import { UIManager, state } from "./uiManager.js";
-import { getUserHighscore, updateUserHighscore } from "./db/DatabaseConfig.js";
-import { font } from "./utils/colors.js";
+import { currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -33,7 +32,7 @@ const ctx = canvas.getContext("2d");
 const off = new OffscreenCanvas(canvas.width, canvas.height);
 const offCtx = off.getContext("2d");
 
-export const player = new Player(0, 0, 50, 1, 2);
+export const player = new Player(0, 0, 50, 16, 12);
 const obstacleManager = new ObstacleManager();
 let gameStarted = false;
 
@@ -91,8 +90,7 @@ function isColliding(player, obstacle, squareSize) {
 		height: player.baseSize,
 	};
 	for (let laneIndex of obstacle.activeLanes) {
-		const obsX =
-			(canvas.clientWidth - squareSize * 3) / 2 + laneIndex * squareSize;
+		const obsX = (canvas.clientWidth - squareSize * 3) / 2 + laneIndex * squareSize;
 		const obsRect = {
 			x: obsX,
 			y: obstacle.y,
@@ -108,21 +106,15 @@ function isColliding(player, obstacle, squareSize) {
 			const currentScore = obstacleManager.score;
 			obstacleManager.reset();
 
-			updateUserHighscore(currentScore)
-				.then(() => {
-					return getUserHighscore();
-				})
-				.then((highscore) => {
-					console.log("Aktualny Highscore:", highscore);
-					const scoreText = document.querySelector(".menu-info-highscore");
-					if (scoreText) scoreText.innerText = highscore;
-				});
+			if (currentScore > currentUserState.data.highScore)
+				updateUserHighscore(currentScore)
 
 			UIManager();
 			return true;
 		}
 	}
 }
+
 function obstaclesOverlap(rect1, rect2) {
 	return !(
 		rect1.x > rect2.x + rect2.width ||
@@ -172,55 +164,49 @@ function menuAnimationAndSkinPreview() {
 const NUMBER_OF_SKINS = 16;
 const COLUMNS = 4;
 function skinsPreview() {
-    var size = checkScreenSizeForOptimalSkinsPreview(canvas, 40);
-    const padding = 20;
-    const textHeight = size / 5 + 10;
+	var size = checkScreenSizeForOptimalSkinsPreview(canvas, 40);
+	const padding = 20;
 
-    ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-    const rows = Math.ceil(NUMBER_OF_SKINS / COLUMNS);
+	const rows = Math.ceil(NUMBER_OF_SKINS / COLUMNS);
 
-    // ROZMIAR CAŁEJ SIATKI
-    const gridWidth = COLUMNS * size + (COLUMNS - 1) * padding;
-    const gridHeight = rows * (size + textHeight) + (rows - 1) * padding;
+	// ROZMIAR CAŁEJ SIATKI
+	const gridWidth = COLUMNS * size + (COLUMNS - 1) * padding;
+	const gridHeight = rows * (size) + (rows - 1) * padding;
 
-    // WYŚRODKOWANIE
-    const startX = (canvas.clientWidth - gridWidth) / 2;
-    const startY = (canvas.clientHeight - gridHeight) / 2;
+	// WYŚRODKOWANIE
+	const startX = (canvas.clientWidth - gridWidth) / 2;
+	const startY = (canvas.clientHeight - gridHeight) / 2;
 
-    for (let skinId = 0; skinId < NUMBER_OF_SKINS; skinId++) {
-        const col = skinId % COLUMNS;
-        const row = Math.floor(skinId / COLUMNS);
+	for (let skinId = 0; skinId < NUMBER_OF_SKINS; skinId++) {
+		const col = skinId % COLUMNS;
+		const row = Math.floor(skinId / COLUMNS);
 
-        const x = startX + col * (size + padding);
-        const y = startY + row * (size + textHeight + padding);
+		const x = startX + col * (size + padding);
+		const y = startY + row * (size + padding);
 
-        const oldX = player.x;
-        const oldY = player.y;
-        const oldSkin = player.selectedSkin;
-        const oldSize = player.baseSize;
+		const oldX = player.x;
+		const oldY = player.y;
+		const oldSkin = player.selectedSkin;
+		const oldSize = player.baseSize;
 
-        player.x = x;
-        player.y = y;
-        player.baseSize = size;
-        player.selectedSkin = skinId;
+		player.x = x;
+		player.y = y;
+		player.baseSize = size;
+		player.selectedSkin = skinId;
 
-        handleSkins(ctx, player);
+		handleSkins(ctx, player);
 
-        ctx.fillStyle = "white";
-        ctx.font = `${size / 5}px Poppins`;
-        ctx.textAlign = "center";
-        ctx.fillText(`#${skinId}`, x + size / 2, y + size + textHeight / 1.5);
-
-        player.x = oldX;
-        player.y = oldY;
-        player.selectedSkin = oldSkin;
-        player.baseSize = oldSize;
-    }
-    gameLoop();
+		player.x = oldX;
+		player.y = oldY;
+		player.selectedSkin = oldSkin;
+		player.baseSize = oldSize;
+	}
+	gameLoop();
 }
 function effectsPreview() {
-
+	gameLoop();
 }
 
 function game() {
@@ -249,7 +235,6 @@ function game() {
 	//check collision
 	for (let obs of obstacleManager.obstacles) {
 		if (isColliding(player, obs, squareSize)) {
-			console.log("Game Over!");
 			state.playerScene = state.scenes.GameOver;
 			obstacleManager.reset();
 			gameStarted = false;
@@ -262,6 +247,10 @@ function game() {
 	obstacleManager.update(canvas.clientHeight);
 	obstacleManager.draw(ctx, gridStartX, squareSize);
 
+	gameLoop();
+}
+
+function pause() {
 	gameLoop();
 }
 
@@ -284,6 +273,7 @@ export function gameLoop() {
 	}
 
 	if (state.playerScene === state.scenes.Pause) {
+		requestAnimationFrame(pause);
 	}
 
 	if (state.playerScene === state.scenes.GameOver) {

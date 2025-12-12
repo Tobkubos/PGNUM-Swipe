@@ -1,4 +1,4 @@
-#how-to-play-panel, #highscores-panel, #options-panel{
+#how-to-play-panel, #highscores-panel, #options-panel, #pause-panel{
     position: absolute;
     width: 100%;
     height: 100%;
@@ -6,7 +6,7 @@
     overflow-y: auto;
 }
 
-#content-panel, #highscores-content-panel, #options-content-panel, #how-to-play-content-panel{
+#content-panel, #highscores-content-panel, #options-content-panel, #how-to-play-content-panel, #pause-content-panel{
     position: absolute;
     width: 80%;
     height: 50%;
@@ -22,7 +22,7 @@
     flex-direction: column;
 }
 
-.close-how-to-play, .close-highscores, .close-options{
+.close-how-to-play, .close-highscores, .close-options, .close-pause{
     position: absolute;
     top: 5%;
     left: 5%;

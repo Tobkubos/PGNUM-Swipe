@@ -51,3 +51,22 @@ export function UIManager() {
 	}
 }
 
+import { currentUserState } from "./db/DatabaseConfig.js";
+export function updateUI() {
+	const statusDiv = document.getElementById("user-status");
+	const loginBtn = document.querySelector(".login-btn");
+	const scoreEl = document.querySelector(".menu-info-highscore");
+
+	if (statusDiv) {
+		statusDiv.innerText = currentUserState.user
+			? `Logged as: ${currentUserState.user.displayName}`
+			: "Nie zalogowano";
+	}
+	if (loginBtn) {
+		loginBtn.style.display = currentUserState.user ? "none" : "block";
+	}
+	if (scoreEl) {
+		scoreEl.innerText = currentUserState.data?.highScore ?? 0;
+	}
+}
+
