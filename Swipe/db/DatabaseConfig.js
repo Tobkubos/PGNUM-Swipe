@@ -56,7 +56,6 @@ export async function loginAndCreateProfile() {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
         
-        //check if user profile exists
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 
@@ -71,14 +70,26 @@ export async function loginAndCreateProfile() {
                 createdAt: new Date().toISOString()
             };
             await setDoc(userRef, newUserData);
+
+            return {
+                user,
+                data: newUserData
+            };
         }
-        
-        return { user: user };
+
+        const userData = userSnap.data();
+
+        return {
+            user,
+            data: userData
+        };
+
     } catch (error) {
         console.error("Błąd logowania:", error);
         return null;
     }
 }
+
 export async function logoutUser() {
     try {
         await signOut(auth);

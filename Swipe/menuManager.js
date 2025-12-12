@@ -1,6 +1,6 @@
-import { state, } from "./script.js";
+import { state } from "./uiManager.js";
 import { UIManager } from "./uiManager.js";
-import { getUserHighscore, loginAndCreateProfile } from "./db/DatabaseConfig.js";
+import { loginAndCreateProfile } from "./db/DatabaseConfig.js";
 
 //----------------------------------------------------
 //start button
@@ -77,16 +77,28 @@ if (title && !title.querySelector("span")) {
 }
 
 //----------------------------------------------------
+const skinBtn = document.querySelector(".skins-btn");
 const effectBtn = document.querySelector(".effects-btn");
+
+const closeSkinCustomizationBtn = document.querySelector(".close-skin-customization-btn");
+const closeEffectCustomizationBtn = document.querySelector(".close-effect-customization-btn");
+
 effectBtn.addEventListener("click", () => {
     state.playerScene = state.scenes.EffectSelect;
-    console.log("Effect Select Opened");
     UIManager();
 });
 
-const skinBtn = document.querySelector(".skins-btn");
 skinBtn.addEventListener("click", () => {
     state.playerScene = state.scenes.SkinSelect;
-    console.log("Skin Select Opened");
+    UIManager();
+});
+
+closeSkinCustomizationBtn?.addEventListener("click", () => {
+    state.playerScene = state.scenes.Menu;
+    UIManager();
+});
+
+closeEffectCustomizationBtn?.addEventListener("click", () => {
+    state.playerScene = state.scenes.Menu;
     UIManager();
 });

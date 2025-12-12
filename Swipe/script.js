@@ -1,14 +1,20 @@
 //----------------------------------------------------
+//player display
 import { Player } from "./player.js";
 import { handleEffects } from "./scripts/effects.js";
 import { handleSkins } from "./scripts/skins.js";
+//objects sizing management
 import {
 	checkScreenSizeForOptimalGameplayMenu,
 	checkScreenSizeForOptimalGameplayGame,
+	checkScreenSizeForOptimalSkinsPreview
 } from "./utils/resizer.js";
+//obstacles
 import { ObstacleManager } from "./scripts/obstacles.js";
-import { UIManager } from "./uiManager.js";
+//ui management
+import { UIManager, state } from "./uiManager.js";
 import { getUserHighscore, updateUserHighscore } from "./db/DatabaseConfig.js";
+import { font } from "./utils/colors.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -22,31 +28,19 @@ if ("serviceWorker" in navigator) {
 
 //----------------------------------------------------
 
-export const state = {
-	playerScene: "Menu",
-	scenes: {
-		Menu: "Menu",
-		SkinSelect: "SkinSelect",
-		EffectSelect: "EffectSelect",
-		Game: "Game",
-		Pause: "Pause",
-		GameOver: "GameOver",
-	},
-};
-
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const off = new OffscreenCanvas(canvas.width, canvas.height);
 const offCtx = off.getContext("2d");
 
-const player = new Player(0, 0, 50, 1, 2);
+export const player = new Player(0, 0, 50, 1, 2);
 const obstacleManager = new ObstacleManager();
 let gameStarted = false;
 
 const buffer = 10;
 
 //----------------------------------------------------
-//MOVEMENT
+//#region MOVEMENT
 let touchStartX = 0;
 let touchEndX = 0;
 function handleGesture() {
@@ -86,9 +80,9 @@ document.addEventListener("mouseup", (e) => {
 	touchEndX = e.screenX;
 	handleGesture();
 });
-
+//#endregion
 //----------------------------------------------------
-//COLLISION DETECTION
+//#region COLLISION DETECTION
 function isColliding(player, obstacle, squareSize) {
 	const playerRect = {
 		x: player.x,
@@ -137,9 +131,9 @@ function obstaclesOverlap(rect1, rect2) {
 		rect1.y + rect1.height < rect2.y
 	);
 }
-
+//#endregion
 //----------------------------------------------------
-
+//#region RESIZE HANDLER
 function resize() {
 	const rect = canvas.getBoundingClientRect();
 	const dpr = window.devicePixelRatio || 1;
@@ -154,6 +148,8 @@ function resize() {
 }
 window.addEventListener("resize", resize);
 resize();
+//#endregion
+//----------------------------------------------------
 
 function setPlayerPosition(x, y) {
 	player.x = x;
@@ -173,28 +169,58 @@ function menuAnimationAndSkinPreview() {
 	gameLoop();
 }
 
+const NUMBER_OF_SKINS = 16;
+const COLUMNS = 4;
 function skinsPreview() {
-	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
-	player.baseSize = playerInMenuSize;
-	setPlayerPosition(
-		canvas.clientWidth / 2 - player.baseSize / 2,
-		canvas.clientHeight / 2 - player.baseSize / 2
-	);
-	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-	handleSkins(ctx, player);
-	gameLoop();
-}
+    var size = checkScreenSizeForOptimalSkinsPreview(canvas, 40);
+    const padding = 20;
+    const textHeight = size / 5 + 10;
 
+    ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+    const rows = Math.ceil(NUMBER_OF_SKINS / COLUMNS);
+
+    // ROZMIAR CAŁEJ SIATKI
+    const gridWidth = COLUMNS * size + (COLUMNS - 1) * padding;
+    const gridHeight = rows * (size + textHeight) + (rows - 1) * padding;
+
+    // WYŚRODKOWANIE
+    const startX = (canvas.clientWidth - gridWidth) / 2;
+    const startY = (canvas.clientHeight - gridHeight) / 2;
+
+    for (let skinId = 0; skinId < NUMBER_OF_SKINS; skinId++) {
+        const col = skinId % COLUMNS;
+        const row = Math.floor(skinId / COLUMNS);
+
+        const x = startX + col * (size + padding);
+        const y = startY + row * (size + textHeight + padding);
+
+        const oldX = player.x;
+        const oldY = player.y;
+        const oldSkin = player.selectedSkin;
+        const oldSize = player.baseSize;
+
+        player.x = x;
+        player.y = y;
+        player.baseSize = size;
+        player.selectedSkin = skinId;
+
+        handleSkins(ctx, player);
+
+        ctx.fillStyle = "white";
+        ctx.font = `${size / 5}px Poppins`;
+        ctx.textAlign = "center";
+        ctx.fillText(`#${skinId}`, x + size / 2, y + size + textHeight / 1.5);
+
+        player.x = oldX;
+        player.y = oldY;
+        player.selectedSkin = oldSkin;
+        player.baseSize = oldSize;
+    }
+    gameLoop();
+}
 function effectsPreview() {
-	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
-	player.baseSize = playerInMenuSize;
-	setPlayerPosition(
-		canvas.clientWidth / 2 - player.baseSize / 2,
-		canvas.clientHeight / 2 - player.baseSize / 2
-	);
-	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-	handleSkins(ctx, player);
-	gameLoop();
+
 }
 
 function game() {

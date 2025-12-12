@@ -18,3 +18,13 @@ export function checkScreenSizeForOptimalGameplayGame(canvas, buffer) {
         playerSize: playerSize
     };
 }
+
+export function checkScreenSizeForOptimalSkinsPreview(canvas, buffer) {
+    var squareSize = Math.max(1, Math.floor(canvas.clientWidth / 4 - buffer));
+
+    if (squareSize >= 80) {
+        squareSize = 80;
+    }
+
+    return squareSize
+}

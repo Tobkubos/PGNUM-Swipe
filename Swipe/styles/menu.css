@@ -151,5 +151,16 @@
     font-size: 16px;
     text-align: center;
     font-family: 'Poppins', sans-serif;
+}
 
+.change-previous {
+    left: 0%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.change-next {
+    right: 0%;
+    top: 50%;
+    transform: translateY(-50%);
 }
