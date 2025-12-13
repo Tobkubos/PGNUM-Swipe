@@ -10,6 +10,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 import { updateUI } from "../uiManager.js";
+import { player } from "../script.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAZvIq7NCMfETcFTx0W0nENSsORxyQuSII",
@@ -43,19 +44,13 @@ export function setupAuthListener() {
             if (userSnap.exists()) {
                 userData = userSnap.data();
             } else {
-                userData = {
-                    username: user.displayName,
-                    highScore: 0,
-                    coins: 0,
-                    unlockedSkins: [0],
-                    unlockedEffects: [0],
-                    createdAt: new Date().toISOString()
-                };
-                await setDoc(userRef, userData);
+                userData = null;
             }
 
             currentUserState.user = user;
             currentUserState.data = userData;
+            player.selectedSkin = userData.savedSelectedSkin || 0;
+            player.selectedEffect = userData.savedSelectedEffect || 0;
 
             if (typeof currentUserState.unsubscribe === "function") {
                 currentUserState.unsubscribe();
@@ -71,7 +66,6 @@ export function setupAuthListener() {
             currentUserState.data = null;
             console.log("Brak zalogowanego użytkownika");
         }
-
         updateUI();
     });
 }
@@ -85,7 +79,6 @@ export function listenToUserData(userId) {
         if (docSnap.exists()) {
             currentUserState.data = docSnap.data();
             console.log("Aktualne dane użytkownika:", currentUserState.user.displayName, currentUserState.data);
-
             updateUI();
         }
     });
@@ -110,6 +103,8 @@ export async function loginAndCreateProfile() {
                 coins: 0,
                 unlockedSkins: [0],
                 unlockedEffects: [0],
+                savedSelectedSkin: 0,
+                savedSelectedEffect: 0,
                 createdAt: new Date().toISOString()
             };
             await setDoc(userRef, userData);
@@ -119,12 +114,13 @@ export async function loginAndCreateProfile() {
 
         currentUserState.user = user;
         currentUserState.data = userData;
-
-        return { user, data: userData };
+        player.selectedSkin = userData.savedSelectedSkin || 0;
+        player.selectedEffect = userData.savedSelectedEffect || 0;
+        //return { user, data: userData };
 
     } catch (error) {
         console.error("Błąd logowania:", error);
-        return null;
+        //return null;
     }
 }
 
@@ -149,6 +145,25 @@ export async function updateUserHighscore(newHighScore) {
 
         if (userSnap.exists()) {
             await updateDoc(userRef, { highScore: newHighScore });
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error("Błąd aktualizacji wyniku:", error);
+        return false;
+    }
+}
+
+export async function saveSelectedSkin(id) {
+    try {
+        const user = auth.currentUser;
+        if (!user) return false;
+
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+            await updateDoc(userRef, { savedSelectedSkin: id });
             return true;
         }
         return false;

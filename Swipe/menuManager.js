@@ -1,6 +1,7 @@
 import { state } from "./uiManager.js";
 import { UIManager } from "./uiManager.js";
 import { loginAndCreateProfile } from "./db/DatabaseConfig.js";
+import { gameLoop, skinsPreview } from "./script.js";
 
 //----------------------------------------------------
 //start button

@@ -13,7 +13,7 @@ import {
 import { ObstacleManager } from "./scripts/obstacles.js";
 //ui management
 import { UIManager, state } from "./uiManager.js";
-import { currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
+import { currentUserState, saveSelectedSkin, updateUserHighscore } from "./db/DatabaseConfig.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -32,7 +32,7 @@ const ctx = canvas.getContext("2d");
 const off = new OffscreenCanvas(canvas.width, canvas.height);
 const offCtx = off.getContext("2d");
 
-export const player = new Player(0, 0, 50, 16, 12);
+export const player = new Player(0, 0, 50, 0, 0);
 const obstacleManager = new ObstacleManager();
 let gameStarted = false;
 
@@ -163,12 +163,15 @@ function menuAnimationAndSkinPreview() {
 
 const NUMBER_OF_SKINS = 16;
 const COLUMNS = 4;
-function skinsPreview() {
+
+let skinHitboxes = [];
+
+export function skinsPreview() {
 	var size = checkScreenSizeForOptimalSkinsPreview(canvas, 40);
 	const padding = 20;
 
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-
+	skinHitboxes = [];
 	const rows = Math.ceil(NUMBER_OF_SKINS / COLUMNS);
 
 	// ROZMIAR CAŁEJ SIATKI
@@ -186,6 +189,13 @@ function skinsPreview() {
 		const x = startX + col * (size + padding);
 		const y = startY + row * (size + padding);
 
+		skinHitboxes.push({
+			x: x,
+			y: y,
+			size: size,
+			skinId: skinId
+		});
+
 		const oldX = player.x;
 		const oldY = player.y;
 		const oldSkin = player.selectedSkin;
@@ -198,6 +208,14 @@ function skinsPreview() {
 
 		handleSkins(ctx, player);
 
+		if (!currentUserState.data?.unlockedSkins.includes(skinId)) {
+			ctx.fillStyle = "rgba(0,0,0,0.5)";
+			ctx.fillRect(x, y, size, size);
+			ctx.fillStyle = "white";
+			ctx.textAlign = "center";
+			ctx.fillText("LOCKED", x + size / 2, y + size / 2);
+		}
+
 		player.x = oldX;
 		player.y = oldY;
 		player.selectedSkin = oldSkin;
@@ -205,6 +223,30 @@ function skinsPreview() {
 	}
 	gameLoop();
 }
+
+canvas.addEventListener("click", (e) => {
+	if (state.playerScene !== state.scenes.SkinSelect) return;
+	const rect = canvas.getBoundingClientRect();
+	const clickX = e.clientX - rect.left;
+	const clickY = e.clientY - rect.top;
+	for (let hitbox of skinHitboxes) {
+		if (
+			clickX >= hitbox.x &&
+			clickX <= hitbox.x + hitbox.size &&
+			clickY >= hitbox.y &&
+			clickY <= hitbox.y + hitbox.size
+		) {
+			if (currentUserState.data.unlockedSkins.includes(hitbox.skinId)) {
+				player.selectedSkin = hitbox.skinId;
+				state.playerScene = state.scenes.Menu;
+				saveSelectedSkin(hitbox.skinId);
+				UIManager();
+				gameLoop();
+			}	
+		}
+	}
+});
+
 function effectsPreview() {
 	gameLoop();
 }

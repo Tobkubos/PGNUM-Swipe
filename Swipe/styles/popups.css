@@ -4,6 +4,7 @@
     height: 100%;
     z-index: 20;
     overflow-y: auto;
+    pointer-events: auto;
 }
 
 #content-panel, #highscores-content-panel, #options-content-panel, #how-to-play-content-panel, #pause-content-panel{
@@ -22,7 +23,7 @@
     flex-direction: column;
 }
 
-.close-how-to-play, .close-highscores, .close-options, .close-pause{
+.close-how-to-play, .close-highscores, .close-options, .close-pause, .close-skin-customization-btn {
     position: absolute;
     top: 5%;
     left: 5%;
@@ -30,6 +31,7 @@
     background: none;
     border: none;
     cursor: pointer;
+    pointer-events: auto;
 }
 
 .popup-header-info {

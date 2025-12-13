@@ -82,6 +82,7 @@
     font-family: 'Poppins', sans-serif;
     width: 75px;
     height: auto;
+    pointer-events: auto;
 }
 
 #menu {
@@ -129,6 +130,7 @@
 
 .small-btn {
     font-size: 12px;
+    pointer-events: auto;
 }
 
 .small-icon {
