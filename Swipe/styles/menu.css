@@ -156,13 +156,33 @@
 }
 
 .change-previous {
+    position: absolute;
     left: 0%;
+    top: 50%;
+    transform: translateY(-50%) rotateY(180deg);
+}
+
+.change-next {
+    position: absolute;
+    right: 0%;
     top: 50%;
     transform: translateY(-50%);
 }
 
-.change-next {
-    right: 0%;
-    top: 50%;
-    transform: translateY(-50%);
+#effect-id{
+    position: absolute;
+    bottom: 20%;
+    width: 100%;
+    font-size: 32px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}   
+
+#skins-header, #effects-header {
+    position: absolute;
+    top: 10%;
+    width: 100%;
+    text-align: center;
+    font-size: 2rem;
+    font-family: 'Poppins', sans-serif;
 }

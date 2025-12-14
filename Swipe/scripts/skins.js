@@ -379,7 +379,7 @@ export function handleSkins(ctx, player) {
             ctx.lineTo(x + size*0.3, cy); 
             ctx.fill();
             break;
-
+            
         default: 
             ctx.fillStyle = "white";
             ctx.fillRect(x, y, size, size);

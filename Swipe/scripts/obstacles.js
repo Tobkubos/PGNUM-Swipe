@@ -11,7 +11,6 @@ export class ObstacleManager {
 
     spawnRandomObstacle() {
 
-
         //możliwe typy przeszkód: 1 -pojedyńcza kolumna, 2 - podwójna kolumna (wszystkie kombinacje 3 kolumn)
         // x1
         // x2

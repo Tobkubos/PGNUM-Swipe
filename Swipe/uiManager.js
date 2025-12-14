@@ -56,17 +56,20 @@ export function updateUI() {
 	const statusDiv = document.getElementById("user-status");
 	const loginBtn = document.querySelector(".login-btn");
 	const scoreEl = document.querySelector(".menu-info-highscore");
-
+	const logoutBtn = document.querySelector(".logout-btn");
 	if (statusDiv) {
 		statusDiv.innerText = currentUserState.user
 			? `Logged as: ${currentUserState.user.displayName}`
-			: "Nie zalogowano";
+			: "Data unlinked - not logged in";
 	}
 	if (loginBtn) {
 		loginBtn.style.display = currentUserState.user ? "none" : "block";
 	}
 	if (scoreEl) {
 		scoreEl.innerText = currentUserState.data?.highScore ?? 0;
+	}
+	if (logoutBtn) {
+		logoutBtn.style.display = currentUserState.user ? "block" : "none";
 	}
 }
 

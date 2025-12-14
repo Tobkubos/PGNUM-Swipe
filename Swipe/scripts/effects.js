@@ -58,7 +58,7 @@ class Particle {
                 this.speedX = (Math.random() - 0.5) * 10;
                 this.fadeSpeed = 0.04;
                 this.color = "yellow";
-                this.gravity = 0.5;
+                //this.gravity = 0.5;
                 this.size *= 0.5;
                 break;
             case 7: 
@@ -111,7 +111,7 @@ class Particle {
             case 13: 
                 this.speedY = -3;
                 this.speedX = (Math.random() - 0.5) * 4;
-                this.fadeSpeed = 0.005;
+                this.fadeSpeed = 0.04;
                 this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
                 this.gravity = 0.2;
                 this.rotationSpeed = 0.2;

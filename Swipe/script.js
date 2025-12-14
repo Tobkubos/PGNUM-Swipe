@@ -13,7 +13,7 @@ import {
 import { ObstacleManager } from "./scripts/obstacles.js";
 //ui management
 import { UIManager, state } from "./uiManager.js";
-import { currentUserState, saveSelectedSkin, updateUserHighscore } from "./db/DatabaseConfig.js";
+import { currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -27,7 +27,7 @@ if ("serviceWorker" in navigator) {
 
 //----------------------------------------------------
 
-const canvas = document.getElementById("gameCanvas");
+export const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const off = new OffscreenCanvas(canvas.width, canvas.height);
 const offCtx = off.getContext("2d");
@@ -35,7 +35,6 @@ const offCtx = off.getContext("2d");
 export const player = new Player(0, 0, 50, 0, 0);
 const obstacleManager = new ObstacleManager();
 let gameStarted = false;
-
 const buffer = 10;
 
 //----------------------------------------------------
@@ -43,7 +42,7 @@ const buffer = 10;
 let touchStartX = 0;
 let touchEndX = 0;
 function handleGesture() {
-	console.log("Handling gesture");
+	//console.log("Handling gesture");
 	if (state.playerScene !== state.scenes.Game) return;
 
 	const threshold = 30;
@@ -164,7 +163,7 @@ function menuAnimationAndSkinPreview() {
 const NUMBER_OF_SKINS = 16;
 const COLUMNS = 4;
 
-let skinHitboxes = [];
+export let skinHitboxes = [];
 
 export function skinsPreview() {
 	var size = checkScreenSizeForOptimalSkinsPreview(canvas, 40);
@@ -224,30 +223,32 @@ export function skinsPreview() {
 	gameLoop();
 }
 
-canvas.addEventListener("click", (e) => {
-	if (state.playerScene !== state.scenes.SkinSelect) return;
-	const rect = canvas.getBoundingClientRect();
-	const clickX = e.clientX - rect.left;
-	const clickY = e.clientY - rect.top;
-	for (let hitbox of skinHitboxes) {
-		if (
-			clickX >= hitbox.x &&
-			clickX <= hitbox.x + hitbox.size &&
-			clickY >= hitbox.y &&
-			clickY <= hitbox.y + hitbox.size
-		) {
-			if (currentUserState.data.unlockedSkins.includes(hitbox.skinId)) {
-				player.selectedSkin = hitbox.skinId;
-				state.playerScene = state.scenes.Menu;
-				saveSelectedSkin(hitbox.skinId);
-				UIManager();
-				gameLoop();
-			}	
-		}
-	}
-});
-
 function effectsPreview() {
+	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
+	player.baseSize = playerInMenuSize;
+	setPlayerPosition(
+		canvas.clientWidth / 2 - player.baseSize / 2,
+		canvas.clientHeight / 2 - player.baseSize / 2
+	);
+	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+	
+	handleEffects(ctx, player);
+	handleSkins(ctx, player);
+
+	if (!currentUserState.data?.unlockedEffects.includes(player.selectedEffect)) {
+		ctx.save();
+		ctx.fillStyle = "rgba(0,0,0,0.6)";
+		const overlaySize = player.baseSize * 2;
+		const overlayX = player.x - (overlaySize - player.baseSize) / 2;
+		const overlayY = player.y - (overlaySize - player.baseSize) / 2;
+		ctx.fillRect(overlayX, overlayY, overlaySize, overlaySize);
+		ctx.fillStyle = "white";
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
+		ctx.font = `${Math.max(12, Math.floor(player.baseSize / 2.5))}px Poppins`;
+		ctx.fillText("LOCKED", overlayX + overlaySize / 2, overlayY + overlaySize / 2);
+		ctx.restore();
+	}
 	gameLoop();
 }
 

@@ -116,11 +116,9 @@ export async function loginAndCreateProfile() {
         currentUserState.data = userData;
         player.selectedSkin = userData.savedSelectedSkin || 0;
         player.selectedEffect = userData.savedSelectedEffect || 0;
-        //return { user, data: userData };
 
     } catch (error) {
         console.error("Błąd logowania:", error);
-        //return null;
     }
 }
 
@@ -128,6 +126,10 @@ export async function logoutUser() {
     try {
         await signOut(auth);
         console.log("Wylogowano");
+        currentUserState.user = null;
+        currentUserState.data = null;
+        player.selectedSkin = 0;
+        player.selectedEffect = 0;
         return true;
     } catch (error) {
         console.error("Błąd wylogowania", error);
@@ -168,7 +170,26 @@ export async function saveSelectedSkin(id) {
         }
         return false;
     } catch (error) {
-        console.error("Błąd aktualizacji wyniku:", error);
+        console.error("Błąd aktualizacji skina", error);
+        return false;
+    }
+}
+
+export async function saveSelectedEffect(id) {
+    try {
+        const user = auth.currentUser;
+        if (!user) return false;
+
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+            await updateDoc(userRef, { saveSelectedEffect: id });
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error("Błąd aktualizacji efektu", error);
         return false;
     }
 }

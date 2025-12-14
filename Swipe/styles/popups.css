@@ -23,7 +23,7 @@
     flex-direction: column;
 }
 
-.close-how-to-play, .close-highscores, .close-options, .close-pause, .close-skin-customization-btn {
+.close-how-to-play, .close-highscores, .close-options, .close-pause, .close-skin-customization-btn, .close-effect-customization-btn {
     position: absolute;
     top: 5%;
     left: 5%;

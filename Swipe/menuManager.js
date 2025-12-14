@@ -1,8 +1,8 @@
 import { state } from "./uiManager.js";
 import { UIManager } from "./uiManager.js";
-import { loginAndCreateProfile } from "./db/DatabaseConfig.js";
-import { gameLoop, skinsPreview } from "./script.js";
-
+import { loginAndCreateProfile, currentUserState, saveSelectedSkin, logoutUser, saveSelectedEffect } from "./db/DatabaseConfig.js";
+import { gameLoop, } from "./script.js";
+import { canvas, player, skinHitboxes } from "./script.js";
 //----------------------------------------------------
 //start button
 document.querySelector(".start-btn").addEventListener("click", () => {
@@ -17,14 +17,14 @@ const resumeGameBtn = document.querySelector(".close-pause-btn");
 
 resumeGameBtn.addEventListener("click", () => {
     state.playerScene = state.scenes.Game;
-    if(pausePanel) pausePanel.style.display = "none";
+    if (pausePanel) pausePanel.style.display = "none";
     console.log("Game Resumed");
     UIManager();
 });
 
 pauseBtn.addEventListener("click", () => {
     state.playerScene = state.scenes.Pause;
-    if(pausePanel) pausePanel.style.display = "block";
+    if (pausePanel) pausePanel.style.display = "block";
     console.log("Game Paused");
     UIManager();
 });
@@ -81,6 +81,12 @@ closeOptions?.addEventListener("click", () => {
 const loginBtn = document.querySelector(".login-btn");
 loginBtn.addEventListener("click", async () => { await loginAndCreateProfile(); });
 
+const logoutBtn = document.querySelector(".logout-btn");
+logoutBtn.addEventListener("click", async () => { await logoutUser(); });
+
+
+;
+
 //----------------------------------------------------
 //title animation
 const title = document.querySelector(".menu-game-name");
@@ -102,8 +108,22 @@ const effectBtn = document.querySelector(".effects-btn");
 const closeSkinCustomizationBtn = document.querySelector(".close-skin-customization-btn");
 const closeEffectCustomizationBtn = document.querySelector(".close-effect-customization-btn");
 
+const previousEffectBtn = document.querySelector(".change-previous");
+const nextEffectBtn = document.querySelector(".change-next");
+
+const effectIdDisplay = document.getElementById("effect-id");
+
+previousEffectBtn?.addEventListener("click", () => {
+    previousEffect();
+});
+
+nextEffectBtn?.addEventListener("click", () => {
+    nextEffect();
+});
+
 effectBtn.addEventListener("click", () => {
     state.playerScene = state.scenes.EffectSelect;
+    effectIdDisplay.innerText = `effect number: ${player.selectedEffect}`;
     UIManager();
 });
 
@@ -119,5 +139,56 @@ closeSkinCustomizationBtn?.addEventListener("click", () => {
 
 closeEffectCustomizationBtn?.addEventListener("click", () => {
     state.playerScene = state.scenes.Menu;
+    if(currentUserState.data?.unlockedEffects.includes(player.selectedEffect)){
+        console.log("mam taki efekt odblokowany")
+        saveSelectedEffect(player.selectedEffect)
+    }
+    else{
+        console.log("nie mam tego skina")
+        player.selectedEffect = currentUserState.data.saveSelectedEffect
+        saveSelectedEffect(currentUserState.data.saveSelectedEffect)
+    }
     UIManager();
 });
+
+canvas.addEventListener("click", (e) => {
+    if (state.playerScene !== state.scenes.SkinSelect) return;
+    const rect = canvas.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+    for (let hitbox of skinHitboxes) {
+        if (
+            clickX >= hitbox.x &&
+            clickX <= hitbox.x + hitbox.size &&
+            clickY >= hitbox.y &&
+            clickY <= hitbox.y + hitbox.size
+        ) {
+            if(currentUserState.data === null) return;
+            if (currentUserState.data.unlockedSkins.includes(hitbox.skinId)) {
+                player.selectedSkin = hitbox.skinId;
+                state.playerScene = state.scenes.Menu;
+                saveSelectedSkin(hitbox.skinId);
+                UIManager();
+                gameLoop();
+            }
+        }
+    }
+});
+
+function previousEffect() {
+    if(currentUserState.data === null) return;
+
+    if (player.selectedEffect > 0) {
+        player.selectedEffect--;
+    } 
+    effectIdDisplay.innerText = `effect number: ${player.selectedEffect}`;
+}
+
+function nextEffect() {
+    if(currentUserState.data === null) return;
+
+    if (player.selectedEffect < 25) {
+        player.selectedEffect++;
+    } 
+    effectIdDisplay.innerText = `effect number: ${player.selectedEffect}`;
+}
