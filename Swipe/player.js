@@ -14,4 +14,9 @@ export class Player {
         if (this.lane < 0) this.lane = 0;
         if (this.lane > 2) this.lane = 2;
     }
+
+    setPlayerPosition(x, y) {
+        this.x = x;
+        this.y = y;
+    }
 }

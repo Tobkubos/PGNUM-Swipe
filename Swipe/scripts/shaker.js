@@ -33,7 +33,7 @@ function handleShake(event) {
 		Math.abs(acc.y) +
 		Math.abs(acc.z);
 
-	if (shakeStrength > 1) {
+	if (shakeStrength > 25) {
 		addShakeProgress();
 	}
 }
@@ -41,6 +41,10 @@ function handleShake(event) {
 if (window.DeviceMotionEvent) {
 	window.addEventListener("devicemotion", handleShake);
 }
+
+window.addEventListener("deviceorientation", e => {
+	//console.log("gamma:", e.gamma, "beta:", e.beta);
+});
 
 document.addEventListener("keydown", (e) => {
 	if (state.playerScene !== state.scenes.Reward) return;

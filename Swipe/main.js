@@ -10,7 +10,7 @@ import {
 	checkScreenSizeForOptimalSkinsPreview
 } from "./utils/resizer.js";
 //obstacles
-import { ObstacleManager } from "./scripts/obstacles.js";
+import { ObstacleManager } from "./scripts/obstaclesManager.js";
 //ui management
 import { UIManager, state } from "./sceneManager.js";
 import { currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
@@ -28,8 +28,8 @@ if ("serviceWorker" in navigator) {
 
 //----------------------------------------------------
 
-export const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+import { canvas, ctx } from "./scripts/canvasManager.js";
+
 const off = new OffscreenCanvas(canvas.width, canvas.height);
 const offCtx = off.getContext("2d");
 
@@ -89,6 +89,7 @@ function isColliding(player, obstacle, squareSize) {
 		width: player.baseSize,
 		height: player.baseSize,
 	};
+
 	for (let laneIndex of obstacle.activeLanes) {
 		const obsX = (canvas.clientWidth - squareSize * 3) / 2 + laneIndex * squareSize;
 		const obsRect = {
@@ -97,8 +98,13 @@ function isColliding(player, obstacle, squareSize) {
 			width: squareSize,
 			height: squareSize,
 		};
-		return obstaclesOverlap(playerRect, obsRect)
+
+		if (obstaclesOverlap(playerRect, obsRect)) {
+			return true;
+		}
 	}
+
+	return false;
 }
 
 function obstaclesOverlap(rect1, rect2) {
@@ -129,15 +135,11 @@ resize();
 //#endregion
 //----------------------------------------------------
 
-function setPlayerPosition(x, y) {
-	player.x = x;
-	player.y = y;
-}
 
 function menuAnimationAndSkinPreview() {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	player.baseSize = playerInMenuSize;
-	setPlayerPosition(
+	player.setPlayerPosition(
 		canvas.clientWidth / 2 - player.baseSize / 2,
 		canvas.clientHeight / 2 - player.baseSize / 2
 	);
@@ -211,7 +213,7 @@ export function skinsPreview() {
 function effectsPreview() {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	player.baseSize = playerInMenuSize;
-	setPlayerPosition(
+	player.setPlayerPosition(
 		canvas.clientWidth / 2 - player.baseSize / 2,
 		canvas.clientHeight / 2 - player.baseSize / 2
 	);

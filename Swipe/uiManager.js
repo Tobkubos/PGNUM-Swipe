@@ -1,7 +1,8 @@
 import { state } from "./sceneManager.js";
 import { UIManager } from "./sceneManager.js";
 import { loginAndCreateProfile, currentUserState, saveSelectedSkin, logoutUser, saveSelectedEffect, getTop10Scores } from "./db/DatabaseConfig.js";
-import { canvas, player, skinHitboxes } from "./script.js";
+import {player, skinHitboxes } from "./main.js";
+import { canvas } from "./scripts/canvasManager.js";
 //----------------------------------------------------
 //start button
 document.querySelector(".start-btn").addEventListener("click", () => {
@@ -27,9 +28,14 @@ pauseBtn.addEventListener("click", () => {
     console.log("Game Paused");
     UIManager();
 });
+export const gameScoreText = document.getElementById("score-display");
+
 //----------------------------------------------------
 //highscore info
 export const highscoreText = document.querySelector(".menu-info-highscore");
+export function updateScoreText(score){
+    gameScoreText.innerText = score;
+} 
 
 //----------------------------------------------------
 //how to play button

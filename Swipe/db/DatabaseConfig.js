@@ -10,7 +10,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 import { updateUI } from "../sceneManager.js";
-import { player } from "../script.js";
+import { player } from "../main.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAZvIq7NCMfETcFTx0W0nENSsORxyQuSII",
@@ -34,7 +34,7 @@ export const currentUserState = {
     unsubscribe: null
 };
 
-export function setupAuthListener() {
+function setupAuthListener() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             const userRef = doc(db, "users", user.uid);
@@ -72,7 +72,7 @@ export function setupAuthListener() {
 setupAuthListener();
 
 
-export function listenToUserData(userId) {
+function listenToUserData(userId) {
     const userRef = doc(db, "users", userId);
 
     const unsubscribe = onSnapshot(userRef, (docSnap) => {

@@ -1,5 +1,20 @@
+import { updateScoreText } from "../uiManager.js";
+
 const topMargin = -400;
-const gameScoreText = document.getElementById("score-display");
+
+
+//możliwe typy przeszkód: 1 -pojedyńcza kolumna, 2 - podwójna kolumna (wszystkie kombinacje 3 kolumn)
+// x1
+// x2
+// x3
+// x1 x2
+// x2 x3
+// x1 x3
+const patterns = [
+    [0], [1], [2],
+    [0, 1], [1, 2], [0, 2]
+];
+
 
 export class ObstacleManager {
     constructor() {
@@ -8,22 +23,7 @@ export class ObstacleManager {
         this.color = "#ff0000";
         this.score = 0;
     }
-
     spawnRandomObstacle() {
-
-        //możliwe typy przeszkód: 1 -pojedyńcza kolumna, 2 - podwójna kolumna (wszystkie kombinacje 3 kolumn)
-        // x1
-        // x2
-        // x3
-        // x1 x2
-        // x2 x3
-        // x1 x3
-
-        const patterns = [
-            [0], [1], [2],
-            [0, 1], [1, 2], [0, 2]
-        ];
-
         const randomIndex = Math.floor(Math.random() * patterns.length);
         const selectedPattern = patterns[randomIndex];
 
@@ -41,11 +41,7 @@ export class ObstacleManager {
             if (obs.y > limitY) {
                 this.obstacles.splice(i, 1);
                 this.score++;
-
-                if (gameScoreText) {
-                    gameScoreText.innerText = this.score;
-                }
-
+                updateScoreText(this.score)
                 this.spawnRandomObstacle();
             }
         }
@@ -60,7 +56,7 @@ export class ObstacleManager {
     reset() {
         this.obstacles = [];
         this.score = 0;
-        if (gameScoreText) gameScoreText.innerText = "0";
+        updateScoreText(this.score)
     }
 }
 
@@ -73,7 +69,7 @@ export class Obstacle {
     }
 
     update(correction = 1) {
-        this.y += this.speed * correction; 
+        this.y += this.speed * correction;
     }
 
     draw(ctx, startX, squareSize) {
