@@ -97,19 +97,7 @@ function isColliding(player, obstacle, squareSize) {
 			width: squareSize,
 			height: squareSize,
 		};
-		if (obstaclesOverlap(playerRect, obsRect)) {
-			console.log("Game Over!");
-			state.playerScene = state.scenes.Menu;
-			gameStarted = false;
-			player.lane = 1;
-
-			const currentScore = obstacleManager.score;
-			obstacleManager.reset();
-
-			if (currentScore > currentUserState.data.highScore)
-				updateUserHighscore(currentScore)
-			return true;
-		}
+		return obstaclesOverlap(playerRect, obsRect)
 	}
 }
 
@@ -156,7 +144,6 @@ function menuAnimationAndSkinPreview() {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 	handleEffects(ctx, player);
 	handleSkins(ctx, player);
-	gameLoop();
 }
 
 const NUMBER_OF_SKINS = 16;
@@ -219,7 +206,6 @@ export function skinsPreview() {
 		player.selectedSkin = oldSkin;
 		player.baseSize = oldSize;
 	}
-	gameLoop();
 }
 
 function effectsPreview() {
@@ -248,7 +234,6 @@ function effectsPreview() {
 		ctx.fillText("LOCKED", overlayX + overlaySize / 2, overlayY + overlaySize / 2);
 		ctx.restore();
 	}
-	gameLoop();
 }
 
 function game() {
@@ -278,6 +263,16 @@ function game() {
 	for (let obs of obstacleManager.obstacles) {
 		if (isColliding(player, obs, squareSize)) {
 			let isReward = Math.random()
+			console.log("Game Over!");
+			gameStarted = false;
+			player.lane = 1;
+			const currentScore = obstacleManager.score;
+			obstacleManager.reset();
+
+			if (currentScore > currentUserState.data.highScore)
+				updateUserHighscore(currentScore)
+
+
 			if (isReward > 0.5) {
 				state.playerScene = state.scenes.GameOver;
 			}
@@ -286,7 +281,7 @@ function game() {
 				enterRewardScene()
 			}
 
-			obstacleManager.reset();
+
 			UIManager()
 			gameStarted = false;
 		}
@@ -297,22 +292,17 @@ function game() {
 
 	obstacleManager.update(canvas.clientHeight);
 	obstacleManager.draw(ctx, gridStartX, squareSize);
-
-	gameLoop();
 }
 
 function pause() {
-	gameLoop();
 }
 
 function gameOver() {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-	gameLoop()
 }
 
 function reward() {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-	gameLoop()
 }
 
 //----------------------------------------------------
@@ -321,32 +311,29 @@ function reward() {
 
 // Game Loop
 export function gameLoop() {
-	if (state.playerScene === state.scenes.Menu) {
-		requestAnimationFrame(menuAnimationAndSkinPreview);
+	switch (state.playerScene) {
+		case state.scenes.Menu:
+			menuAnimationAndSkinPreview();
+			break;
+		case state.scenes.Game:
+			game();
+			break;
+		case state.scenes.SkinSelect:
+			skinsPreview();
+			break;
+		case state.scenes.EffectSelect:
+			effectsPreview();
+			break;
+		case state.scenes.Pause:
+			pause();
+			break;
+		case state.scenes.GameOver:
+			gameOver();
+			break;
+		case state.scenes.Reward:
+			reward();
+			break;
 	}
-
-	if (state.playerScene === state.scenes.Game) {
-		requestAnimationFrame(game);
-	}
-
-	if (state.playerScene === state.scenes.SkinSelect) {
-		requestAnimationFrame(skinsPreview);
-	}
-
-	if (state.playerScene === state.scenes.EffectSelect) {
-		requestAnimationFrame(effectsPreview);
-	}
-
-	if (state.playerScene === state.scenes.Pause) {
-		requestAnimationFrame(pause);
-	}
-
-	if (state.playerScene === state.scenes.GameOver) {
-		requestAnimationFrame(gameOver);
-	}
-
-	if (state.playerScene === state.scenes.Reward) {
-		requestAnimationFrame(reward);
-	}
+	requestAnimationFrame(gameLoop);
 }
 gameLoop();
