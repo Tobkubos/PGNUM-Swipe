@@ -12,8 +12,9 @@ import {
 //obstacles
 import { ObstacleManager } from "./scripts/obstacles.js";
 //ui management
-import { UIManager, state } from "./uiManager.js";
+import { UIManager, state } from "./sceneManager.js";
 import { currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
+import { enterRewardScene } from "./scripts/shaker.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -107,8 +108,6 @@ function isColliding(player, obstacle, squareSize) {
 
 			if (currentScore > currentUserState.data.highScore)
 				updateUserHighscore(currentScore)
-
-			UIManager();
 			return true;
 		}
 	}
@@ -231,7 +230,7 @@ function effectsPreview() {
 		canvas.clientHeight / 2 - player.baseSize / 2
 	);
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-	
+
 	handleEffects(ctx, player);
 	handleSkins(ctx, player);
 
@@ -278,8 +277,17 @@ function game() {
 	//check collision
 	for (let obs of obstacleManager.obstacles) {
 		if (isColliding(player, obs, squareSize)) {
-			state.playerScene = state.scenes.GameOver;
+			let isReward = Math.random()
+			if (isReward > 0.5) {
+				state.playerScene = state.scenes.GameOver;
+			}
+			else {
+				state.playerScene = state.scenes.Reward;
+				enterRewardScene()
+			}
+
 			obstacleManager.reset();
+			UIManager()
 			gameStarted = false;
 		}
 	}
@@ -296,6 +304,20 @@ function game() {
 function pause() {
 	gameLoop();
 }
+
+function gameOver() {
+	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+	gameLoop()
+}
+
+function reward() {
+	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+	gameLoop()
+}
+
+//----------------------------------------------------
+
+
 
 // Game Loop
 export function gameLoop() {
@@ -320,7 +342,11 @@ export function gameLoop() {
 	}
 
 	if (state.playerScene === state.scenes.GameOver) {
-		requestAnimationFrame(menuAnimationAndSkinPreview);
+		requestAnimationFrame(gameOver);
+	}
+
+	if (state.playerScene === state.scenes.Reward) {
+		requestAnimationFrame(reward);
 	}
 }
 gameLoop();

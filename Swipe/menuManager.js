@@ -1,7 +1,6 @@
-import { state } from "./uiManager.js";
-import { UIManager } from "./uiManager.js";
-import { loginAndCreateProfile, currentUserState, saveSelectedSkin, logoutUser, saveSelectedEffect } from "./db/DatabaseConfig.js";
-import { gameLoop, } from "./script.js";
+import { state } from "./sceneManager.js";
+import { UIManager } from "./sceneManager.js";
+import { loginAndCreateProfile, currentUserState, saveSelectedSkin, logoutUser, saveSelectedEffect, getTop10Scores } from "./db/DatabaseConfig.js";
 import { canvas, player, skinHitboxes } from "./script.js";
 //----------------------------------------------------
 //start button
@@ -51,16 +50,24 @@ closeHowTo?.addEventListener("click", () => {
 const highscoresBtn = document.querySelector(".highscore-btn");
 const highscoresPanel = document.getElementById("highscores-panel");
 const closeHighscores = document.querySelector(".close-highscores");
+const highscoresTop10 = document.querySelector(".highscores-top10");
 
-highscoresBtn.addEventListener("click", () => {
+highscoresBtn.addEventListener("click", async() => {
     if (highscoresPanel) highscoresPanel.style.display = "block";
-    const highscoresTop10 = document.querySelector(".highscores-top10");
-    const highscoresYourPlace = document.querySelector(".highscores-yourPlace");
-    highscoresTop10.innerHTML = "TOP 10";
-    highscoresYourPlace.innerHTML = "Your Place: 15th";
+    
+    const top10 = await getTop10Scores();
+
+    top10.forEach((plr, index) => {
+        highscoresTop10.innerHTML += `
+            <div class="highscore-row">
+                ${index + 1}. ${plr.username} — ${plr.highScore}
+            </div>
+        `;
+    });
 });
 
 closeHighscores?.addEventListener("click", () => {
+    highscoresTop10.innerHTML = "";
     if (highscoresPanel) highscoresPanel.style.display = "none";
 });
 
@@ -139,11 +146,11 @@ closeSkinCustomizationBtn?.addEventListener("click", () => {
 
 closeEffectCustomizationBtn?.addEventListener("click", () => {
     state.playerScene = state.scenes.Menu;
-    if(currentUserState.data?.unlockedEffects.includes(player.selectedEffect)){
+    if (currentUserState.data?.unlockedEffects.includes(player.selectedEffect)) {
         console.log("mam taki efekt odblokowany")
         saveSelectedEffect(player.selectedEffect)
     }
-    else{
+    else {
         console.log("nie mam tego skina")
         player.selectedEffect = currentUserState.data.saveSelectedEffect
         saveSelectedEffect(currentUserState.data.saveSelectedEffect)
@@ -163,32 +170,47 @@ canvas.addEventListener("click", (e) => {
             clickY >= hitbox.y &&
             clickY <= hitbox.y + hitbox.size
         ) {
-            if(currentUserState.data === null) return;
+            if (currentUserState.data === null) return;
             if (currentUserState.data.unlockedSkins.includes(hitbox.skinId)) {
                 player.selectedSkin = hitbox.skinId;
                 state.playerScene = state.scenes.Menu;
                 saveSelectedSkin(hitbox.skinId);
                 UIManager();
-                gameLoop();
             }
         }
     }
 });
 
 function previousEffect() {
-    if(currentUserState.data === null) return;
+    if (currentUserState.data === null) return;
 
     if (player.selectedEffect > 0) {
         player.selectedEffect--;
-    } 
+    }
     effectIdDisplay.innerText = `effect number: ${player.selectedEffect}`;
 }
 
 function nextEffect() {
-    if(currentUserState.data === null) return;
+    if (currentUserState.data === null) return;
 
     if (player.selectedEffect < 25) {
         player.selectedEffect++;
-    } 
+    }
     effectIdDisplay.innerText = `effect number: ${player.selectedEffect}`;
 }
+
+const restartGameBtn = document.querySelector(".restart-game-btn")
+const goToMenu = document.querySelectorAll(".go-to-menu-btn")
+
+restartGameBtn?.addEventListener("click", () => {
+    state.playerScene = state.scenes.Game;
+    console.log("Restarted");
+    UIManager();
+});
+
+goToMenu.forEach(btn => {btn.addEventListener("click", () => {
+    state.playerScene = state.scenes.Menu;
+    console.log("Went to menu");
+    UIManager();
+})});
+

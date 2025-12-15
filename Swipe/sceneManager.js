@@ -2,6 +2,8 @@ const menuElement = document.getElementById("menu");
 const gameplayElement = document.getElementById("gameplay");
 const skinElement = document.getElementById("skins");
 const effectElement = document.getElementById("effects");
+const gameOverElement = document.getElementById("gameover");
+const rewardElement = document.getElementById("reward");
 
 export const state = {
 	playerScene: "Menu",
@@ -12,6 +14,7 @@ export const state = {
 		Game: "Game",
 		Pause: "Pause",
 		GameOver: "GameOver",
+		Reward: "Reward"
 	},
 };
 
@@ -19,7 +22,9 @@ var Ui = [
 	menuElement,
 	gameplayElement,
 	skinElement,
-	effectElement
+	effectElement,
+	gameOverElement,
+	rewardElement
 ];
 
 export function UIManager() {
@@ -48,6 +53,20 @@ export function UIManager() {
 			element.style.display = "none";
 		});
 		skinElement.style.display = "block";
+	}
+
+	if (state.playerScene === state.scenes.GameOver) {
+		Ui.forEach(element => {
+			element.style.display = "none";
+		});
+		gameOverElement.style.display = "block";
+	}
+
+	if (state.playerScene === state.scenes.Reward) {
+		Ui.forEach(element => {
+			element.style.display = "none";
+		});
+		rewardElement.style.display = "block";
 	}
 }
 

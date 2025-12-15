@@ -9,7 +9,7 @@ import {
     getFirestore, doc, getDoc, setDoc, updateDoc, query, collection, orderBy, limit, getDocs, onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-import { updateUI } from "../uiManager.js";
+import { updateUI } from "../sceneManager.js";
 import { player } from "../script.js";
 
 const firebaseConfig = {
@@ -194,7 +194,7 @@ export async function saveSelectedEffect(id) {
     }
 }
 
-export async function updateTop10ScoreDisplay() {
+export async function getTop10Scores() {
     try {
         const q = query(
             collection(db, "users"),

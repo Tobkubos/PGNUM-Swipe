@@ -121,22 +121,54 @@
 					<img src="icons/close.png" alt="" class="btn-icon small-icon" />
 				</button>
 				<button class="change-previous menu-btn ">
-					<img src="icons/play.png" alt="" class="btn-icon small-icon"/>
+					<img src="icons/play.png" alt="" class="btn-icon small-icon" />
 				</button>
 				<button class="change-next menu-btn ">
 					<img src="icons/play.png" alt="" class="btn-icon small-icon" />
 				</button>
 				<div id="effect-id"></div>
-
 			</div>
+
+			<div id="gameover" style="display: none;">
+				<div id="gameover-panel">
+					<div id="gameover-content-panel">
+						<div class="popup-header-info">Game Over!</div>
+
+						<button class="menu-btn go-to-menu-btn">
+							<img src="icons/back.png" alt="" class="btn-icon small-icon" />
+							<span>Go to menu</span>
+						</button>
+						<button class="menu-btn restart-game-btn">
+							<img src="icons/restart.png" alt="" class="btn-icon small-icon" />
+							<span>Restart</span>
+						</button>
+						<div id="game-score" class="popup-content"></div>
+					</div>
+				</div>
+			</div>
+
+			<div id="reward" style="display: none;">
+				<div id="reward-panel">
+					<div id="reward-content-panel">
+						<div class="popup-header-info">Game Over!</div>
+						<div class="reward-status">You found a treasure in this run! Shake to open!</div>
+						<button class="menu-btn go-to-menu-btn">
+							<img src="icons/treasure-chest.png" alt="" class="btn-icon" />
+							<span>Go to menu</span>
+						</button>
+						<div class="shake-progress-bar">0%</div>
+					</div>
+				</div>
+			</div>
+
 		</div>
 		<canvas id="gameCanvas"></canvas>
 	</div>
 	<script src="script.js" type="module"></script>
-	<script src="utils/resizer.js" type="module"></script>
 	<script src="menuManager.js" type="module"></script>
-	<script src="utils/colorSetter.js" type="module"></script>
 	<script src="player.js" type="module"></script>
+	<script src="utils/colorSetter.js" type="module"></script>
+	<script src="utils/resizer.js" type="module"></script>
 	<script src="db/DatabaseConfig.js" type="module"></script>
 </body>
 
