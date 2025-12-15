@@ -70,7 +70,7 @@ export function UIManager() {
 	}
 }
 
-import { currentUserState } from "./db/DatabaseConfig.js";
+import { currentUserState } from "../db/DatabaseConfig.js";
 export function updateUI() {
 	const statusDiv = document.getElementById("user-status");
 	const loginBtn = document.querySelector(".login-btn");

@@ -1,8 +1,8 @@
 import { state } from "./sceneManager.js";
 import { UIManager } from "./sceneManager.js";
-import { loginAndCreateProfile, currentUserState, saveSelectedSkin, logoutUser, saveSelectedEffect, getTop10Scores } from "./db/DatabaseConfig.js";
-import {player, skinHitboxes } from "./main.js";
-import { canvas } from "./scripts/canvasManager.js";
+import { loginAndCreateProfile, currentUserState, saveSelectedSkin, logoutUser, saveSelectedEffect, getTop10Scores } from "../db/DatabaseConfig.js";
+import {player, skinHitboxes } from "../main.js";
+import { canvas } from "./canvasManager.js";
 //----------------------------------------------------
 //start button
 document.querySelector(".start-btn").addEventListener("click", () => {

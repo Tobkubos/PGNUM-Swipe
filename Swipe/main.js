@@ -1,20 +1,17 @@
 //----------------------------------------------------
-//player display
-import { Player } from "./player.js";
+import { Player } from "./scripts/player.js";
 import { handleEffects } from "./scripts/effects.js";
 import { handleSkins } from "./scripts/skins.js";
-//objects sizing management
 import {
 	checkScreenSizeForOptimalGameplayMenu,
 	checkScreenSizeForOptimalGameplayGame,
 	checkScreenSizeForOptimalSkinsPreview
 } from "./utils/resizer.js";
-//obstacles
 import { ObstacleManager } from "./scripts/obstaclesManager.js";
-//ui management
-import { UIManager, state } from "./sceneManager.js";
+import { UIManager, state } from "./scripts/sceneManager.js";
 import { currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
 import { enterRewardScene } from "./scripts/shaker.js";
+import { canvas, ctx } from "./scripts/canvasManager.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -28,8 +25,6 @@ if ("serviceWorker" in navigator) {
 
 //----------------------------------------------------
 
-import { canvas, ctx } from "./scripts/canvasManager.js";
-
 const off = new OffscreenCanvas(canvas.width, canvas.height);
 const offCtx = off.getContext("2d");
 
@@ -38,84 +33,6 @@ const obstacleManager = new ObstacleManager();
 let gameStarted = false;
 const buffer = 10;
 
-//----------------------------------------------------
-//#region MOVEMENT
-let touchStartX = 0;
-let touchEndX = 0;
-function handleGesture() {
-	//console.log("Handling gesture");
-	if (state.playerScene !== state.scenes.Game) return;
-
-	const threshold = 30;
-
-	if (touchEndX < touchStartX - threshold) {
-		player.move(-1);
-	}
-
-	if (touchEndX > touchStartX + threshold) {
-		player.move(1);
-	}
-}
-
-function lerp(start, end, t) {
-	return start * (1 - t) + end * t;
-}
-//MOBILE
-document.addEventListener("touchstart", (e) => {
-	touchStartX = e.changedTouches[0].screenX;
-});
-
-document.addEventListener("touchend", (e) => {
-	touchEndX = e.changedTouches[0].screenX;
-	handleGesture();
-});
-
-//PC
-document.addEventListener("mousedown", (e) => {
-	touchStartX = e.screenX;
-});
-
-document.addEventListener("mouseup", (e) => {
-	touchEndX = e.screenX;
-	handleGesture();
-});
-//#endregion
-//----------------------------------------------------
-//#region COLLISION DETECTION
-function isColliding(player, obstacle, squareSize) {
-	const playerRect = {
-		x: player.x,
-		y: player.y,
-		width: player.baseSize,
-		height: player.baseSize,
-	};
-
-	for (let laneIndex of obstacle.activeLanes) {
-		const obsX = (canvas.clientWidth - squareSize * 3) / 2 + laneIndex * squareSize;
-		const obsRect = {
-			x: obsX,
-			y: obstacle.y,
-			width: squareSize,
-			height: squareSize,
-		};
-
-		if (obstaclesOverlap(playerRect, obsRect)) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-function obstaclesOverlap(rect1, rect2) {
-	return !(
-		rect1.x > rect2.x + rect2.width ||
-		rect1.x + rect1.width < rect2.x ||
-		rect1.y > rect2.y + rect2.height ||
-		rect1.y + rect1.height < rect2.y
-	);
-}
-//#endregion
 //----------------------------------------------------
 //#region RESIZE HANDLER
 function resize() {
@@ -132,9 +49,9 @@ function resize() {
 }
 window.addEventListener("resize", resize);
 resize();
+
 //#endregion
 //----------------------------------------------------
-
 
 function menuAnimationAndSkinPreview() {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
@@ -247,8 +164,7 @@ function game(correction = 1) {
 
 	const totalWidth = squareSize * 3;
 	const gridStartX = (canvas.clientWidth - totalWidth) / 2;
-	const targetX =
-		gridStartX + player.lane * squareSize + (squareSize - playerSize) / 2;
+	const targetX = gridStartX + player.lane * squareSize + (squareSize - playerSize) / 2;
 	const targetY = canvas.clientHeight - player.baseSize - 100;
 
 	player.x = lerp(player.x, targetX, 0.2);
@@ -263,7 +179,7 @@ function game(correction = 1) {
 
 	//check collision
 	for (let obs of obstacleManager.obstacles) {
-		if (isColliding(player, obs, squareSize)) {
+		if (obstacleManager.isColliding(player, obs, squareSize)) {
 			let isReward = Math.random()
 			console.log("Game Over!");
 			gameStarted = false;
@@ -309,9 +225,6 @@ function reward() {
 }
 
 //----------------------------------------------------
-
-
-
 // Game Loop
 let lastTime = 0;
 export function gameLoop(timestamp) {

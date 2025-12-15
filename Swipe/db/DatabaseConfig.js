@@ -9,7 +9,7 @@ import {
     getFirestore, doc, getDoc, setDoc, updateDoc, query, collection, orderBy, limit, getDocs, onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-import { updateUI } from "../sceneManager.js";
+import { updateUI } from "../scripts/sceneManager.js";
 import { player } from "../main.js";
 
 const firebaseConfig = {
