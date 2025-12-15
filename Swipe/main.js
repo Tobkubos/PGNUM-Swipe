@@ -12,6 +12,7 @@ import { UIManager, state } from "./scripts/sceneManager.js";
 import { currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
 import { enterRewardScene } from "./scripts/shaker.js";
 import { canvas, ctx } from "./scripts/canvasManager.js";
+import { lerp } from "./scripts/movementHandler.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {

@@ -1,3 +1,6 @@
+import { state } from "./sceneManager.js";
+import { player } from "../main.js";
+
 let touchStartX = 0;
 let touchEndX = 0;
 function handleGesture() {
@@ -15,7 +18,7 @@ function handleGesture() {
     }
 }
 
-function lerp(start, end, t) {
+export function lerp(start, end, t) {
     return start * (1 - t) + end * t;
 }
 //MOBILE

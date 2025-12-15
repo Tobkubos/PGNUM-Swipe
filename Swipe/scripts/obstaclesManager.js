@@ -1,5 +1,7 @@
 import { updateScoreText } from "./uiManager.js";
 import { canvas } from "./canvasManager.js";
+import { getColorIndex, setColors } from "../utils/colorSetter.js";
+import { gameBackground } from "../utils/colorSetter.js";
 
 const topMargin = -400;
 
@@ -44,6 +46,11 @@ export class ObstacleManager {
                 this.score++;
                 updateScoreText(this.score)
                 this.spawnRandomObstacle();
+
+                if (this.score % 2 === 0) {
+                    const idx = getColorIndex(this.score);
+                    setColors(gameBackground, this.obstacles, this, idx);
+                }
             }
         }
     }
@@ -58,9 +65,10 @@ export class ObstacleManager {
         this.obstacles = [];
         this.score = 0;
         updateScoreText(this.score)
+        setColors(gameBackground, this.obstacles, this, 0);
     }
 
-        
+
     obstaclesOverlap(rect1, rect2) {
         return !(
             rect1.x > rect2.x + rect2.width ||
@@ -77,7 +85,7 @@ export class ObstacleManager {
             width: player.baseSize,
             height: player.baseSize,
         };
-    
+
         for (let laneIndex of obstacle.activeLanes) {
             const obsX = (canvas.clientWidth - squareSize * 3) / 2 + laneIndex * squareSize;
             const obsRect = {
@@ -86,12 +94,12 @@ export class ObstacleManager {
                 width: squareSize,
                 height: squareSize,
             };
-    
+
             if (this.obstaclesOverlap(playerRect, obsRect)) {
                 return true;
             }
         }
-    
+
         return false;
     }
 

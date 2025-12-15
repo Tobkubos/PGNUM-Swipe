@@ -12,14 +12,14 @@ export function hexToRgba(hex, alpha = 1) {
 }
 
 
-const obstacleColors = {
+export const obstacleColors = {
         1: "#ff4d4d",
         2: "#4dff88",
         3: "#4d88ff"
 };
 
-const backgroundColors = {
-        1: "#be2525ff",
+export const backgroundColors = {
+        1: "#282c34",
         2: "#20aa4eff",
         3: "#1b49a7ff"
 };
