@@ -31,12 +31,12 @@ export class ObstacleManager {
         this.obstacles.push(newObstacle);
     }
 
-    update(canvasHeight) {
+    update(canvasHeight, correction = 1) {
         const limitY = canvasHeight ? canvasHeight + 100 : 1000;
 
         for (let i = this.obstacles.length - 1; i >= 0; i--) {
             let obs = this.obstacles[i];
-            obs.update();
+            obs.update(correction);
 
             if (obs.y > limitY) {
                 this.obstacles.splice(i, 1);
@@ -72,8 +72,8 @@ export class Obstacle {
         this.color = color;
     }
 
-    update() {
-        this.y += this.speed;
+    update(correction = 1) {
+        this.y += this.speed * correction; 
     }
 
     draw(ctx, startX, squareSize) {

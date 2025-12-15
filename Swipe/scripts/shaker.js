@@ -33,7 +33,7 @@ function handleShake(event) {
 		Math.abs(acc.y) +
 		Math.abs(acc.z);
 
-	if (shakeStrength > 25) {
+	if (shakeStrength > 1) {
 		addShakeProgress();
 	}
 }

@@ -236,7 +236,7 @@ function effectsPreview() {
 	}
 }
 
-function game() {
+function game(correction = 1) {
 	const { squareSize, playerSize } = checkScreenSizeForOptimalGameplayGame(
 		canvas,
 		buffer
@@ -269,9 +269,10 @@ function game() {
 			const currentScore = obstacleManager.score;
 			obstacleManager.reset();
 
-			if (currentScore > currentUserState.data.highScore)
-				updateUserHighscore(currentScore)
-
+			if (currentUserState.data != null) {
+				if (currentScore > currentUserState.data.highScore)
+					updateUserHighscore(currentScore)
+			}
 
 			if (isReward > 0.5) {
 				state.playerScene = state.scenes.GameOver;
@@ -290,7 +291,7 @@ function game() {
 	handleEffects(ctx, player);
 	handleSkins(ctx, player);
 
-	obstacleManager.update(canvas.clientHeight);
+	obstacleManager.update(canvas.clientHeight, correction);
 	obstacleManager.draw(ctx, gridStartX, squareSize);
 }
 
@@ -310,13 +311,22 @@ function reward() {
 
 
 // Game Loop
-export function gameLoop() {
+let lastTime = 0;
+export function gameLoop(timestamp) {
+	if (!timestamp) timestamp = 0;
+
+	const deltaTime = timestamp - lastTime;
+	lastTime = timestamp;
+	let correction = deltaTime / (1000 / 60);
+
+	if (isNaN(correction) || correction > 5) correction = 1;
+
 	switch (state.playerScene) {
 		case state.scenes.Menu:
 			menuAnimationAndSkinPreview();
 			break;
 		case state.scenes.Game:
-			game();
+			game(correction);
 			break;
 		case state.scenes.SkinSelect:
 			skinsPreview();
