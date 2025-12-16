@@ -1,7 +1,7 @@
 import { state } from "./sceneManager.js";
 import { UIManager } from "./sceneManager.js";
 import { loginAndCreateProfile, currentUserState, saveSelectedSkin, logoutUser, saveSelectedEffect, getTop10Scores } from "../db/DatabaseConfig.js";
-import {player, skinHitboxes } from "../main.js";
+import { player, skinHitboxes } from "../main.js";
 import { canvas } from "./canvasManager.js";
 //----------------------------------------------------
 //start button
@@ -33,9 +33,9 @@ export const gameScoreText = document.getElementById("score-display");
 //----------------------------------------------------
 //highscore info
 export const highscoreText = document.querySelector(".menu-info-highscore");
-export function updateScoreText(score){
+export function updateScoreText(score) {
     gameScoreText.innerText = score;
-} 
+}
 
 //----------------------------------------------------
 //how to play button
@@ -58,9 +58,9 @@ const highscoresPanel = document.getElementById("highscores-panel");
 const closeHighscores = document.querySelector(".close-highscores");
 const highscoresTop10 = document.querySelector(".highscores-top10");
 
-highscoresBtn.addEventListener("click", async() => {
+highscoresBtn.addEventListener("click", async () => {
     if (highscoresPanel) highscoresPanel.style.display = "block";
-    
+
     const top10 = await getTop10Scores();
 
     top10.forEach((plr, index) => {
@@ -135,12 +135,14 @@ nextEffectBtn?.addEventListener("click", () => {
 });
 
 effectBtn.addEventListener("click", () => {
+    if(!isLogged()) return;
     state.playerScene = state.scenes.EffectSelect;
     effectIdDisplay.innerText = `effect number: ${player.selectedEffect}`;
     UIManager();
 });
 
 skinBtn.addEventListener("click", () => {
+    if(!isLogged()) return;
     state.playerScene = state.scenes.SkinSelect;
     UIManager();
 });
@@ -214,9 +216,33 @@ restartGameBtn?.addEventListener("click", () => {
     UIManager();
 });
 
-goToMenu.forEach(btn => {btn.addEventListener("click", () => {
-    state.playerScene = state.scenes.Menu;
-    console.log("Went to menu");
-    UIManager();
-})});
+goToMenu.forEach(btn => {
+    btn.addEventListener("click", () => {
+        state.playerScene = state.scenes.Menu;
+        console.log("Went to menu");
+        UIManager();
+    })
+});
 
+let toastTimeout;
+
+function showToast(text) {
+    const toast = document.getElementById("toast");
+    if (!toast) return;
+
+    toast.textContent = text;
+    toast.classList.add("show");
+
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2500);
+}
+
+function isLogged() {
+    if (currentUserState.data == null || currentUserState.user == null) {
+        showToast("Unlock by logging in OPTIONS!");
+        return false;
+    }
+    return true;
+}

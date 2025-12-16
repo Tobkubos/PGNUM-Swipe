@@ -50,6 +50,7 @@ export class ObstacleManager {
                 if (this.score % 2 === 0) {
                     const idx = getColorIndex(this.score);
                     setColors(gameBackground, this.obstacles, this, idx);
+                    this.speed++
                 }
             }
         }
@@ -64,6 +65,7 @@ export class ObstacleManager {
     reset() {
         this.obstacles = [];
         this.score = 0;
+        this.speed = 3;
         updateScoreText(this.score)
         setColors(gameBackground, this.obstacles, this, 0);
     }

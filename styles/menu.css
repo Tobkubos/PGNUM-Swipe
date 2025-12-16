@@ -85,6 +85,22 @@
     pointer-events: auto;
 }
 
+
+.menu-btn.locked {
+	opacity: 0.5;
+}
+
+.lock-overlay {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 28px;
+	height: 28px;
+	z-index: 999;
+	pointer-events: none;
+}
+
 #menu {
     position: absolute;
     width: 100%;

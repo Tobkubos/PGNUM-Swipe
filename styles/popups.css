@@ -37,7 +37,7 @@
 .close-how-to-play,
 .close-highscores,
 .close-options,
-.close-pause,
+.close-pause-btn,
 .close-skin-customization-btn,
 .close-effect-customization-btn {
     position: absolute;
@@ -50,12 +50,22 @@
     pointer-events: auto;
 }
 
+.close-pause-btn{
+        top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .popup-header-info {
     justify-content: center;
     text-align: center;
     font-size: 2rem;
     font-family: 'Poppins', sans-serif;
     margin-bottom: 1rem;
+}
+
+.small-header {
+    font-size: 1rem;
 }
 
 .popup-content {

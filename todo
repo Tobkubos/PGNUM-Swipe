@@ -1,4 +1,3 @@
-- gdy gracz nie zalogowany - dostęp do wszystkich skinów i efektów
+- gdy gracz nie zalogowany - blokada do wszystkich skinów i efektów
 - kolory jako tablica tła i przeszkód
-- akcelerometr nie działa na telefonie
 - jedna funkcja do resetowania gry

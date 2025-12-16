@@ -1,17 +1,31 @@
 const CACHE_NAME = 'Swipe the Game v1';
 const ASSETS = [
-    '../',
-    '../index.html',
-    '../styles/style.css',
-    '../styles/menu.css',
-    '../script.js',
-    '../utils/colorSetter.js',
-    '../menuManager.js',
-    './manifest.json',
-    '../icons/icon-192.png',
-    '../icons/icon-512.png',
-    '../fonts/poppins-v24-latin-regular.woff2',
-    '../fonts/poppins-v24-latin-700.woff2',
+  "../",
+  "../index.html",
+
+  "../main.js",
+
+  "../styles/style.css",
+  "../styles/menu.css",
+  "../styles/gameplay.css",
+  "../styles/popups.css",
+
+  "../scripts/canvasManager.js",
+  "../scripts/sceneManager.js",
+  "../scripts/uiManager.js",
+  "../scripts/player.js",
+  "../scripts/obstaclesManager.js",
+
+  "../utils/resizer.js",
+  "../utils/colorSetter.js",
+
+  "../config/manifest.json",
+
+  "../icons/icon-192.png",
+  "../icons/icon-512.png",
+
+  "../fonts/poppins-v24-latin-regular.woff2",
+  "../fonts/poppins-v24-latin-700.woff2"
 ];
 
 //installation

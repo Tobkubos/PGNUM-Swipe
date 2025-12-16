@@ -35,14 +35,16 @@
 					<span>Options</span>
 				</button>
 
-				<button class="menu-btn skins-btn small-btn">
+				<button class="menu-btn skins-btn small-btn locked">
 					<img src="icons/star.png" alt="" class="btn-icon small-icon" />
 					<span>Skins</span>
+					<img src="icons/lock.png" class="lock-overlay" alt="locked" />
 				</button>
 
-				<button class="menu-btn effects-btn small-btn">
+				<button class="menu-btn effects-btn small-btn locked">
 					<img src="icons/star.png" alt="" class="btn-icon small-icon" />
 					<span>Effects</span>
+					<img src="icons/lock.png" class="lock-overlay" alt="locked" />
 				</button>
 
 				<button class="menu-btn how-to-play-btn small-btn">
@@ -67,6 +69,7 @@
 							<img src="icons/close.png" alt="" class="btn-icon small-icon" />
 						</button>
 						<div class="popup-header-info">Highscores</div>
+						<div class="popup-header-info small-header">Login to join score table!</div>
 						<div class="highscores-top10 popup-content"></div>
 						<div class="highscores-yourPlace popup-content"></div>
 					</div>
@@ -100,8 +103,9 @@
 				<div id="pause-panel" style="display:none;">
 					<div id="pause-content-panel">
 						<div class="popup-header-info">Game paused</div>
-						<button class="close-pause-btn close-btn">
-							<img src="icons/close.png" alt="" class="btn-icon small-icon" />
+						<button class="close-pause-btn close-btn menu-btn">
+							<img src="icons/play.png" alt="" class="btn-icon small-icon" />
+							<span>Resume</span>
 						</button>
 					</div>
 				</div>
@@ -160,7 +164,7 @@
 					</div>
 				</div>
 			</div>
-
+			<div id="toast" class="toast">toast info</div>
 		</div>
 		<canvas id="gameCanvas"></canvas>
 	</div>

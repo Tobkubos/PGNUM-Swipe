@@ -76,6 +76,9 @@ export function updateUI() {
 	const loginBtn = document.querySelector(".login-btn");
 	const scoreEl = document.querySelector(".menu-info-highscore");
 	const logoutBtn = document.querySelector(".logout-btn");
+	const lockOverlay = document.querySelectorAll(".lock-overlay");
+	const lockedOpacity = document.querySelectorAll(".menu-btn.locked");
+
 	if (statusDiv) {
 		statusDiv.innerText = currentUserState.user
 			? `Logged as: ${currentUserState.user.displayName}`
@@ -89,6 +92,16 @@ export function updateUI() {
 	}
 	if (logoutBtn) {
 		logoutBtn.style.display = currentUserState.user ? "block" : "none";
+	}
+	if (lockOverlay) {
+		lockOverlay.forEach(element => {
+			element.style.display = currentUserState.user ? "none" : "block";
+		});
+	}
+	if (lockedOpacity) {
+		lockedOpacity.forEach(element => {
+			element.style.opacity = currentUserState.user ? 1 : 0.5;
+		});
 	}
 }
 
