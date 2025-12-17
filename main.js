@@ -8,7 +8,7 @@ import {
 	checkScreenSizeForOptimalSkinsPreview
 } from "./utils/resizer.js";
 import { ObstacleManager } from "./scripts/obstaclesManager.js";
-import { UIManager, state } from "./scripts/sceneManager.js";
+import { SceneSwitchManager, state } from "./scripts/sceneManager.js";
 import { currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
 import { enterRewardScene } from "./scripts/shaker.js";
 import { canvas, ctx } from "./scripts/canvasManager.js";
@@ -30,6 +30,7 @@ const off = new OffscreenCanvas(canvas.width, canvas.height);
 const offCtx = off.getContext("2d");
 
 export const player = new Player(0, 0, 50, 0, 0);
+const previewPlayer = new Player(0, 0, 50, 0, 0);
 const obstacleManager = new ObstacleManager();
 let gameStarted = false;
 const buffer = 10;
@@ -193,16 +194,29 @@ function game(correction = 1) {
 					updateUserHighscore(currentScore)
 			}
 
-			if (isReward > 0.5) {
-				state.playerScene = state.scenes.GameOver;
-			}
-			else {
+			if (currentUserState.user != null && currentUserState.data != null && isReward > 0.1) {
+				let isSkinOrEffect = Math.random()
+				if(isSkinOrEffect > 0.5){
+					var randomSkin = Math.floor(Math.random() * 16);
+					console.log("RANDOM SKIN: ", randomSkin)
+					previewPlayer.selectedSkin = randomSkin;
+					previewPlayer.selectedEffect = player.selectedEffect
+				}
+				else{
+					var randomEffect = Math.floor(Math.random() * 16);
+					console.log("RANDOM EFEKT: ", randomEffect)
+					previewPlayer.selectedSkin = player.selectedSkin
+					previewPlayer.selectedEffect = randomEffect;
+				}
 				state.playerScene = state.scenes.Reward;
 				enterRewardScene()
 			}
+			else {
+				state.playerScene = state.scenes.GameOver;
+			}
 
 
-			UIManager()
+			SceneSwitchManager()
 			gameStarted = false;
 		}
 	}
@@ -223,6 +237,19 @@ function gameOver() {
 
 function reward() {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+}
+
+function rewardPreview() {
+	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
+	previewPlayer.baseSize = playerInMenuSize;
+	previewPlayer.setPlayerPosition(
+		canvas.clientWidth / 2 - player.baseSize / 2,
+		canvas.clientHeight / 2 - player.baseSize / 2
+	);
+	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+	handleEffects(ctx, previewPlayer);
+	handleSkins(ctx, previewPlayer);
 }
 
 //----------------------------------------------------
@@ -259,6 +286,8 @@ export function gameLoop(timestamp) {
 		case state.scenes.Reward:
 			reward();
 			break;
+		case state.scenes.RewardPreview:
+			rewardPreview();
 	}
 	requestAnimationFrame(gameLoop);
 }

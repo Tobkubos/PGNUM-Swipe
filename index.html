@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="styles/popups.css" />
 	<link rel="stylesheet" href="styles/menu.css" />
 	<link rel="stylesheet" href="styles/gameplay.css" />
+	<link rel="stylesheet" href="styles/toast.css" />
 	<link rel="manifest" href="config/manifest.json" />
 	<link rel="icon" href="images/icon-192.png">
 </head>
@@ -140,7 +141,7 @@
 
 						<button class="menu-btn go-to-menu-btn">
 							<img src="icons/back.png" alt="" class="btn-icon small-icon" />
-							<span>Go to menu</span>
+							<span>Menu</span>
 						</button>
 						<button class="menu-btn restart-game-btn">
 							<img src="icons/restart.png" alt="" class="btn-icon small-icon" />
@@ -156,14 +157,23 @@
 					<div id="reward-content-panel">
 						<div class="popup-header-info">Game Over!</div>
 						<div class="reward-status">You found a treasure in this run! Shake to open!</div>
-						<button class="menu-btn go-to-menu-btn">
-							<img src="icons/treasure-chest.png" alt="" class="btn-icon" />
-							<span>Go to menu</span>
+						<img src="icons/treasure-chest.png" alt="" class="treasure-icon" />
+						<button class="menu-btn go-to-menu-btn bottom-btn">
+							<img src="icons/back.png" alt="" class="btn-icon" />
+							<span>Menu</span>
 						</button>
 						<div class="shake-progress-bar">0%</div>
 					</div>
 				</div>
 			</div>
+
+			<div id="reward-preview" style="display: none;">
+				<button class="menu-btn go-to-menu-btn bottom-btn">
+					<img src="icons/back.png" alt="" class="btn-icon" />
+					<span>Menu</span>
+				</button>
+			</div>
+			
 			<div id="toast" class="toast">toast info</div>
 		</div>
 		<canvas id="gameCanvas"></canvas>

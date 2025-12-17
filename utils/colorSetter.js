@@ -13,7 +13,7 @@ const toast = document.querySelector('.toast')
 toast.style.background = hexToRgba(backgroundDarker, 0.9)
 toast.style.color = font
 
-document.querySelectorAll('.menu-game-name, .menu-info-score, .menu-info-highscore, .popup-header-info, .popup-content, .reward-status, #skins-header, #effects-header, #effect-id').forEach(obj => {
+document.querySelectorAll('.menu-game-name, .menu-info-score, .menu-info-highscore, .popup-header-info, .popup-content, .reward-status, #skins-header, #effects-header, #effect-id, .shake-progress-bar').forEach(obj => {
     obj.style.color = font;
 });
 

@@ -1,5 +1,5 @@
 import { state } from "./sceneManager.js";
-import { UIManager } from "./sceneManager.js";
+import { SceneSwitchManager } from "./sceneManager.js";
 import { loginAndCreateProfile, currentUserState, saveSelectedSkin, logoutUser, saveSelectedEffect, getTop10Scores } from "../db/DatabaseConfig.js";
 import { player, skinHitboxes } from "../main.js";
 import { canvas } from "./canvasManager.js";
@@ -8,7 +8,7 @@ import { canvas } from "./canvasManager.js";
 document.querySelector(".start-btn").addEventListener("click", () => {
     state.playerScene = state.scenes.Game;
     console.log("Game Started");
-    UIManager();
+    SceneSwitchManager();
 });
 
 const pausePanel = document.getElementById("pause-panel");
@@ -19,14 +19,14 @@ resumeGameBtn.addEventListener("click", () => {
     state.playerScene = state.scenes.Game;
     if (pausePanel) pausePanel.style.display = "none";
     console.log("Game Resumed");
-    UIManager();
+    SceneSwitchManager();
 });
 
 pauseBtn.addEventListener("click", () => {
     state.playerScene = state.scenes.Pause;
     if (pausePanel) pausePanel.style.display = "block";
     console.log("Game Paused");
-    UIManager();
+    SceneSwitchManager();
 });
 export const gameScoreText = document.getElementById("score-display");
 
@@ -138,18 +138,18 @@ effectBtn.addEventListener("click", () => {
     if(!isLogged()) return;
     state.playerScene = state.scenes.EffectSelect;
     effectIdDisplay.innerText = `effect number: ${player.selectedEffect}`;
-    UIManager();
+    SceneSwitchManager();
 });
 
 skinBtn.addEventListener("click", () => {
     if(!isLogged()) return;
     state.playerScene = state.scenes.SkinSelect;
-    UIManager();
+    SceneSwitchManager();
 });
 
 closeSkinCustomizationBtn?.addEventListener("click", () => {
     state.playerScene = state.scenes.Menu;
-    UIManager();
+    SceneSwitchManager();
 });
 
 closeEffectCustomizationBtn?.addEventListener("click", () => {
@@ -160,10 +160,10 @@ closeEffectCustomizationBtn?.addEventListener("click", () => {
     }
     else {
         console.log("nie mam tego skina")
-        player.selectedEffect = currentUserState.data.saveSelectedEffect
-        saveSelectedEffect(currentUserState.data.saveSelectedEffect)
+        player.selectedEffect = currentUserState.data.savedSelectedEffect
+        saveSelectedEffect(currentUserState.data.savedSelectedEffect)
     }
-    UIManager();
+    SceneSwitchManager();
 });
 
 canvas.addEventListener("click", (e) => {
@@ -183,7 +183,7 @@ canvas.addEventListener("click", (e) => {
                 player.selectedSkin = hitbox.skinId;
                 state.playerScene = state.scenes.Menu;
                 saveSelectedSkin(hitbox.skinId);
-                UIManager();
+                SceneSwitchManager();
             }
         }
     }
@@ -213,14 +213,14 @@ const goToMenu = document.querySelectorAll(".go-to-menu-btn")
 restartGameBtn?.addEventListener("click", () => {
     state.playerScene = state.scenes.Game;
     console.log("Restarted");
-    UIManager();
+    SceneSwitchManager();
 });
 
 goToMenu.forEach(btn => {
     btn.addEventListener("click", () => {
         state.playerScene = state.scenes.Menu;
         console.log("Went to menu");
-        UIManager();
+        SceneSwitchManager();
     })
 });
 

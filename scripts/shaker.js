@@ -1,10 +1,12 @@
-import {state } from "./sceneManager.js";
+import { SceneSwitchManager, state} from "./sceneManager.js";
 // SHAKE
 let shakeProgress = 0;
 
 const shakeBar = document.querySelector(".shake-progress-bar");
+const chestIcon = document.querySelector(".treasure-icon");
 
 export function enterRewardScene() {
+	chestIcon.classList.remove("shake", "shake-strong");
 	shakeProgress = 0;
 	if (shakeBar) shakeBar.textContent = "0%";
 }
@@ -20,7 +22,25 @@ function addShakeProgress() {
 	if (shakeBar) {
 		shakeBar.textContent = shakeProgress + "%";
 	}
+
+	if (!chestIcon) return;
+
+	chestIcon.classList.remove("shake", "shake-strong");
+	void chestIcon.offsetWidth;
+
+	if (shakeProgress === 100) {
+		chestIcon.classList.add("shake-strong");
+	} else {
+		chestIcon.classList.add("shake");
+	}
 }
+
+chestIcon.addEventListener("animationend", (e) => {
+	if (e.animationName === "chest-shake-strong") {
+		state.playerScene = state.scenes.RewardPreview;
+		SceneSwitchManager();
+	}
+});
 
 function handleShake(event) {
 	if (state.playerScene !== state.scenes.Reward) return;

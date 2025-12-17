@@ -118,7 +118,7 @@ export async function loginAndCreateProfile() {
         player.selectedEffect = userData.savedSelectedEffect || 0;
 
     } catch (error) {
-        console.error("Błąd logowania:", error);
+        //console.error("Błąd logowania:", error);
     }
 }
 
@@ -184,7 +184,7 @@ export async function saveSelectedEffect(id) {
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-            await updateDoc(userRef, { saveSelectedEffect: id });
+            await updateDoc(userRef, { savedSelectedEffect: id });
             return true;
         }
         return false;

@@ -4,6 +4,7 @@ const skinElement = document.getElementById("skins");
 const effectElement = document.getElementById("effects");
 const gameOverElement = document.getElementById("gameover");
 const rewardElement = document.getElementById("reward");
+const rewardPreviewElement = document.getElementById("reward-preview");
 
 export const state = {
 	playerScene: "Menu",
@@ -14,7 +15,8 @@ export const state = {
 		Game: "Game",
 		Pause: "Pause",
 		GameOver: "GameOver",
-		Reward: "Reward"
+		Reward: "Reward",
+		RewardPreview: "Reward-preview"
 	},
 };
 
@@ -24,10 +26,11 @@ var Ui = [
 	skinElement,
 	effectElement,
 	gameOverElement,
-	rewardElement
+	rewardElement,
+	rewardPreviewElement
 ];
 
-export function UIManager() {
+export function SceneSwitchManager() {
 	if (state.playerScene === state.scenes.Game) {
 		Ui.forEach(element => {
 			element.style.display = "none";
@@ -67,6 +70,13 @@ export function UIManager() {
 			element.style.display = "none";
 		});
 		rewardElement.style.display = "block";
+	}
+
+	if (state.playerScene === state.scenes.RewardPreview) {
+		Ui.forEach(element => {
+			element.style.display = "none";
+		});
+		rewardPreviewElement.style.display = "block";
 	}
 }
 

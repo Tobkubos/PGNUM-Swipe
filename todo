@@ -1,3 +1,3 @@
-- gdy gracz nie zalogowany - blokada do wszystkich skinów i efektów
-- kolory jako tablica tła i przeszkód
-- jedna funkcja do resetowania gry
+moze zmienic wyswietlanie skinów i efektów
+scene transition
+smooth color change w gameplayu
