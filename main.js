@@ -196,13 +196,14 @@ function game(correction = 1) {
 
 			if (currentUserState.user != null && currentUserState.data != null && isReward > 0.1) {
 				let isSkinOrEffect = Math.random()
-				if(isSkinOrEffect > 0.5){
+				if (isSkinOrEffect > 0.5) {
+
 					var randomSkin = Math.floor(Math.random() * 16);
 					console.log("RANDOM SKIN: ", randomSkin)
 					previewPlayer.selectedSkin = randomSkin;
 					previewPlayer.selectedEffect = player.selectedEffect
 				}
-				else{
+				else {
 					var randomEffect = Math.floor(Math.random() * 16);
 					console.log("RANDOM EFEKT: ", randomEffect)
 					previewPlayer.selectedSkin = player.selectedSkin
