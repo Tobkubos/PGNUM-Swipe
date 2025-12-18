@@ -1,217 +1,28 @@
+// scripts/effects.js
+
 const particles = [];
 
 class Particle {
-    constructor(x, y, size, type) {
+    constructor(x, y, size, config) {
         this.x = x;
         this.y = y;
         this.size = size;
-        this.initialSize = size;
         this.opacity = 1;
-        this.type = type;
         this.rotation = Math.random() * Math.PI * 2;
         this.rotationSpeed = 0;
         this.gravity = 0;
-        this.drag = 1;
-        this.shape = "square"; 
+        this.speedX = 0;
+        this.speedY = 0;
+        this.fadeSpeed = 0.02;
+        this.color = "white";
+        this.shape = "square";
+        this.stroke = false;
+        this.borderColor = null;
         this.text = "";
-
-        switch (this.type) {
-            case 1: 
-                this.speedY = Math.random() * 0.1 + 0.75;
-                this.speedX = (Math.random() - 0.5) * 1;
-                this.fadeSpeed = 0.03;
-                this.color = "white";
-                break;
-            case 2: 
-                this.speedY = 2 + Math.random() * 2;
-                this.speedX = (Math.random() - 0.5) * 2;
-                this.fadeSpeed = 0.05;
-                this.color = `hsl(${10 + Math.random() * 40}, 100%, 50%)`;
-                this.size *= 1.5;
-                break;
-            case 3: 
-                this.speedY = 0;
-                this.speedX = 0;
-                this.fadeSpeed = 0.02;
-                this.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
-                this.size *= 0.8;
-                break;
-            case 4: 
-                this.speedY = 3;
-                this.speedX = 0;
-                this.fadeSpeed = 0.015;
-                this.color = "#00ff00";
-                this.shape = "text";
-                this.text = Math.random() > 0.5 ? "1" : "0";
-                this.size = 14;
-                break;
-            case 5: 
-                this.speedY = -1 - Math.random();
-                this.speedX = (Math.random() - 0.5) * 0.5;
-                this.fadeSpeed = 0.01;
-                this.color = "rgba(0, 150, 255, 0.6)";
-                this.shape = "circle";
-                this.stroke = true;
-                break;
-            case 6: 
-                this.speedY = (Math.random() - 0.5) * 10;
-                this.speedX = (Math.random() - 0.5) * 10;
-                this.fadeSpeed = 0.04;
-                this.color = "yellow";
-                //this.gravity = 0.5;
-                this.size *= 0.5;
-                break;
-            case 7: 
-                this.speedY = 1;
-                this.speedX = 0;
-                this.fadeSpeed = 0.02;
-                this.color = "black";
-                this.shape = "circle";
-                this.stroke = true;
-                this.borderColor = "purple";
-                break;
-            case 8: 
-                this.speedY = 2;
-                this.speedX = Math.sin(Math.random() * 10);
-                this.fadeSpeed = 0.01;
-                this.color = "white";
-                this.shape = "circle";
-                break;
-            case 9: 
-                this.speedY = 0;
-                this.speedX = (Math.random() - 0.5) * 10;
-                this.fadeSpeed = 0.1;
-                this.color = `rgb(${Math.random()*255}, 0, ${Math.random()*255})`;
-                this.size = Math.random() * 40 + 5;
-                this.shape = "rect_random";
-                break;
-            case 10: 
-                this.speedY = -1.5;
-                this.speedX = (Math.random() - 0.5) * 0.5;
-                this.fadeSpeed = 0.01;
-                this.color = "pink";
-                this.shape = "heart";
-                break;
-            case 11: 
-                this.speedY = 15;
-                this.speedX = 0;
-                this.fadeSpeed = 0.05;
-                this.color = "cyan";
-                this.size = 2;
-                this.shape = "line";
-                break;
-            case 12: 
-                this.speedY = 1;
-                this.speedX = (Math.random() - 0.5) * 2;
-                this.fadeSpeed = 0.02;
-                this.color = "#39ff14";
-                this.shape = "circle";
-                this.size *= Math.random();
-                break;
-            case 13: 
-                this.speedY = -3;
-                this.speedX = (Math.random() - 0.5) * 4;
-                this.fadeSpeed = 0.04;
-                this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                this.gravity = 0.2;
-                this.rotationSpeed = 0.2;
-                this.size *= 0.6;
-                break;
-            case 14: 
-                this.speedY = 1;
-                this.speedX = (Math.random() - 0.5) * 1;
-                this.fadeSpeed = 0.015;
-                this.color = "rgba(100, 100, 100, 0.2)";
-                this.size *= 2;
-                this.growth = 0.5;
-                this.shape = "circle";
-                break;
-            case 15: 
-                this.speedY = 0;
-                this.speedX = 0;
-                this.fadeSpeed = 0.05;
-                this.color = "white";
-                this.shape = "pixel_grid";
-                break;
-            case 16: 
-                this.speedY = (Math.random() - 0.5) * 5;
-                this.speedX = (Math.random() - 0.5) * 5;
-                this.fadeSpeed = 0.08;
-                this.color = "#00ffff";
-                this.shape = "line_random";
-                break;
-            case 17: 
-                this.speedY = 0;
-                this.speedX = 0;
-                this.fadeSpeed = 0.02;
-                this.color = "yellow";
-                this.shape = "star";
-                this.rotationSpeed = 0.1;
-                break;
-            case 18: 
-                this.speedY = -1;
-                this.speedX = Math.sin(y) * 2;
-                this.fadeSpeed = 0.01;
-                this.color = "black";
-                this.shape = "note";
-                break;
-            case 19: 
-                this.speedY = 0;
-                this.speedX = (Math.random() - 0.5) * 2;
-                this.gravity = 0.3;
-                this.fadeSpeed = 0.01;
-                this.color = "#8a0303";
-                this.shape = "circle";
-                break;
-            case 20: 
-                this.speedY = (Math.random() - 0.5) * 2;
-                this.speedX = (Math.random() - 0.5) * 2;
-                this.fadeSpeed = 0.02;
-                this.color = "violet";
-                this.rotationSpeed = 0.1;
-                this.shape = "spiral";
-                break;
-            case 21: 
-                this.speedY = 0;
-                this.speedX = 0;
-                this.fadeSpeed = 0.1;
-                this.color = "rgba(255,255,255,0.5)";
-                this.shape = "clone";
-                break;
-            case 22: 
-                this.speedY = -4;
-                this.speedX = (Math.random() - 0.5) * 2;
-                this.gravity = 0.2;
-                this.fadeSpeed = 0.01;
-                this.color = "gold";
-                this.shape = "circle";
-                this.stroke = true;
-                this.borderColor = "#B8860B";
-                break;
-            case 23: 
-                this.speedY = 2;
-                this.speedX = 0;
-                this.fadeSpeed = 0.02;
-                this.color = "#00ff00";
-                this.shape = "text_code";
-                this.text = String.fromCharCode(0x30A0 + Math.random() * 96);
-                break;
-            case 24: 
-                this.speedY = 1;
-                this.speedX = Math.sin(Math.random() * 10);
-                this.fadeSpeed = 0.01;
-                this.color = "pink";
-                this.rotationSpeed = 0.05;
-                this.shape = "petal";
-                break;
-            case 25: 
-                this.speedY = 5;
-                this.speedX = (Math.random() - 0.5) * 1;
-                this.fadeSpeed = 0.06;
-                this.color = "blue";
-                this.size *= 0.8;
-                break;
-        }
+        this.growth = 0;
+        
+        // Nadpisanie configiem
+        Object.assign(this, config);
     }
 
     update() {
@@ -220,7 +31,14 @@ class Particle {
         this.y += this.speedY;
         this.opacity -= this.fadeSpeed;
         this.rotation += this.rotationSpeed;
-        if (this.growth) this.size += this.growth;
+        
+        if (this.growth) {
+            this.size += this.growth;
+        }
+
+        if (this.wobble) {
+            this.x += Math.sin(this.y * 0.05) * 0.5;
+        }
     }
 
     draw(ctx) {
@@ -228,143 +46,470 @@ class Particle {
         ctx.globalAlpha = Math.max(0, this.opacity);
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
+        
         ctx.fillStyle = this.color;
         ctx.strokeStyle = this.borderColor || this.color;
-        
+        ctx.lineWidth = 2;
+
+        this.drawShape(ctx);
+
+        ctx.restore();
+    }
+
+    drawShape(ctx) {
         const s = this.size;
 
-        switch(this.shape) {
-            case "square":
-                ctx.fillRect(-s/2, -s/2, s, s);
-                break;
-            case "circle":
+        const SHAPES = {
+            square: () => ctx.fillRect(-s / 2, -s / 2, s, s),
+            
+            circle: () => {
                 ctx.beginPath();
-                ctx.arc(0, 0, s/2, 0, Math.PI*2);
+                ctx.arc(0, 0, s / 2, 0, Math.PI * 2);
                 ctx.fill();
-                if(this.stroke) {
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                }
-                break;
-            case "rect_random":
-                ctx.fillRect(-s/2, -s/8, s, s/4);
-                break;
-            case "heart":
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.bezierCurveTo(-s/2, -s/2, -s, s/3, 0, s);
-                ctx.bezierCurveTo(s, s/3, s/2, -s/2, 0, 0);
-                ctx.fill();
-                break;
-            case "text":
-            case "text_code":
-                ctx.font = `${s}px monospace`;
-                ctx.textAlign = "center";
-                ctx.fillText(this.text, 0, 0);
-                break;
-            case "line":
-                ctx.fillRect(-s/4, -s*2, s/2, s*4);
-                break;
-            case "line_random":
-                ctx.lineWidth = 2;
+                if (this.stroke) ctx.stroke();
+            },
+            
+            line: () => ctx.fillRect(-s / 4, -s * 2, s / 2, s * 4),
+            
+            line_random: () => {
                 ctx.beginPath();
                 ctx.moveTo(-s, -s);
                 ctx.lineTo(s, s);
                 ctx.stroke();
-                break;
-            case "star":
+            },
+
+            rect_random: () => ctx.fillRect(-s / 2, -s / 8, s, s / 4),
+
+            heart: () => {
                 ctx.beginPath();
-                for(let i=0; i<5; i++){
-                    ctx.lineTo(Math.cos((18+i*72)/180*Math.PI)*s, 
-                               -Math.sin((18+i*72)/180*Math.PI)*s);
-                    ctx.lineTo(Math.cos((54+i*72)/180*Math.PI)*s/2, 
-                               -Math.sin((54+i*72)/180*Math.PI)*s/2);
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-s / 2, -s / 2, -s, s / 3, 0, s);
+                ctx.bezierCurveTo(s, s / 3, s / 2, -s / 2, 0, 0);
+                ctx.fill();
+            },
+
+            star: () => {
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    ctx.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * s,
+                        -Math.sin((18 + i * 72) / 180 * Math.PI) * s);
+                    ctx.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * s / 2,
+                        -Math.sin((54 + i * 72) / 180 * Math.PI) * s / 2);
                 }
                 ctx.closePath();
                 ctx.fill();
-                break;
-            case "note":
+            },
+
+            petal: () => {
+                ctx.beginPath();
+                ctx.ellipse(0, 0, s / 2, s / 4, 0, 0, Math.PI * 2);
+                ctx.fill();
+            },
+
+            spiral: () => ctx.fillRect(s, 0, s / 4, s / 4),
+
+            note: () => {
                 ctx.font = `${s}px Arial`;
                 ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = "black"; // Nutki zazwyczaj czarne
                 ctx.fillText("♪", 0, 0);
-                break;
-            case "clone":
-                ctx.fillRect(-s/2, -s/2, s, s);
-                break;
-            case "spiral":
-                ctx.fillRect(s, 0, s/4, s/4);
-                break;
-            case "petal":
-                ctx.beginPath();
-                ctx.ellipse(0, 0, s/2, s/4, 0, 0, Math.PI*2);
-                ctx.fill();
-                break;
-            case "pixel_grid":
-                ctx.fillRect(-s/2, -s/2, s, s);
-                break;
-            default:
-                ctx.fillRect(-s/2, -s/2, s, s);
-        }
+            },
 
-        ctx.restore();
+            text: () => {
+                ctx.font = `${s}px monospace`;
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(this.text, 0, 0);
+            }
+        };
+
+        if (SHAPES[this.shape]) {
+            SHAPES[this.shape]();
+        } else {
+            // Fallback
+            ctx.fillRect(-s / 2, -s / 2, s, s);
+        }
     }
 }
 
+const effects = [
+    // 0: Brak efektu
+    {
+        id: 0,
+        spawnCount: () => 0,
+        create: () => null
+    },
+
+    // 1: Biały kwadrat, wolny
+    {
+        id: 1,
+        spawnCount: () => Math.round(Math.random()),
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: Math.random() * 0.1 + 0.75,
+            speedX: (Math.random() - 0.5),
+            fadeSpeed: 0.03,
+            color: "white",
+            shape: "square"
+        })
+    },
+
+    // 2: Kolorowe HSL, szybkie, rosnące
+    {
+        id: 2,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size * 1.5, {
+            speedY: 2 + Math.random() * 2,
+            speedX: (Math.random() - 0.5) * 2,
+            fadeSpeed: 0.05,
+            color: `hsl(${10 + Math.random() * 40}, 100%, 50%)`,
+            shape: "square"
+        })
+    },
+
+    // 3: Random HSL, statyczne, znikające
+    {
+        id: 3,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size * 0.8, {
+            speedY: 0,
+            speedX: 0,
+            fadeSpeed: 0.02,
+            color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+            shape: "square"
+        })
+    },
+
+    // 4: Kod binarny (0/1), zielony
+    {
+        id: 4,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, 14, {
+            speedY: 3,
+            speedX: 0,
+            fadeSpeed: 0.015,
+            color: "#00ff00",
+            shape: "text",
+            text: Math.random() > 0.5 ? "1" : "0"
+        })
+    },
+
+    // 5: Niebieskie kółka (bąbelki), w górę
+    {
+        id: 5,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: -1 - Math.random(),
+            speedX: (Math.random() - 0.5) * 0.5,
+            fadeSpeed: 0.01,
+            color: "rgba(0, 150, 255, 0.6)",
+            shape: "circle",
+            stroke: true
+        })
+    },
+
+    // 6: Żółta eksplozja
+    {
+        id: 6,
+        spawnCount: () => 2,
+        create: (x, y, size) => new Particle(x, y, size * 0.5, {
+            speedY: (Math.random() - 0.5) * 10,
+            speedX: (Math.random() - 0.5) * 10,
+            fadeSpeed: 0.04,
+            color: "yellow",
+            shape: "square"
+        })
+    },
+
+    // 7: Czarne kółko z fioletową obwódką
+    {
+        id: 7,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: 1,
+            speedX: 0,
+            fadeSpeed: 0.02,
+            color: "black",
+            shape: "circle",
+            stroke: true,
+            borderColor: "purple"
+        })
+    },
+
+    // 8: Białe kółko, sinusoida (wobble)
+    {
+        id: 8,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: 2,
+            speedX: 0, // Ruch X obsługiwany przez wobble
+            wobble: true,
+            fadeSpeed: 0.01,
+            color: "white",
+            shape: "circle"
+        })
+    },
+
+    // 9: Prostokąty RGB, losowa wielkość
+    {
+        id: 9,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, Math.random() * 40 + 5, {
+            speedY: 0,
+            speedX: (Math.random() - 0.5) * 10,
+            fadeSpeed: 0.1,
+            color: `rgb(${Math.random() * 255}, 0, ${Math.random() * 255})`,
+            shape: "rect_random"
+        })
+    },
+
+    // 10: Różowe serca
+    {
+        id: 10,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: -1.5,
+            speedX: (Math.random() - 0.5) * 0.5,
+            fadeSpeed: 0.01,
+            color: "pink",
+            shape: "heart"
+        })
+    },
+
+    // 11: Cyjanowe linie, bardzo szybkie
+    {
+        id: 11,
+        spawnCount: () => 2,
+        create: (x, y, size) => new Particle(x, y, 2, {
+            speedY: 15,
+            speedX: 0,
+            fadeSpeed: 0.05,
+            color: "cyan",
+            shape: "line"
+        })
+    },
+
+    // 12: Neonowe zielone kółka
+    {
+        id: 12,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size * Math.random(), {
+            speedY: 1,
+            speedX: (Math.random() - 0.5) * 2,
+            fadeSpeed: 0.02,
+            color: "#39ff14",
+            shape: "circle"
+        })
+    },
+
+    // 13: Konfetti tęczowe
+    {
+        id: 13,
+        spawnCount: () => 2,
+        create: (x, y, size) => new Particle(x, y, size * 0.6, {
+            speedY: -3,
+            speedX: (Math.random() - 0.5) * 4,
+            gravity: 0.2,
+            fadeSpeed: 0.04,
+            rotationSpeed: 0.2,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+            shape: "square"
+        })
+    },
+
+    // 14: Dym (szary, rosnący)
+    {
+        id: 14,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size * 2, {
+            speedY: 1,
+            speedX: (Math.random() - 0.5),
+            fadeSpeed: 0.015,
+            growth: 0.5,
+            color: "rgba(100, 100, 100, 0.2)",
+            shape: "circle"
+        })
+    },
+
+    // 15: Biała siatka pikseli
+    {
+        id: 15,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: 0,
+            speedX: 0,
+            fadeSpeed: 0.05,
+            color: "white",
+            shape: "square" // pixel_grid to w zasadzie kwadrat w starej implementacji
+        })
+    },
+
+    // 16: Chaotyczne linie
+    {
+        id: 16,
+        spawnCount: () => 2,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: (Math.random() - 0.5) * 5,
+            speedX: (Math.random() - 0.5) * 5,
+            fadeSpeed: 0.08,
+            color: "#00ffff",
+            shape: "line_random"
+        })
+    },
+
+    // 17: Żółta gwiazda, obracająca się
+    {
+        id: 17,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: 0,
+            speedX: 0,
+            fadeSpeed: 0.02,
+            rotationSpeed: 0.1,
+            color: "yellow",
+            shape: "star"
+        })
+    },
+
+    // 18: Nutka muzyczna
+    {
+        id: 18,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: -1,
+            wobble: true, // Zastępuje speedX = sin(y)
+            fadeSpeed: 0.01,
+            color: "black",
+            shape: "note"
+        })
+    },
+
+    // 19: Ciemnoczerwone kółka (krew?)
+    {
+        id: 19,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: 0,
+            speedX: (Math.random() - 0.5) * 2,
+            gravity: 0.3,
+            fadeSpeed: 0.01,
+            color: "#8a0303",
+            shape: "circle"
+        })
+    },
+
+    // 20: Fioletowa spirala
+    {
+        id: 20,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: (Math.random() - 0.5) * 2,
+            speedX: (Math.random() - 0.5) * 2,
+            fadeSpeed: 0.02,
+            rotationSpeed: 0.1,
+            color: "violet",
+            shape: "spiral"
+        })
+    },
+
+    // 21: Duch (klon) - półprzezroczysty kwadrat
+    {
+        id: 21,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: 0,
+            speedX: 0,
+            fadeSpeed: 0.1,
+            color: "rgba(255,255,255,0.5)",
+            shape: "square" 
+        })
+    },
+
+    // 22: Złote monety
+    {
+        id: 22,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: -4,
+            speedX: (Math.random() - 0.5) * 2,
+            gravity: 0.2,
+            fadeSpeed: 0.01,
+            color: "gold",
+            shape: "circle",
+            stroke: true,
+            borderColor: "#B8860B"
+        })
+    },
+
+    // 23: Matrix code (japońskie znaki)
+    {
+        id: 23,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: 2,
+            speedX: 0,
+            fadeSpeed: 0.02,
+            color: "#00ff00",
+            shape: "text",
+            text: String.fromCharCode(0x30A0 + Math.random() * 96)
+        })
+    },
+
+    // 24: Różowe płatki
+    {
+        id: 24,
+        spawnCount: () => 1,
+        create: (x, y, size) => new Particle(x, y, size, {
+            speedY: 1,
+            speedX: Math.sin(Math.random() * 10),
+            wobble: true,
+            fadeSpeed: 0.01,
+            rotationSpeed: 0.05,
+            color: "pink",
+            shape: "petal"
+        })
+    },
+
+    // 25: Niebieski deszcz
+    {
+        id: 25,
+        spawnCount: () => 2,
+        create: (x, y, size) => new Particle(x, y, size * 0.8, {
+            speedY: 5,
+            speedX: (Math.random() - 0.5),
+            fadeSpeed: 0.06,
+            color: "blue",
+            shape: "square"
+        })
+    }
+];
+
+export const EFFECTS = effects;
+export const EFFECTS_COUNT = effects.length;
 export function handleEffects(ctx, player) {
-    let spawnCount = 0;
+    const effect = EFFECTS[player.selectedEffect];
     
-    switch (player.selectedEffect) {
-        case 1: spawnCount = Math.round(Math.random()); break;
-        case 2: spawnCount = 2; break; 
-        case 3: spawnCount = 1; break; 
-        case 4: spawnCount = Math.random() > 0.7 ? 1 : 0; break;
-        case 5: spawnCount = Math.random() > 0.8 ? 1 : 0; break;
-        case 6: spawnCount = 3; break;
-        case 7: spawnCount = Math.random() > 0.9 ? 1 : 0; break;
-        case 8: spawnCount = Math.round(Math.random()); break;
-        case 9: spawnCount = Math.random() > 0.5 ? 1 : 0; break;
-        case 10: spawnCount = Math.random() > 0.9 ? 1 : 0; break;
-        case 11: spawnCount = 2; break;
-        case 12: spawnCount = Math.round(Math.random()); break;
-        case 13: spawnCount = 3; break;
-        case 14: spawnCount = Math.random() > 0.8 ? 1 : 0; break;
-        case 15: spawnCount = 1; break;
-        case 16: spawnCount = 2; break;
-        case 17: spawnCount = Math.random() > 0.8 ? 1 : 0; break;
-        case 18: spawnCount = Math.random() > 0.9 ? 1 : 0; break;
-        case 19: spawnCount = 1; break;
-        case 20: spawnCount = 2; break;
-        case 21: spawnCount = Math.random() > 0.8 ? 1 : 0; break;
-        case 22: spawnCount = Math.random() > 0.5 ? 1 : 0; break;
-        case 23: spawnCount = 1; break;
-        case 24: spawnCount = Math.round(Math.random()); break;
-        case 25: spawnCount = 4; break;
-    }
+    if (!effect) return;
 
-    for (let i = 0; i < spawnCount; i++) {
-        let px = player.x + Math.random() * player.baseSize;
-        let py = player.y + player.baseSize;
-        let pSize = player.baseSize / 6;
+    const count = effect.spawnCount();
 
-        if (player.selectedEffect === 21) {
-            px = player.x + player.baseSize/2;
-            py = player.y + player.baseSize/2;
-            pSize = player.baseSize;
-        } else if (player.selectedEffect === 4 || player.selectedEffect === 23) {
-            py = player.y; 
+    for (let i = 0; i < count; i++) {
+        const px = player.x + Math.random() * player.baseSize;
+        const py = player.y + player.baseSize;
+
+        const p = effect.create(px, py, player.baseSize / 6);
+        if (p) {
+            particles.push(p);
         }
-
-        particles.push(new Particle(px, py, pSize, player.selectedEffect));
     }
 
-    for (let i = 0; i < particles.length; i++) {
+    for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.update();
         p.draw(ctx);
 
-        if (p.opacity <= 0 || p.size <= 0) {
+        if (p.opacity <= 0) {
             particles.splice(i, 1);
-            i--;
         }
     }
 }

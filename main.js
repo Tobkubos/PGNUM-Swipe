@@ -1,6 +1,6 @@
 //----------------------------------------------------
 import { Player } from "./scripts/player.js";
-import { handleEffects } from "./scripts/effects.js";
+import { EFFECTS_COUNT, handleEffects } from "./scripts/effects.js";
 import { handleSkins, SKINS_COUNT } from "./scripts/skins.js";
 import {
 	checkScreenSizeForOptimalGameplayMenu,
@@ -9,7 +9,12 @@ import {
 } from "./utils/resizer.js";
 import { ObstacleManager } from "./scripts/obstaclesManager.js";
 import { SceneSwitchManager, state } from "./scripts/sceneManager.js";
-import { addNewSkinToCollection, currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
+import {
+	addNewEffectToCollection,
+	addNewSkinToCollection,
+	currentUserState,
+	updateUserHighscore,
+} from "./db/DatabaseConfig.js";
 import { enterRewardScene } from "./scripts/shaker.js";
 import { canvas, ctx } from "./scripts/canvasManager.js";
 import { lerp } from "./scripts/movementHandler.js";
@@ -205,7 +210,9 @@ function game(correction = 1) {
 				isReward > 0.1
 			) {
 				let isSkinOrEffect = Math.random();
+
 				if (isSkinOrEffect > 0.5) {
+					//random skin
 					const notUnlockedYet = [];
 					for (let i = 0; i < SKINS_COUNT; i++) {
 						if (!currentUserState.data.unlockedSkins.includes(i)) {
@@ -214,17 +221,31 @@ function game(correction = 1) {
 					}
 
 					if (notUnlockedYet.length > 0) {
-						const randomIndex = Math.floor(Math.random() * notUnlockedYet.length);
+						const randomIndex = Math.floor(
+							Math.random() * notUnlockedYet.length
+						);
 						const randomSkin = notUnlockedYet[randomIndex];
-						addNewSkinToCollection(randomSkin)
+						addNewSkinToCollection(randomSkin);
 						previewPlayer.selectedSkin = randomSkin;
 						previewPlayer.selectedEffect = player.selectedEffect;
 					}
 				} else {
-					var randomEffect = Math.floor(Math.random() * 16);
-					console.log("RANDOM EFEKT: ", randomEffect);
-					previewPlayer.selectedSkin = player.selectedSkin;
-					previewPlayer.selectedEffect = randomEffect;
+					//random effect
+					const notUnlockedYet = [];
+					for (let i = 0; i < EFFECTS_COUNT; i++) {
+						if (!currentUserState.data.unlockedEffects.includes(i)) {
+							notUnlockedYet.push(i);
+						}
+					}
+					if (notUnlockedYet.length > 0) {
+						const randomIndex = Math.floor(
+							Math.random() * notUnlockedYet.length
+						);
+						const randomEffect = notUnlockedYet[randomIndex];
+						addNewEffectToCollection(randomEffect);
+						previewPlayer.selectedSkin = player.selectedSkin;
+						previewPlayer.selectedEffect = randomEffect;
+					}
 				}
 				state.playerScene = state.scenes.Reward;
 				enterRewardScene();
