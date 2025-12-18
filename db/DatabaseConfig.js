@@ -6,7 +6,7 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 import {
-    getFirestore, doc, getDoc, setDoc, updateDoc, query, collection, orderBy, limit, getDocs, onSnapshot
+    getFirestore, doc, getDoc, setDoc, updateDoc, query, collection, orderBy, limit, getDocs, onSnapshot, arrayUnion
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 import { updateUI } from "../scripts/sceneManager.js";
@@ -193,6 +193,45 @@ export async function saveSelectedEffect(id) {
         return false;
     }
 }
+
+export async function addNewSkinToCollection(id) {
+    try {
+        const user = auth.currentUser;
+        if (!user) return false;
+
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+            await updateDoc(userRef, { unlockedSkins: arrayUnion(id) });
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error("Błąd dodania skina", error);
+        return false;
+    }
+}
+
+export async function addNewEffectToCollection(id) {
+    try {
+        const user = auth.currentUser;
+        if (!user) return false;
+
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+            await updateDoc(userRef, { unlockedEffects: arrayUnion(id) });
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error("Błąd dodania efektu", error);
+        return false;
+    }
+}
+
 
 export async function getTop10Scores() {
     try {

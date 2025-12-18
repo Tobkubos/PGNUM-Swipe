@@ -1,15 +1,15 @@
 //----------------------------------------------------
 import { Player } from "./scripts/player.js";
 import { handleEffects } from "./scripts/effects.js";
-import { handleSkins } from "./scripts/skins.js";
+import { handleSkins, SKINS_COUNT } from "./scripts/skins.js";
 import {
 	checkScreenSizeForOptimalGameplayMenu,
 	checkScreenSizeForOptimalGameplayGame,
-	checkScreenSizeForOptimalSkinsPreview
+	checkScreenSizeForOptimalSkinsPreview,
 } from "./utils/resizer.js";
 import { ObstacleManager } from "./scripts/obstaclesManager.js";
 import { SceneSwitchManager, state } from "./scripts/sceneManager.js";
-import { currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
+import { addNewSkinToCollection, currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
 import { enterRewardScene } from "./scripts/shaker.js";
 import { canvas, ctx } from "./scripts/canvasManager.js";
 import { lerp } from "./scripts/movementHandler.js";
@@ -82,7 +82,7 @@ export function skinsPreview() {
 
 	// ROZMIAR CAŁEJ SIATKI
 	const gridWidth = COLUMNS * size + (COLUMNS - 1) * padding;
-	const gridHeight = rows * (size) + (rows - 1) * padding;
+	const gridHeight = rows * size + (rows - 1) * padding;
 
 	// WYŚRODKOWANIE
 	const startX = (canvas.clientWidth - gridWidth) / 2;
@@ -99,7 +99,7 @@ export function skinsPreview() {
 			x: x,
 			y: y,
 			size: size,
-			skinId: skinId
+			skinId: skinId,
 		});
 
 		const oldX = player.x;
@@ -152,7 +152,11 @@ function effectsPreview() {
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 		ctx.font = `${Math.max(12, Math.floor(player.baseSize / 2.5))}px Poppins`;
-		ctx.fillText("LOCKED", overlayX + overlaySize / 2, overlayY + overlaySize / 2);
+		ctx.fillText(
+			"LOCKED",
+			overlayX + overlaySize / 2,
+			overlayY + overlaySize / 2
+		);
 		ctx.restore();
 	}
 }
@@ -166,7 +170,8 @@ function game(correction = 1) {
 
 	const totalWidth = squareSize * 3;
 	const gridStartX = (canvas.clientWidth - totalWidth) / 2;
-	const targetX = gridStartX + player.lane * squareSize + (squareSize - playerSize) / 2;
+	const targetX =
+		gridStartX + player.lane * squareSize + (squareSize - playerSize) / 2;
 	const targetY = canvas.clientHeight - player.baseSize - 100;
 
 	player.x = lerp(player.x, targetX, 0.2);
@@ -182,7 +187,7 @@ function game(correction = 1) {
 	//check collision
 	for (let obs of obstacleManager.obstacles) {
 		if (obstacleManager.isColliding(player, obs, squareSize)) {
-			let isReward = Math.random()
+			let isReward = Math.random();
 			console.log("Game Over!");
 			gameStarted = false;
 			player.lane = 1;
@@ -191,33 +196,43 @@ function game(correction = 1) {
 
 			if (currentUserState.data != null) {
 				if (currentScore > currentUserState.data.highScore)
-					updateUserHighscore(currentScore)
+					updateUserHighscore(currentScore);
 			}
 
-			if (currentUserState.user != null && currentUserState.data != null && isReward > 0.1) {
-				let isSkinOrEffect = Math.random()
+			if (
+				currentUserState.user != null &&
+				currentUserState.data != null &&
+				isReward > 0.1
+			) {
+				let isSkinOrEffect = Math.random();
 				if (isSkinOrEffect > 0.5) {
+					const notUnlockedYet = [];
+					for (let i = 0; i < SKINS_COUNT; i++) {
+						if (!currentUserState.data.unlockedSkins.includes(i)) {
+							notUnlockedYet.push(i);
+						}
+					}
 
-					var randomSkin = Math.floor(Math.random() * 16);
-					console.log("RANDOM SKIN: ", randomSkin)
-					previewPlayer.selectedSkin = randomSkin;
-					previewPlayer.selectedEffect = player.selectedEffect
-				}
-				else {
+					if (notUnlockedYet.length > 0) {
+						const randomIndex = Math.floor(Math.random() * notUnlockedYet.length);
+						const randomSkin = notUnlockedYet[randomIndex];
+						addNewSkinToCollection(randomSkin)
+						previewPlayer.selectedSkin = randomSkin;
+						previewPlayer.selectedEffect = player.selectedEffect;
+					}
+				} else {
 					var randomEffect = Math.floor(Math.random() * 16);
-					console.log("RANDOM EFEKT: ", randomEffect)
-					previewPlayer.selectedSkin = player.selectedSkin
+					console.log("RANDOM EFEKT: ", randomEffect);
+					previewPlayer.selectedSkin = player.selectedSkin;
 					previewPlayer.selectedEffect = randomEffect;
 				}
 				state.playerScene = state.scenes.Reward;
-				enterRewardScene()
-			}
-			else {
+				enterRewardScene();
+			} else {
 				state.playerScene = state.scenes.GameOver;
 			}
 
-
-			SceneSwitchManager()
+			SceneSwitchManager();
 			gameStarted = false;
 		}
 	}
@@ -229,8 +244,7 @@ function game(correction = 1) {
 	obstacleManager.draw(ctx, gridStartX, squareSize);
 }
 
-function pause() {
-}
+function pause() {}
 
 function gameOver() {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
