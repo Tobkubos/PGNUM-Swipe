@@ -6,7 +6,7 @@ import { gameBackground } from "../utils/colorSetter.js";
 const topMargin = -400;
 
 const barrierImage = new Image();
-barrierImage.src = "../icons/barrier.png";
+barrierImage.src = '../icons/barrier.png';
 
 //możliwe typy przeszkód: 1 -pojedyńcza kolumna, 2 - podwójna kolumna (wszystkie kombinacje 3 kolumn)
 // x1
@@ -134,7 +134,7 @@ export class Obstacle {
 		this.activeLanes.forEach((laneIndex) => {
 			const x = startX + laneIndex * squareSize;
 
-			if (barrierImage.complete) {
+			if (barrierImage.complete && barrierImage.naturalWidth !== 0) {
 				ctx.drawImage(barrierImage, x, this.y, squareSize, squareSize);
 			} else {
 				//jezeli brak obazka to prosta przeszkoda
