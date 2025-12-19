@@ -284,7 +284,7 @@ const skins = [
     }
 ]
 
-skins[16].img.src = "../icons/skins/Skibidi_Toilet.png";
+skins[16].img.src = "./icons/skins/Skibidi_Toilet.png";
 export const SKINS = skins;
 export const SKINS_COUNT = skins.length;
 
