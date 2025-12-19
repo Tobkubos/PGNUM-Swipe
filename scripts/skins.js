@@ -285,6 +285,11 @@ const skins = [
 ]
 
 skins[16].img.src = "./icons/skins/Skibidi_Toilet.png";
+
+skins[16].img.onerror = () => {
+    console.error("Skin image failed to load:", skins[16].img.src);
+};
+
 export const SKINS = skins;
 export const SKINS_COUNT = skins.length;
 
