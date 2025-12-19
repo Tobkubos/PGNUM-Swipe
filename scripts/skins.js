@@ -274,10 +274,10 @@ const skins = [
         id: 16,
         name: "Skibidi",
         img: new Image(),
-        draw(ctx, p, time) {
+        draw(ctx, p) {
             const { x, y, size } = getPlayerVars(p);
 
-            if (this.img.complete) {
+            if (this.img.complete && this.img.naturalWidth > 0) {
                 ctx.drawImage(this.img, x, y, size, size);
             }
         }
