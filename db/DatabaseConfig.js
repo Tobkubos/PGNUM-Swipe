@@ -134,7 +134,7 @@ export async function DB_logoutUser() {
 }
 
 export async function DB_updateUserHighscore(newHighScore) {
-    if (currentUserState.data == null && newHighScore < currentUserState.data.highScore) return;
+    if (currentUserState.data == null || newHighScore < currentUserState.data.highScore) return;
 
     try {
         const user = auth.currentUser;
