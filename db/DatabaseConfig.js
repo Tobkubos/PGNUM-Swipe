@@ -1,5 +1,3 @@
-
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
 
@@ -34,7 +32,7 @@ export const currentUserState = {
     unsubscribe: null
 };
 
-function setupAuthListener() {
+function DB_setupAuthListener() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             const userRef = doc(db, "users", user.uid);
@@ -55,7 +53,7 @@ function setupAuthListener() {
             if (typeof currentUserState.unsubscribe === "function") {
                 currentUserState.unsubscribe();
             }
-            currentUserState.unsubscribe = listenToUserData(user.uid);
+            currentUserState.unsubscribe = DB_listenToUserData(user.uid);
 
         } else {
             // user logged out
@@ -69,10 +67,9 @@ function setupAuthListener() {
         updateUI();
     });
 }
-setupAuthListener();
+DB_setupAuthListener();
 
-
-function listenToUserData(userId) {
+function DB_listenToUserData(userId) {
     const userRef = doc(db, "users", userId);
 
     const unsubscribe = onSnapshot(userRef, (docSnap) => {
@@ -86,8 +83,7 @@ function listenToUserData(userId) {
     return unsubscribe;
 }
 
-
-export async function loginAndCreateProfile() {
+export async function DB_loginAndCreateProfile() {
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
@@ -122,7 +118,7 @@ export async function loginAndCreateProfile() {
     }
 }
 
-export async function logoutUser() {
+export async function DB_logoutUser() {
     try {
         await signOut(auth);
         console.log("Wylogowano");
@@ -137,7 +133,9 @@ export async function logoutUser() {
     }
 }
 
-export async function updateUserHighscore(newHighScore) {
+export async function DB_updateUserHighscore(newHighScore) {
+    if (currentUserState.data == null && newHighScore < currentUserState.data.highScore) return;
+
     try {
         const user = auth.currentUser;
         if (!user) return false;
@@ -156,7 +154,7 @@ export async function updateUserHighscore(newHighScore) {
     }
 }
 
-export async function saveSelectedSkin(id) {
+export async function DB_saveSelectedSkin(id) {
     try {
         const user = auth.currentUser;
         if (!user) return false;
@@ -175,7 +173,7 @@ export async function saveSelectedSkin(id) {
     }
 }
 
-export async function saveSelectedEffect(id) {
+export async function DB_saveSelectedEffect(id) {
     try {
         const user = auth.currentUser;
         if (!user) return false;
@@ -194,7 +192,7 @@ export async function saveSelectedEffect(id) {
     }
 }
 
-export async function addNewSkinToCollection(id) {
+export async function DB_addNewSkinToCollection(id) {
     try {
         const user = auth.currentUser;
         if (!user) return false;
@@ -213,7 +211,7 @@ export async function addNewSkinToCollection(id) {
     }
 }
 
-export async function addNewEffectToCollection(id) {
+export async function DB_addNewEffectToCollection(id) {
     try {
         const user = auth.currentUser;
         if (!user) return false;
@@ -233,7 +231,7 @@ export async function addNewEffectToCollection(id) {
 }
 
 
-export async function getTop10Scores() {
+export async function DB_getTop10Scores() {
     try {
         const q = query(
             collection(db, "users"),

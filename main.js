@@ -5,7 +5,7 @@ import { handleSkins, SKINS, SKINS_COUNT } from "./scripts/skins.js";
 import { checkScreenSizeForOptimalGameplayMenu, checkScreenSizeForOptimalGameplayGame, checkScreenSizeForOptimalSkinsPreview } from "./utils/resizer.js";
 import { ObstacleManager } from "./scripts/obstaclesManager.js";
 import { SceneSwitchManager, state } from "./scripts/sceneManager.js";
-import { addNewEffectToCollection, addNewSkinToCollection, currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
+import { DB_addNewEffectToCollection, DB_addNewSkinToCollection, currentUserState, DB_updateUserHighscore } from "./db/DatabaseConfig.js";
 import { clearTreasureAnimations } from "./scripts/treasureShaker.js";
 import { canvas, ctx } from "./scripts/canvasManager.js";
 import { lerp } from "./scripts/movementHandler.js";
@@ -25,21 +25,15 @@ if ("serviceWorker" in navigator) {
 export const player = new Player(0, 0, 50, 0, 0);
 const previewPlayer = new Player(0, 0, 50, 0, 0);
 const obstacleManager = new ObstacleManager();
-let gameStarted = false;
 const buffer = 10;
-
 const COLUMNS = 4;
-
 export let skinHitboxes = [];
 //----------------------------------------------------
 
 function menuAnimationAndSkinPreview() {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	player.baseSize = playerInMenuSize;
-	player.setPlayerPosition(
-		canvas.clientWidth / 2 - player.baseSize / 2,
-		canvas.clientHeight / 2 - player.baseSize / 2
-	);
+	player.setPlayerPosition(canvas.clientWidth / 2 - player.baseSize / 2, canvas.clientHeight / 2 - player.baseSize / 2);
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 	handleEffects(ctx, player);
 	handleSkins(ctx, player);
@@ -102,14 +96,10 @@ function skinsPreview() {
 	});
 }
 
-
 function effectsPreview() {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	player.baseSize = playerInMenuSize;
-	player.setPlayerPosition(
-		canvas.clientWidth / 2 - player.baseSize / 2,
-		canvas.clientHeight / 2 - player.baseSize / 2
-	);
+	player.setPlayerPosition(canvas.clientWidth / 2 - player.baseSize / 2, canvas.clientHeight / 2 - player.baseSize / 2);
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
 	handleEffects(ctx, player);
@@ -151,10 +141,6 @@ function game(correction = 1) {
 	player.x = lerp(player.x, targetX, 0.2);
 	player.y = targetY;
 
-	if (!gameStarted) {
-		obstacleManager.spawnRandomObstacle();
-		gameStarted = true;
-	}
 
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
@@ -163,54 +149,51 @@ function game(correction = 1) {
 		if (obstacleManager.isColliding(player, obs, squareSize)) {
 			let isReward = Math.random();
 			console.log("Game Over!");
-			gameStarted = false;
 			player.lane = 1;
 			const currentScore = obstacleManager.score;
 			obstacleManager.reset();
-			if (currentUserState.data != null) {
-				if (currentScore > currentUserState.data.highScore)
-					updateUserHighscore(currentScore);
-			}
 
-			if (
-				currentUserState.user != null &&
-				currentUserState.data != null &&
-				isReward > 0.1
-			) {
+			DB_updateUserHighscore(currentScore);
+
+
+			if (currentUserState.user != null && currentUserState.data != null && isReward > 0.1) {
 				let isSkinOrEffect = Math.random();
+
+				const notUnlockedSkinsYet = [];
+				for (let i = 0; i < SKINS_COUNT; i++) {
+					if (!currentUserState.data.unlockedSkins.includes(i)) {
+						notUnlockedSkinsYet.push(i);
+					}
+				}
+
+				const notUnlockedEffectsYet = [];
+				for (let i = 0; i < EFFECTS_COUNT; i++) {
+					if (!currentUserState.data.unlockedEffects.includes(i)) {
+						notUnlockedEffectsYet.push(i);
+					}
+				}
+
+				const notUnlockedAll = notUnlockedEffectsYet + notUnlockedEffectsYet;
 
 				if (isSkinOrEffect > 0.5) {
 					//random skin
-					const notUnlockedYet = [];
-					for (let i = 0; i < SKINS_COUNT; i++) {
-						if (!currentUserState.data.unlockedSkins.includes(i)) {
-							notUnlockedYet.push(i);
-						}
-					}
-
-					if (notUnlockedYet.length > 0) {
+					if (notUnlockedSkinsYet.length > 0) {
 						const randomIndex = Math.floor(
-							Math.random() * notUnlockedYet.length
+							Math.random() * notUnlockedSkinsYet.length
 						);
-						const randomSkin = notUnlockedYet[randomIndex];
-						addNewSkinToCollection(randomSkin);
+						const randomSkin = notUnlockedSkinsYet[randomIndex];
+						DB_addNewSkinToCollection(randomSkin);
 						previewPlayer.selectedSkin = randomSkin;
 						previewPlayer.selectedEffect = player.selectedEffect;
 					}
 				} else {
 					//random effect
-					const notUnlockedYet = [];
-					for (let i = 0; i < EFFECTS_COUNT; i++) {
-						if (!currentUserState.data.unlockedEffects.includes(i)) {
-							notUnlockedYet.push(i);
-						}
-					}
-					if (notUnlockedYet.length > 0) {
+					if (notUnlockedEffectsYet.length > 0) {
 						const randomIndex = Math.floor(
-							Math.random() * notUnlockedYet.length
+							Math.random() * notUnlockedEffectsYet.length
 						);
-						const randomEffect = notUnlockedYet[randomIndex];
-						addNewEffectToCollection(randomEffect);
+						const randomEffect = notUnlockedEffectsYet[randomIndex];
+						DB_addNewEffectToCollection(randomEffect);
 						previewPlayer.selectedSkin = player.selectedSkin;
 						previewPlayer.selectedEffect = randomEffect;
 					}
@@ -220,9 +203,7 @@ function game(correction = 1) {
 			} else {
 				state.playerScene = state.scenes.GameOver;
 			}
-
 			SceneSwitchManager();
-			gameStarted = false;
 		}
 	}
 
@@ -232,8 +213,6 @@ function game(correction = 1) {
 	obstacleManager.update(canvas.clientHeight, correction);
 	obstacleManager.draw(ctx, gridStartX, squareSize);
 }
-
-function pause() { }
 
 function gameOver() {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
@@ -256,10 +235,11 @@ function rewardPreview() {
 	handleSkins(ctx, previewPlayer);
 }
 
+function pause() { }
 //----------------------------------------------------
 // Game Loop
 let lastTime = 0;
-export function gameLoop(timestamp) {
+function gameLoop(timestamp) {
 	if (!timestamp) timestamp = 0;
 
 	const deltaTime = timestamp - lastTime;

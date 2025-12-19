@@ -29,9 +29,9 @@ document.querySelectorAll('#score-display').forEach(obj => {
     obj.style.color = hexToRgba(font, 0.1);
 });
 
-export function getColorIndex(score) {
+export function getColorIndex(score, l) {
     const colorsCount = Object.keys(themes).length;
-    return ((Math.floor(score / 2)) % colorsCount);
+    return ((Math.floor(score / l)) % colorsCount);
 }
 
 export function setColors(backgroundElement, obstacles, obstacleManager, idx) {

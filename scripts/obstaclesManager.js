@@ -3,8 +3,6 @@ import { canvas } from "./canvasManager.js";
 import { getColorIndex, setColors } from "../utils/colorSetter.js";
 import { gameBackground } from "../utils/colorSetter.js";
 
-const topMargin = -400;
-
 //możliwe typy przeszkód: 1 -pojedyńcza kolumna, 2 - podwójna kolumna (wszystkie kombinacje 3 kolumn)
 // x1
 // x2
@@ -20,41 +18,51 @@ export class ObstacleManager {
 		this.speed = 3;
 		this.color = "#ff0000";
 		this.score = 0;
-	}
-	spawnRandomObstacle() {
-		const randomIndex = Math.floor(Math.random() * patterns.length);
-		const selectedPattern = patterns[randomIndex];
 
-		const newObstacle = new Obstacle(
-			topMargin,
-			selectedPattern,
-			this.speed,
-			this.color
-		);
-		this.obstacles.push(newObstacle);
+		this.warningCooldown = 60;
+        this.warningTimer = 0;
 	}
 
 	update(canvasHeight, correction = 1) {
-		const limitY = canvasHeight ? canvasHeight + 100 : 1000;
+        const limitY = canvasHeight ? canvasHeight + 100 : 1000;
 
-		for (let i = this.obstacles.length - 1; i >= 0; i--) {
-			let obs = this.obstacles[i];
-			obs.update(correction);
+        // update wszystkich przeszkód
+        for (let i = this.obstacles.length - 1; i >= 0; i--) {
+            let obs = this.obstacles[i];
+            obs.update(correction);
 
-			if (obs.y > limitY) {
-				this.obstacles.splice(i, 1);
-				this.score++;
-				updateScoreText(this.score);
-				this.spawnRandomObstacle();
+            if (obs.y > limitY) {
+                this.obstacles.splice(i, 1);
+                this.score++;
+                updateScoreText(this.score);
+                // zmiana koloru co 5 pkt
+                if (this.score % 5 === 0) {
+                    const idx = getColorIndex(this.score, 5);
+                    setColors(gameBackground, this.obstacles, this, idx);
+                }
+            }
+        }
 
-				if (this.score % 2 === 0) {
-					const idx = getColorIndex(this.score);
-					setColors(gameBackground, this.obstacles, this, idx);
-					this.speed++;
-				}
-			}
-		}
-	}
+        this.warningTimer += correction;
+        if (this.warningTimer >= this.warningCooldown) {
+            this.warningTimer = 0;
+            this.spawnRandomWarning();
+        }
+    }
+
+	spawnRandomWarning() {
+        const randomIndex = Math.floor(Math.random() * patterns.length);
+        const selectedPattern = patterns[randomIndex];
+
+        const newObstacle = new Obstacle(
+            -100,
+            selectedPattern,
+            this.speed,
+            this.color
+        );
+
+        this.obstacles.push(newObstacle);
+    }
 
 	draw(ctx, startX, squareSize, gap) {
 		this.obstacles.forEach((obs) => {
@@ -80,6 +88,7 @@ export class ObstacleManager {
 	}
 
 	isColliding(player, obstacle, squareSize) {
+		if (obstacle.state !== "fall") return false;
 		const playerRect = {
 			x: player.x,
 			y: player.y,
@@ -88,8 +97,7 @@ export class ObstacleManager {
 		};
 
 		for (let laneIndex of obstacle.activeLanes) {
-			const obsX =
-				(canvas.clientWidth - squareSize * 3) / 2 + laneIndex * squareSize;
+			const obsX = (canvas.clientWidth - squareSize * 3) / 2 + laneIndex * squareSize;
 			const obsRect = {
 				x: obsX,
 				y: obstacle.y,
@@ -107,62 +115,108 @@ export class ObstacleManager {
 }
 
 export class Obstacle {
-	constructor(y, activeLanes, speed, color) {
-		this.y = y;
-		this.activeLanes = activeLanes;
-		this.speed = speed;
-		this.color = color;
+    constructor(y, activeLanes, speed, color) {
+        this.activeLanes = activeLanes;
+        this.speed = speed;
+        this.color = color;
 
-		this.rotation = 0;
-		this.rotationSpeed = 0.15;
-	}
+        this.rotation = 0;
+        this.rotationSpeed = 0.05;
 
-	update(correction = 1) {
-		this.y += this.speed * correction;
-		this.rotation += this.rotationSpeed * correction;
-	}
+        this.state = "warning"; // warning | spawn | fall
+        this.timer = 0;
+        this.scale = 0;
+        this.velocityY = 0;
+        this.acceleration = 0.5;
 
-	draw(ctx, startX, squareSize) {
-		this.activeLanes.forEach((laneIndex) => {
-			const cx = startX + laneIndex * squareSize + squareSize / 2;
-			const cy = this.y + squareSize / 2;
-			const radius = squareSize / 2.5;
+        this.warningY = 50;
+        this.spawnY = this.warningY;
+        this.y = this.warningY; 
+    }
 
-			ctx.save();
-			ctx.translate(cx, cy);
-			ctx.rotate(this.rotation);
+    update(correction = 1) {
+        this.timer += correction;
 
-			this.drawSaw(ctx, 0, 0, radius);
+        if (this.state === "warning") {
+            if (this.timer > 36) {
+                this.state = "spawn";
+                this.timer = 0;
+                this.scale = 0;
+                this.y = this.spawnY;
+            }
+        } else if (this.state === "spawn") {
+            this.scale += 0.08 * correction;
+            if (this.scale >= 1) {
+                this.scale = 1;
+                this.state = "fall";
+                this.velocityY = this.speed;
+            }
+        } else if (this.state === "fall") {
+            this.velocityY += this.acceleration * correction;
+            this.y += this.velocityY * correction;
 
-			ctx.restore();
-		});
-	}
+            this.rotation += this.rotationSpeed * correction;
+        }
+    }
 
-	drawSaw(ctx, cx, cy, r) {
-		const teeth = 12;
-		const toothDepth = r * 0.25;
+    draw(ctx, startX, squareSize) {
+        this.activeLanes.forEach((laneIndex) => {
+            const cx = startX + laneIndex * squareSize + squareSize / 2;
+            const cy = this.state === "warning" ? this.warningY : this.y;
 
-		ctx.fillStyle = this.color;
-		ctx.beginPath();
+            ctx.save();
+            ctx.translate(cx, cy);
 
-		for (let i = 0; i < teeth * 2; i++) {
-			const angle = (i / (teeth * 2)) * Math.PI * 2;
-			const currentRadius = i % 2 === 0 ? r + toothDepth : r;
+            if (this.state === "warning") {
+                this.drawWarning(ctx, squareSize * 0.6);
+            } else {
+                ctx.scale(this.scale, this.scale);
+                ctx.rotate(this.rotation);
+                this.drawSaw(ctx, 0, 0, squareSize / 2.5);
+            }
 
-			const x = cx + Math.cos(angle) * currentRadius;
-			const y = cy + Math.sin(angle) * currentRadius;
+            ctx.restore();
+        });
+    }
 
-			if (i === 0) ctx.moveTo(x, y);
-			else ctx.lineTo(x, y);
-		}
+    drawWarning(ctx, size) {
+        const blink = Math.sin(this.timer * 0.3) > 0; // miganie
+        if (!blink) return;
 
-		ctx.closePath();
-		ctx.fill();
+        ctx.fillStyle = "#ffcc00";
+        ctx.beginPath();
+        ctx.moveTo(0, -size / 2);
+        ctx.lineTo(size / 2, size / 2);
+        ctx.lineTo(-size / 2, size / 2);
+        ctx.closePath();
+        ctx.fill();
+    }
 
-		// środek
-		ctx.fillStyle = "#444";
-		ctx.beginPath();
-		ctx.arc(cx, cy, r * 0.3, 0, Math.PI * 2);
-		ctx.fill();
-	}
+    drawSaw(ctx, cx, cy, r) {
+        const teeth = 12;
+        const toothDepth = r * 0.25;
+
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+
+        for (let i = 0; i < teeth * 2; i++) {
+            const angle = (i / (teeth * 2)) * Math.PI * 2;
+            const currentRadius = i % 2 === 0 ? r + toothDepth : r;
+
+            const x = cx + Math.cos(angle) * currentRadius;
+            const y = cy + Math.sin(angle) * currentRadius;
+
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+
+        ctx.closePath();
+        ctx.fill();
+
+        // środek
+        ctx.fillStyle = "#444";
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * 0.3, 0, Math.PI * 2);
+        ctx.fill();
+    }
 }

@@ -1,6 +1,6 @@
 import { state } from "./sceneManager.js";
 import { SceneSwitchManager } from "./sceneManager.js";
-import { loginAndCreateProfile, currentUserState, saveSelectedSkin, logoutUser, saveSelectedEffect, getTop10Scores } from "../db/DatabaseConfig.js";
+import { DB_loginAndCreateProfile, currentUserState, DB_saveSelectedSkin, DB_logoutUser, DB_saveSelectedEffect, DB_getTop10Scores } from "../db/DatabaseConfig.js";
 import { player, skinHitboxes } from "../main.js";
 import { canvas } from "./canvasManager.js";
 //----------------------------------------------------
@@ -61,7 +61,7 @@ const highscoresTop10 = document.querySelector(".highscores-top10");
 highscoresBtn.addEventListener("click", async () => {
     if (highscoresPanel) highscoresPanel.style.display = "block";
 
-    const top10 = await getTop10Scores();
+    const top10 = await DB_getTop10Scores();
 
     top10.forEach((plr, index) => {
         highscoresTop10.innerHTML += `
@@ -92,13 +92,10 @@ closeOptions?.addEventListener("click", () => {
 });
 
 const loginBtn = document.querySelector(".login-btn");
-loginBtn.addEventListener("click", async () => { await loginAndCreateProfile(); });
+loginBtn.addEventListener("click", async () => { await DB_loginAndCreateProfile(); });
 
 const logoutBtn = document.querySelector(".logout-btn");
-logoutBtn.addEventListener("click", async () => { await logoutUser(); });
-
-
-;
+logoutBtn.addEventListener("click", async () => { await DB_logoutUser(); });
 
 //----------------------------------------------------
 //title animation
@@ -156,12 +153,12 @@ closeEffectCustomizationBtn?.addEventListener("click", () => {
     state.playerScene = state.scenes.Menu;
     if (currentUserState.data?.unlockedEffects.includes(player.selectedEffect)) {
         console.log("mam taki efekt odblokowany")
-        saveSelectedEffect(player.selectedEffect)
+        DB_saveSelectedEffect(player.selectedEffect)
     }
     else {
         console.log("nie mam tego skina")
         player.selectedEffect = currentUserState.data.savedSelectedEffect
-        saveSelectedEffect(currentUserState.data.savedSelectedEffect)
+        DB_saveSelectedEffect(currentUserState.data.savedSelectedEffect)
     }
     SceneSwitchManager();
 });
@@ -182,7 +179,7 @@ canvas.addEventListener("click", (e) => {
             if (currentUserState.data.unlockedSkins.includes(hitbox.skinId)) {
                 player.selectedSkin = hitbox.skinId;
                 state.playerScene = state.scenes.Menu;
-                saveSelectedSkin(hitbox.skinId);
+                DB_saveSelectedSkin(hitbox.skinId);
                 SceneSwitchManager();
             }
         }
