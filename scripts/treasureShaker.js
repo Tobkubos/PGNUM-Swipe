@@ -5,7 +5,7 @@ let shakeProgress = 0;
 const shakeBar = document.querySelector(".shake-progress-bar");
 const chestIcon = document.querySelector(".treasure-icon");
 
-export function enterRewardScene() {
+export function clearTreasureAnimations() {
 	chestIcon.classList.remove("shake", "shake-strong");
 	shakeProgress = 0;
 	if (shakeBar) shakeBar.textContent = "0%";

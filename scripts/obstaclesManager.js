@@ -5,9 +5,6 @@ import { gameBackground } from "../utils/colorSetter.js";
 
 const topMargin = -400;
 
-const barrierImage = new Image();
-barrierImage.src = './icons/barrier.png';
-
 //możliwe typy przeszkód: 1 -pojedyńcza kolumna, 2 - podwójna kolumna (wszystkie kombinacje 3 kolumn)
 // x1
 // x2
@@ -115,32 +112,57 @@ export class Obstacle {
 		this.activeLanes = activeLanes;
 		this.speed = speed;
 		this.color = color;
+
+		this.rotation = 0;
+		this.rotationSpeed = 0.15;
 	}
 
 	update(correction = 1) {
 		this.y += this.speed * correction;
-	}
-
-	drawOLD(ctx, startX, squareSize) {
-		ctx.fillStyle = this.color;
-
-		this.activeLanes.forEach((laneIndex) => {
-			const x = startX + laneIndex * squareSize;
-			ctx.fillRect(x, this.y, squareSize, squareSize);
-		});
+		this.rotation += this.rotationSpeed * correction;
 	}
 
 	draw(ctx, startX, squareSize) {
 		this.activeLanes.forEach((laneIndex) => {
-			const x = startX + laneIndex * squareSize;
+			const cx = startX + laneIndex * squareSize + squareSize / 2;
+			const cy = this.y + squareSize / 2;
+			const radius = squareSize / 2.5;
 
-			if (barrierImage.complete) {
-				ctx.drawImage(barrierImage, x, this.y, squareSize, squareSize);
-			} else {
-				//jezeli brak obazka to prosta przeszkoda
-				ctx.fillStyle = this.color;
-				ctx.fillRect(x, this.y, squareSize, squareSize);
-			}
+			ctx.save();
+			ctx.translate(cx, cy);
+			ctx.rotate(this.rotation);
+
+			this.drawSaw(ctx, 0, 0, radius);
+
+			ctx.restore();
 		});
+	}
+
+	drawSaw(ctx, cx, cy, r) {
+		const teeth = 12;
+		const toothDepth = r * 0.25;
+
+		ctx.fillStyle = this.color;
+		ctx.beginPath();
+
+		for (let i = 0; i < teeth * 2; i++) {
+			const angle = (i / (teeth * 2)) * Math.PI * 2;
+			const currentRadius = i % 2 === 0 ? r + toothDepth : r;
+
+			const x = cx + Math.cos(angle) * currentRadius;
+			const y = cy + Math.sin(angle) * currentRadius;
+
+			if (i === 0) ctx.moveTo(x, y);
+			else ctx.lineTo(x, y);
+		}
+
+		ctx.closePath();
+		ctx.fill();
+
+		// środek
+		ctx.fillStyle = "#444";
+		ctx.beginPath();
+		ctx.arc(cx, cy, r * 0.3, 0, Math.PI * 2);
+		ctx.fill();
 	}
 }

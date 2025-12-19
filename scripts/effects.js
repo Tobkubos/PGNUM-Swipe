@@ -21,7 +21,7 @@ class Particle {
         this.text = "";
         this.growth = 0;
         
-        // Nadpisanie configiem
+        //dodatkowe opcje
         Object.assign(this, config);
     }
 
@@ -112,7 +112,7 @@ class Particle {
                 ctx.font = `${s}px Arial`;
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
-                ctx.fillStyle = "black"; // Nutki zazwyczaj czarne
+                ctx.fillStyle = "black";
                 ctx.fillText("♪", 0, 0);
             },
 

@@ -1,3 +1,5 @@
+import { canvas, ctx, off, offCtx } from "../scripts/canvasManager.js"
+
 export function checkScreenSizeForOptimalGameplayMenu(canvas) {
     var squareSize = Math.max(1, Math.floor(canvas.clientWidth / 3));
     if (squareSize >= 100) {
@@ -28,3 +30,18 @@ export function checkScreenSizeForOptimalSkinsPreview(canvas, buffer) {
 
     return squareSize
 }
+
+function resize() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    off.width = canvas.width;
+    off.height = canvas.height;
+    offCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+window.addEventListener("resize", resize);
+resize();

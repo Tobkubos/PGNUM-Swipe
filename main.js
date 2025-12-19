@@ -1,21 +1,12 @@
 //----------------------------------------------------
 import { Player } from "./scripts/player.js";
 import { EFFECTS_COUNT, handleEffects } from "./scripts/effects.js";
-import { handleSkins, SKINS_COUNT } from "./scripts/skins.js";
-import {
-	checkScreenSizeForOptimalGameplayMenu,
-	checkScreenSizeForOptimalGameplayGame,
-	checkScreenSizeForOptimalSkinsPreview,
-} from "./utils/resizer.js";
+import { handleSkins, SKINS, SKINS_COUNT } from "./scripts/skins.js";
+import { checkScreenSizeForOptimalGameplayMenu, checkScreenSizeForOptimalGameplayGame, checkScreenSizeForOptimalSkinsPreview } from "./utils/resizer.js";
 import { ObstacleManager } from "./scripts/obstaclesManager.js";
 import { SceneSwitchManager, state } from "./scripts/sceneManager.js";
-import {
-	addNewEffectToCollection,
-	addNewSkinToCollection,
-	currentUserState,
-	updateUserHighscore,
-} from "./db/DatabaseConfig.js";
-import { enterRewardScene } from "./scripts/shaker.js";
+import { addNewEffectToCollection, addNewSkinToCollection, currentUserState, updateUserHighscore } from "./db/DatabaseConfig.js";
+import { clearTreasureAnimations } from "./scripts/treasureShaker.js";
 import { canvas, ctx } from "./scripts/canvasManager.js";
 import { lerp } from "./scripts/movementHandler.js";
 //----------------------------------------------------
@@ -31,33 +22,15 @@ if ("serviceWorker" in navigator) {
 
 //----------------------------------------------------
 
-const off = new OffscreenCanvas(canvas.width, canvas.height);
-const offCtx = off.getContext("2d");
-
 export const player = new Player(0, 0, 50, 0, 0);
 const previewPlayer = new Player(0, 0, 50, 0, 0);
 const obstacleManager = new ObstacleManager();
 let gameStarted = false;
 const buffer = 10;
 
-//----------------------------------------------------
-//#region RESIZE HANDLER
-function resize() {
-	const rect = canvas.getBoundingClientRect();
-	const dpr = window.devicePixelRatio || 1;
+const COLUMNS = 4;
 
-	canvas.width = Math.round(rect.width * dpr);
-	canvas.height = Math.round(rect.height * dpr);
-	ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-	off.width = canvas.width;
-	off.height = canvas.height;
-	offCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-}
-window.addEventListener("resize", resize);
-resize();
-
-//#endregion
+export let skinHitboxes = [];
 //----------------------------------------------------
 
 function menuAnimationAndSkinPreview() {
@@ -72,18 +45,13 @@ function menuAnimationAndSkinPreview() {
 	handleSkins(ctx, player);
 }
 
-const NUMBER_OF_SKINS = 16;
-const COLUMNS = 4;
-
-export let skinHitboxes = [];
-
-export function skinsPreview() {
+function skinsPreview() {
 	var size = checkScreenSizeForOptimalSkinsPreview(canvas, 40);
 	const padding = 20;
 
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 	skinHitboxes = [];
-	const rows = Math.ceil(NUMBER_OF_SKINS / COLUMNS);
+	const rows = Math.ceil(SKINS_COUNT / COLUMNS);
 
 	// ROZMIAR CAŁEJ SIATKI
 	const gridWidth = COLUMNS * size + (COLUMNS - 1) * padding;
@@ -93,9 +61,9 @@ export function skinsPreview() {
 	const startX = (canvas.clientWidth - gridWidth) / 2;
 	const startY = (canvas.clientHeight - gridHeight) / 2;
 
-	for (let skinId = 0; skinId < NUMBER_OF_SKINS; skinId++) {
-		const col = skinId % COLUMNS;
-		const row = Math.floor(skinId / COLUMNS);
+	SKINS.forEach(skin => {
+		const col = skin.id % COLUMNS;
+		const row = Math.floor(skin.id / COLUMNS);
 
 		const x = startX + col * (size + padding);
 		const y = startY + row * (size + padding);
@@ -104,7 +72,7 @@ export function skinsPreview() {
 			x: x,
 			y: y,
 			size: size,
-			skinId: skinId,
+			skinId: skin.id,
 		});
 
 		const oldX = player.x;
@@ -115,11 +83,11 @@ export function skinsPreview() {
 		player.x = x;
 		player.y = y;
 		player.baseSize = size;
-		player.selectedSkin = skinId;
+		player.selectedSkin = skin.id;
 
 		handleSkins(ctx, player);
 
-		if (!currentUserState.data?.unlockedSkins.includes(skinId)) {
+		if (!currentUserState.data?.unlockedSkins.includes(skin.id)) {
 			ctx.fillStyle = "rgba(0,0,0,0.5)";
 			ctx.fillRect(x, y, size, size);
 			ctx.fillStyle = "white";
@@ -131,8 +99,9 @@ export function skinsPreview() {
 		player.y = oldY;
 		player.selectedSkin = oldSkin;
 		player.baseSize = oldSize;
-	}
+	});
 }
+
 
 function effectsPreview() {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
@@ -198,7 +167,6 @@ function game(correction = 1) {
 			player.lane = 1;
 			const currentScore = obstacleManager.score;
 			obstacleManager.reset();
-
 			if (currentUserState.data != null) {
 				if (currentScore > currentUserState.data.highScore)
 					updateUserHighscore(currentScore);
@@ -248,7 +216,7 @@ function game(correction = 1) {
 					}
 				}
 				state.playerScene = state.scenes.Reward;
-				enterRewardScene();
+				clearTreasureAnimations();
 			} else {
 				state.playerScene = state.scenes.GameOver;
 			}
@@ -265,7 +233,7 @@ function game(correction = 1) {
 	obstacleManager.draw(ctx, gridStartX, squareSize);
 }
 
-function pause() {}
+function pause() { }
 
 function gameOver() {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
