@@ -9,6 +9,7 @@ import {
 
 import { updateUI } from "../scripts/sceneManager.js";
 import { player } from "../main.js";
+import { SKINS_BY_KEY } from "../scripts/skins.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAZvIq7NCMfETcFTx0W0nENSsORxyQuSII",
@@ -37,17 +38,27 @@ function DB_setupAuthListener() {
         if (user) {
             const userRef = doc(db, "users", user.uid);
             const userSnap = await getDoc(userRef);
-            let userData = null;
 
-            if (userSnap.exists()) {
-                userData = userSnap.data();
+            let userData;
+            if (!userSnap.exists()) {
+                userData = {
+                    username: user.displayName,
+                    highScore: 0,
+                    coins: 0,
+                    unlockedSkins: [],
+                    unlockedEffects: [],
+                    savedSelectedSkin: "default",
+                    savedSelectedEffect: "none",
+                    createdAt: new Date().toISOString()
+                };
+                await setDoc(userRef, userData);
             } else {
-                userData = null;
+                userData = userSnap.data();
             }
 
             currentUserState.user = user;
             currentUserState.data = userData;
-            player.selectedSkin = userData.savedSelectedSkin || 0;
+            player.selectedSkin = userData.savedSelectedSkin && SKINS_BY_KEY[userData.savedSelectedSkin] ? userData.savedSelectedSkin : "default";
             player.selectedEffect = userData.savedSelectedEffect || 0;
 
             if (typeof currentUserState.unsubscribe === "function") {
@@ -97,10 +108,10 @@ export async function DB_loginAndCreateProfile() {
                 username: user.displayName,
                 highScore: 0,
                 coins: 0,
-                unlockedSkins: [0],
-                unlockedEffects: [0],
-                savedSelectedSkin: 0,
-                savedSelectedEffect: 0,
+                unlockedSkins: [],
+                unlockedEffects: [],
+                savedSelectedSkin: "default",
+                savedSelectedEffect: "none",
                 createdAt: new Date().toISOString()
             };
             await setDoc(userRef, userData);
@@ -110,8 +121,8 @@ export async function DB_loginAndCreateProfile() {
 
         currentUserState.user = user;
         currentUserState.data = userData;
-        player.selectedSkin = userData.savedSelectedSkin || 0;
-        player.selectedEffect = userData.savedSelectedEffect || 0;
+        player.selectedSkin = userData.savedSelectedSkin && SKINS_BY_KEY[userData.savedSelectedSkin] ? userData.savedSelectedSkin : "default";
+        player.selectedEffect = userData.savedSelectedEffect || "none";
 
     } catch (error) {
         //console.error("Błąd logowania:", error);
@@ -124,8 +135,8 @@ export async function DB_logoutUser() {
         console.log("Wylogowano");
         currentUserState.user = null;
         currentUserState.data = null;
-        player.selectedSkin = 0;
-        player.selectedEffect = 0;
+        player.selectedSkin = "default";
+        player.selectedEffect = "none";
         return true;
     } catch (error) {
         console.error("Błąd wylogowania", error);
@@ -154,26 +165,26 @@ export async function DB_updateUserHighscore(newHighScore) {
     }
 }
 
-export async function DB_saveSelectedSkin(id) {
+export async function DB_saveSelectedSkin(skinKey) {
     try {
         const user = auth.currentUser;
         if (!user) return false;
 
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
-
-        if (userSnap.exists()) {
-            await updateDoc(userRef, { savedSelectedSkin: id });
-            return true;
+        if (!SKINS_BY_KEY[skinKey]) {
+            console.warn("Nieznany skin:", skinKey);
+            return false;
         }
-        return false;
-    } catch (error) {
-        console.error("Błąd aktualizacji skina", error);
+
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, { savedSelectedSkin: skinKey });
+        return true;
+    } catch (e) {
+        console.error("Błąd zapisu skina", e);
         return false;
     }
 }
 
-export async function DB_saveSelectedEffect(id) {
+export async function DB_saveSelectedEffect(effectKey) {
     try {
         const user = auth.currentUser;
         if (!user) return false;
@@ -182,7 +193,7 @@ export async function DB_saveSelectedEffect(id) {
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-            await updateDoc(userRef, { savedSelectedEffect: id });
+            await updateDoc(userRef, { savedSelectedEffect: effectKey });
             return true;
         }
         return false;
@@ -192,26 +203,25 @@ export async function DB_saveSelectedEffect(id) {
     }
 }
 
-export async function DB_addNewSkinToCollection(id) {
+export async function DB_addNewSkinToCollection(skinKey) {
     try {
         const user = auth.currentUser;
         if (!user) return false;
 
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
+        if (!SKINS_BY_KEY[skinKey]) return false;
 
-        if (userSnap.exists()) {
-            await updateDoc(userRef, { unlockedSkins: arrayUnion(id) });
-            return true;
-        }
-        return false;
-    } catch (error) {
-        console.error("Błąd dodania skina", error);
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, {unlockedSkins: arrayUnion(skinKey)
+        });
+
+        return true;
+    } catch (e) {
+        console.error("Błąd dodania skina", e);
         return false;
     }
 }
 
-export async function DB_addNewEffectToCollection(id) {
+export async function DB_addNewEffectToCollection(effectKey) {
     try {
         const user = auth.currentUser;
         if (!user) return false;
@@ -220,7 +230,7 @@ export async function DB_addNewEffectToCollection(id) {
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-            await updateDoc(userRef, { unlockedEffects: arrayUnion(id) });
+            await updateDoc(userRef, { unlockedEffects: arrayUnion(effectKey) });
             return true;
         }
         return false;

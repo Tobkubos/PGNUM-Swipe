@@ -1,7 +1,7 @@
 //----------------------------------------------------
 import { Player } from "./scripts/player.js";
-import { EFFECTS_COUNT, handleEffects } from "./scripts/effects.js";
-import { handleSkins, SKINS, SKINS_COUNT } from "./scripts/skins.js";
+import { EFFECTS, EFFECTS_COUNT, handleEffects } from "./scripts/effects.js";
+import { handleSkins, SKIN_CATEGORIES, SKINS, SKINS_COUNT } from "./scripts/skins.js";
 import { checkScreenSizeForOptimalGameplayMenu, checkScreenSizeForOptimalGameplayGame, checkScreenSizeForOptimalSkinsPreview } from "./utils/resizer.js";
 import { ObstacleManager } from "./scripts/obstaclesManager.js";
 import { SceneSwitchManager, state } from "./scripts/sceneManager.js";
@@ -9,6 +9,7 @@ import { DB_addNewEffectToCollection, DB_addNewSkinToCollection, currentUserStat
 import { clearTreasureAnimations } from "./scripts/treasureShaker.js";
 import { canvas, ctx } from "./scripts/canvasManager.js";
 import { lerp } from "./scripts/movementHandler.js";
+import { updateSkinMenuUI  } from "./scripts/uiManager.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -22,12 +23,53 @@ if ("serviceWorker" in navigator) {
 
 //----------------------------------------------------
 
-export const player = new Player(0, 0, 50, 0, 0);
-const previewPlayer = new Player(0, 0, 50, 0, 0);
+export const player = new Player(0, 0, 50, "default", 0);
+const previewPlayer = new Player(0, 0, 50, "default", 0);
 const obstacleManager = new ObstacleManager();
 const buffer = 10;
-const COLUMNS = 4;
+const COLUMNS = 3;
+const ROWS = 3;
+const SKINS_PER_PAGE = 9;
+
 export let skinHitboxes = [];
+
+let currentSkinCategoryIndex = 0;
+export let currentSkinPage = 0;
+//----------------------------------------------------
+export function getCurrentSkinCategoryIndex() {
+	return currentSkinCategoryIndex;
+}
+
+export function nextSkinCategory() {
+	currentSkinCategoryIndex = (currentSkinCategoryIndex + 1) % SKIN_CATEGORIES.length;
+	currentSkinPage = 0;
+
+}
+
+export function previousSkinCategory() {
+	currentSkinCategoryIndex = (currentSkinCategoryIndex - 1 + SKIN_CATEGORIES.length) % SKIN_CATEGORIES.length;
+	currentSkinPage = 0;
+}
+
+export function getCurrentSkinCategory() {
+	return SKIN_CATEGORIES[currentSkinCategoryIndex];
+}
+
+export function nextSkinPage() {
+	const activeCategory = getCurrentSkinCategory();
+	const skinsInCategory = SKINS.filter(s => s.category === activeCategory);
+	const maxPages = Math.ceil(skinsInCategory.length / SKINS_PER_PAGE);
+
+	if (currentSkinPage < maxPages - 1) {
+		currentSkinPage++;
+	}
+}
+
+export function previousSkinPage() {
+	if (currentSkinPage > 0) {
+		currentSkinPage--;
+	}
+}
 //----------------------------------------------------
 
 function menuAnimationAndSkinPreview() {
@@ -40,59 +82,69 @@ function menuAnimationAndSkinPreview() {
 }
 
 function skinsPreview() {
-	var size = checkScreenSizeForOptimalSkinsPreview(canvas, 40);
+	var size = checkScreenSizeForOptimalSkinsPreview(canvas, 15);
 	const padding = 20;
 
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 	skinHitboxes = [];
-	const rows = Math.ceil(SKINS_COUNT / COLUMNS);
 
-	// ROZMIAR CAŁEJ SIATKI
+	const activeCategory = getCurrentSkinCategory();
+	const allSkinsInCategory = SKINS.filter(s => s.category === activeCategory);
+
+	const totalPages = Math.ceil(allSkinsInCategory.length / SKINS_PER_PAGE);
+	const safeTotalPages = totalPages > 0 ? totalPages : 1;
+
+	const startIndex = currentSkinPage * SKINS_PER_PAGE;
+	const endIndex = startIndex + SKINS_PER_PAGE;
+	const skinsOnCurrentPage = allSkinsInCategory.slice(startIndex, endIndex);
+
+	updateSkinMenuUI(activeCategory, currentSkinPage, safeTotalPages);
+
 	const gridWidth = COLUMNS * size + (COLUMNS - 1) * padding;
-	const gridHeight = rows * size + (rows - 1) * padding;
+	const gridHeight = ROWS * size + (ROWS - 1) * padding;
 
-	// WYŚRODKOWANIE
 	const startX = (canvas.clientWidth - gridWidth) / 2;
 	const startY = (canvas.clientHeight - gridHeight) / 2;
 
-	SKINS.forEach(skin => {
-		const col = skin.id % COLUMNS;
-		const row = Math.floor(skin.id / COLUMNS);
+	skinsOnCurrentPage.forEach((skin, index) => {
+		const col = index % COLUMNS;
+		const row = Math.floor(index / COLUMNS);
 
 		const x = startX + col * (size + padding);
 		const y = startY + row * (size + padding);
 
 		skinHitboxes.push({
-			x: x,
-			y: y,
-			size: size,
-			skinId: skin.id,
+			x,
+			y,
+			size,
+			skinKey: skin.key,
 		});
 
-		const oldX = player.x;
-		const oldY = player.y;
-		const oldSkin = player.selectedSkin;
-		const oldSize = player.baseSize;
+		const old = {
+			x: player.x,
+			y: player.y,
+			size: player.baseSize,
+			selectedSkin: player.selectedSkin,
+		};
 
 		player.x = x;
 		player.y = y;
 		player.baseSize = size;
-		player.selectedSkin = skin.id;
+		player.selectedSkin = skin.key;
 
 		handleSkins(ctx, player);
 
-		if (!currentUserState.data?.unlockedSkins.includes(skin.id)) {
+		if (currentUserState.data?.unlockedSkins && !currentUserState.data.unlockedSkins.includes(skin.key)) {
 			ctx.fillStyle = "rgba(0,0,0,0.5)";
 			ctx.fillRect(x, y, size, size);
 			ctx.fillStyle = "white";
 			ctx.textAlign = "center";
+			ctx.textBaseline = "middle";
+			ctx.font = "16px Poppins";
 			ctx.fillText("LOCKED", x + size / 2, y + size / 2);
 		}
 
-		player.x = oldX;
-		player.y = oldY;
-		player.selectedSkin = oldSkin;
-		player.baseSize = oldSize;
+		Object.assign(player, old);
 	});
 }
 
@@ -134,8 +186,7 @@ function game(correction = 1) {
 
 	const totalWidth = squareSize * 3;
 	const gridStartX = (canvas.clientWidth - totalWidth) / 2;
-	const targetX =
-		gridStartX + player.lane * squareSize + (squareSize - playerSize) / 2;
+	const targetX = gridStartX + player.lane * squareSize + (squareSize - playerSize) / 2;
 	const targetY = canvas.clientHeight - player.baseSize - 100;
 
 	player.x = lerp(player.x, targetX, 0.2);
@@ -159,40 +210,28 @@ function game(correction = 1) {
 			if (currentUserState.user != null && currentUserState.data != null && isReward > 0.1) {
 				let isSkinOrEffect = Math.random();
 
-				const notUnlockedSkinsYet = [];
-				for (let i = 0; i < SKINS_COUNT; i++) {
-					if (!currentUserState.data.unlockedSkins.includes(i)) {
-						notUnlockedSkinsYet.push(i);
-					}
-				}
+				const notUnlockedSkinsYet = SKINS
+					.map(s => s.key)
+					.filter(k => !currentUserState.data.unlockedSkins.includes(k));
 
-				const notUnlockedEffectsYet = [];
-				for (let i = 0; i < EFFECTS_COUNT; i++) {
-					if (!currentUserState.data.unlockedEffects.includes(i)) {
-						notUnlockedEffectsYet.push(i);
-					}
-				}
+				const notUnlockedEffectsYet = EFFECTS
+					.map(e => e.key)
+					.filter(k => !currentUserState.data.unlockedEffects.includes(k));
 
 				const notUnlockedAll = notUnlockedEffectsYet + notUnlockedEffectsYet;
 
-				if (isSkinOrEffect > 0.5) {
+				if (isSkinOrEffect > 0.9) {
 					//random skin
 					if (notUnlockedSkinsYet.length > 0) {
-						const randomIndex = Math.floor(
-							Math.random() * notUnlockedSkinsYet.length
-						);
-						const randomSkin = notUnlockedSkinsYet[randomIndex];
+						const randomSkin = notUnlockedSkinsYet[Math.floor(Math.random() * notUnlockedSkinsYet.length)];
 						DB_addNewSkinToCollection(randomSkin);
 						previewPlayer.selectedSkin = randomSkin;
 						previewPlayer.selectedEffect = player.selectedEffect;
 					}
 				} else {
-					//random effect
+					//random effect	
 					if (notUnlockedEffectsYet.length > 0) {
-						const randomIndex = Math.floor(
-							Math.random() * notUnlockedEffectsYet.length
-						);
-						const randomEffect = notUnlockedEffectsYet[randomIndex];
+						const randomEffect = notUnlockedEffectsYet[Math.floor(Math.random() * notUnlockedEffectsYet.length)];
 						DB_addNewEffectToCollection(randomEffect);
 						previewPlayer.selectedSkin = player.selectedSkin;
 						previewPlayer.selectedEffect = randomEffect;

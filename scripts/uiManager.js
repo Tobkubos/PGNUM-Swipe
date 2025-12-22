@@ -3,6 +3,8 @@ import { SceneSwitchManager } from "./sceneManager.js";
 import { DB_loginAndCreateProfile, currentUserState, DB_saveSelectedSkin, DB_logoutUser, DB_saveSelectedEffect, DB_getTop10Scores } from "../db/DatabaseConfig.js";
 import { player, skinHitboxes } from "../main.js";
 import { canvas } from "./canvasManager.js";
+import { EFFECT_KEYS, EFFECTS_BY_KEY } from "./effects.js";
+import { nextSkinCategory, previousSkinCategory, previousSkinPage, nextSkinPage } from "../main.js";
 //----------------------------------------------------
 //start button
 document.querySelector(".start-btn").addEventListener("click", () => {
@@ -123,6 +125,55 @@ const nextEffectBtn = document.querySelector(".change-next");
 
 const effectIdDisplay = document.getElementById("effect-id");
 
+const uiSkinPagePrevBtn = document.querySelector(".change-skin-page-previous");
+const uiSkinPageNextBtn = document.querySelector(".change-skin-page-next");
+const uiSkinPageCounter = document.getElementById("skins-footer-page");
+const uiSkinCategoryHeader = document.getElementById("skins-header-category");
+const uiChangeSkinCategoryNext = document.querySelector(".change-skin-category-next");
+const uiChangeSkinCategoryPrevious = document.querySelector(".change-skin-category-previous");
+
+export function updateSkinMenuUI(categoryName, currentPage, totalPages) {
+    if (uiSkinCategoryHeader) {
+        uiSkinCategoryHeader.innerText = categoryName.toUpperCase();
+    }
+
+    if (uiSkinPageCounter) {
+        uiSkinPageCounter.innerText = `${currentPage + 1} / ${totalPages}`;
+    }
+
+    if (uiSkinPagePrevBtn) {
+        if (currentPage > 0) {
+            uiSkinPagePrevBtn.style.opacity = "1";
+            uiSkinPagePrevBtn.style.filter = "grayscale(0%)";
+            uiSkinPagePrevBtn.style.cursor = "pointer";
+            uiSkinPagePrevBtn.style.pointerEvents = "auto";
+        } else {
+            uiSkinPagePrevBtn.style.opacity = "0.3";
+            uiSkinPagePrevBtn.style.filter = "grayscale(100%)";
+            uiSkinPagePrevBtn.style.cursor = "default";
+            uiSkinPagePrevBtn.style.pointerEvents = "none";
+        }
+    }
+
+    if (uiSkinPageNextBtn) {
+        if (currentPage < totalPages - 1) {
+            uiSkinPageNextBtn.style.opacity = "1";
+            uiSkinPageNextBtn.style.filter = "grayscale(0%)";
+            uiSkinPageNextBtn.style.cursor = "pointer";
+            uiSkinPageNextBtn.style.pointerEvents = "auto";
+        } else {
+            uiSkinPageNextBtn.style.opacity = "0.3";
+            uiSkinPageNextBtn.style.filter = "grayscale(100%)";
+            uiSkinPageNextBtn.style.cursor = "default";
+            uiSkinPageNextBtn.style.pointerEvents = "none";
+        }
+    }
+}
+uiChangeSkinCategoryNext?.addEventListener("click", nextSkinCategory);
+uiChangeSkinCategoryPrevious?.addEventListener("click", previousSkinCategory);
+uiSkinPagePrevBtn?.addEventListener("click", previousSkinPage);
+uiSkinPageNextBtn?.addEventListener("click", nextSkinPage);
+
 previousEffectBtn?.addEventListener("click", () => {
     previousEffect();
 });
@@ -131,15 +182,15 @@ nextEffectBtn?.addEventListener("click", () => {
     nextEffect();
 });
 
-effectBtn.addEventListener("click", () => {
-    if(!isLogged()) return;
+effectBtn?.addEventListener("click", () => {
+    if (!isLogged()) return;
     state.playerScene = state.scenes.EffectSelect;
-    effectIdDisplay.innerText = `effect number: ${player.selectedEffect}`;
+    updateEffectDisplay(); 
     SceneSwitchManager();
 });
 
 skinBtn.addEventListener("click", () => {
-    if(!isLogged()) return;
+    if (!isLogged()) return;
     state.playerScene = state.scenes.SkinSelect;
     SceneSwitchManager();
 });
@@ -149,6 +200,7 @@ closeSkinCustomizationBtn?.addEventListener("click", () => {
     SceneSwitchManager();
 });
 
+
 closeEffectCustomizationBtn?.addEventListener("click", () => {
     state.playerScene = state.scenes.Menu;
     if (currentUserState.data?.unlockedEffects.includes(player.selectedEffect)) {
@@ -156,7 +208,7 @@ closeEffectCustomizationBtn?.addEventListener("click", () => {
         DB_saveSelectedEffect(player.selectedEffect)
     }
     else {
-        console.log("nie mam tego skina")
+        console.log("nie mam tego efektu")
         player.selectedEffect = currentUserState.data.savedSelectedEffect
         DB_saveSelectedEffect(currentUserState.data.savedSelectedEffect)
     }
@@ -176,34 +228,51 @@ canvas.addEventListener("click", (e) => {
             clickY <= hitbox.y + hitbox.size
         ) {
             if (currentUserState.data === null) return;
-            if (currentUserState.data.unlockedSkins.includes(hitbox.skinId)) {
-                player.selectedSkin = hitbox.skinId;
+            if (currentUserState.data.unlockedSkins.includes(hitbox.skinKey)) {
+                player.selectedSkin = hitbox.skinKey;
+                DB_saveSelectedSkin(hitbox.skinKey);
                 state.playerScene = state.scenes.Menu;
-                DB_saveSelectedSkin(hitbox.skinId);
                 SceneSwitchManager();
             }
         }
     }
 });
 
+function updateEffectDisplay() {
+    if (!effectIdDisplay) return;
+
+    const currentEffectObj = EFFECTS_BY_KEY[player.selectedEffect];
+    const displayName = currentEffectObj ? currentEffectObj.name : player.selectedEffect;
+    effectIdDisplay.innerText = `Effect: ${displayName}`;
+}
+
 function previousEffect() {
     if (currentUserState.data === null) return;
 
-    if (player.selectedEffect > 0) {
-        player.selectedEffect--;
+    let currentIndex = EFFECT_KEYS.indexOf(player.selectedEffect);
+    if (currentIndex === -1) currentIndex = 0;
+
+    if (currentIndex > 0) {
+        currentIndex--;
+        player.selectedEffect = EFFECT_KEYS[currentIndex];
+        updateEffectDisplay();
     }
-    effectIdDisplay.innerText = `effect number: ${player.selectedEffect}`;
 }
 
 function nextEffect() {
     if (currentUserState.data === null) return;
 
-    if (player.selectedEffect < 25) {
-        player.selectedEffect++;
+    let currentIndex = EFFECT_KEYS.indexOf(player.selectedEffect);
+    if (currentIndex === -1) currentIndex = 0;
+
+    if (currentIndex < EFFECT_KEYS.length - 1) {
+        currentIndex++;
+        player.selectedEffect = EFFECT_KEYS[currentIndex];
+        updateEffectDisplay();
     }
-    effectIdDisplay.innerText = `effect number: ${player.selectedEffect}`;
 }
 
+//-----------------------------------------------------------------
 const restartGameBtn = document.querySelector(".restart-game-btn")
 const goToMenu = document.querySelectorAll(".go-to-menu-btn")
 

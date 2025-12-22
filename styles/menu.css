@@ -87,18 +87,18 @@
 
 
 .menu-btn.locked {
-	opacity: 0.5;
+    opacity: 0.5;
 }
 
 .lock-overlay {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 28px;
-	height: 28px;
-	z-index: 999;
-	pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px;
+    height: 28px;
+    z-index: 999;
+    pointer-events: none;
 }
 
 #menu {
@@ -154,17 +154,17 @@
     height: 35px;
 }
 
-.go-to-menu-btn{
+.go-to-menu-btn {
     bottom: 30%;
     left: 50%;
     transform: translateX(-50%);
 }
 
-.bottom-btn{
+.bottom-btn {
     bottom: 0;
 }
 
-.restart-game-btn{
+.restart-game-btn {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
@@ -201,20 +201,64 @@
     transform: translateY(-50%);
 }
 
-#effect-id{
+#effect-id {
     position: absolute;
     bottom: 20%;
     width: 100%;
     font-size: 32px;
     text-align: center;
     font-family: 'Poppins', sans-serif;
-}   
+}
 
-#skins-header, #effects-header {
-    position: absolute;
-    top: 10%;
+#skins-header,
+#effects-header,
+#skins-header-category {
+    position: fixed;
+    top: 50px;
     width: 100%;
     text-align: center;
     font-size: 2rem;
     font-family: 'Poppins', sans-serif;
+}
+
+#skins-footer-page {
+    position: fixed;
+    left: 0%;
+    bottom: 75px;
+    width: 100%;
+    text-align: center;
+    font-size: 1rem;
+}
+
+#skins-header-category {
+    top: 110px;
+    font-size: 1rem;
+}
+
+.change-skin-category-previous {
+    position: fixed;
+    left: 0%;
+    top: 120px;
+    transform: translateY(-50%) rotateY(180deg);
+}
+
+.change-skin-category-next {
+    position: fixed;
+    right: 0%;
+    top: 120px;
+    transform: translateY(-50%);
+}
+
+.change-skin-page-previous {
+    position: fixed;
+    left: 25%;
+    bottom: 50px;
+    transform: translateY(-50%) rotateY(180deg);
+}
+
+.change-skin-page-next {
+    position: fixed;
+    right: 25%;
+    bottom: 50px;
+    transform: translateY(-50%);
 }

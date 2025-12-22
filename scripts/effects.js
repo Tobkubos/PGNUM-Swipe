@@ -20,8 +20,8 @@ class Particle {
         this.borderColor = null;
         this.text = "";
         this.growth = 0;
-        
-        //dodatkowe opcje
+
+        //nadpis
         Object.assign(this, config);
     }
 
@@ -31,7 +31,7 @@ class Particle {
         this.y += this.speedY;
         this.opacity -= this.fadeSpeed;
         this.rotation += this.rotationSpeed;
-        
+
         if (this.growth) {
             this.size += this.growth;
         }
@@ -46,7 +46,7 @@ class Particle {
         ctx.globalAlpha = Math.max(0, this.opacity);
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
-        
+
         ctx.fillStyle = this.color;
         ctx.strokeStyle = this.borderColor || this.color;
         ctx.lineWidth = 2;
@@ -61,16 +61,16 @@ class Particle {
 
         const SHAPES = {
             square: () => ctx.fillRect(-s / 2, -s / 2, s, s),
-            
+
             circle: () => {
                 ctx.beginPath();
                 ctx.arc(0, 0, s / 2, 0, Math.PI * 2);
                 ctx.fill();
                 if (this.stroke) ctx.stroke();
             },
-            
+
             line: () => ctx.fillRect(-s / 4, -s * 2, s / 2, s * 4),
-            
+
             line_random: () => {
                 ctx.beginPath();
                 ctx.moveTo(-s, -s);
@@ -136,14 +136,16 @@ class Particle {
 const effects = [
     // 0: Brak efektu
     {
-        id: 0,
+        key: "none",
+        name: "No effect",
         spawnCount: () => 0,
         create: () => null
     },
 
     // 1: Biały kwadrat, wolny
     {
-        id: 1,
+        key: "simple_squares",
+        name: "White squares",
         spawnCount: () => Math.round(Math.random()),
         create: (x, y, size) => new Particle(x, y, size, {
             speedY: Math.random() * 0.1 + 0.75,
@@ -156,7 +158,8 @@ const effects = [
 
     // 2: Kolorowe HSL, szybkie, rosnące
     {
-        id: 2,
+        key: "rocket",
+        name: "Rocket",
         spawnCount: () => 1,
         create: (x, y, size) => new Particle(x, y, size * 1.5, {
             speedY: 2 + Math.random() * 2,
@@ -169,7 +172,8 @@ const effects = [
 
     // 3: Random HSL, statyczne, znikające
     {
-        id: 3,
+        key: "rainbow_squares",
+        name: "Rainbow Squares",
         spawnCount: () => 1,
         create: (x, y, size) => new Particle(x, y, size * 0.8, {
             speedY: 0,
@@ -182,7 +186,8 @@ const effects = [
 
     // 4: Kod binarny (0/1), zielony
     {
-        id: 4,
+        key: "falling_digits",
+        name: "IT Lover",
         spawnCount: () => 1,
         create: (x, y, size) => new Particle(x, y, 14, {
             speedY: 3,
@@ -196,7 +201,8 @@ const effects = [
 
     // 5: Niebieskie kółka (bąbelki), w górę
     {
-        id: 5,
+        key: "bubles",
+        name: "Bubbles",
         spawnCount: () => 1,
         create: (x, y, size) => new Particle(x, y, size, {
             speedY: -1 - Math.random(),
@@ -210,7 +216,8 @@ const effects = [
 
     // 6: Żółta eksplozja
     {
-        id: 6,
+        key: "yellow_explosion",
+        name: "Yellow Explosive",
         spawnCount: () => 2,
         create: (x, y, size) => new Particle(x, y, size * 0.5, {
             speedY: (Math.random() - 0.5) * 10,
@@ -223,7 +230,8 @@ const effects = [
 
     // 7: Czarne kółko z fioletową obwódką
     {
-        id: 7,
+        key: "void",
+        name: "The Void",
         spawnCount: () => 1,
         create: (x, y, size) => new Particle(x, y, size, {
             speedY: 1,
@@ -238,7 +246,8 @@ const effects = [
 
     // 8: Białe kółko, sinusoida (wobble)
     {
-        id: 8,
+        key: "wobble_snow",
+        name: "Wobbling snow",
         spawnCount: () => 1,
         create: (x, y, size) => new Particle(x, y, size, {
             speedY: 2,
@@ -252,7 +261,8 @@ const effects = [
 
     // 9: Prostokąty RGB, losowa wielkość
     {
-        id: 9,
+        key: "neon_rider",
+        name: "Neon Rider",
         spawnCount: () => 1,
         create: (x, y, size) => new Particle(x, y, Math.random() * 40 + 5, {
             speedY: 0,
@@ -265,7 +275,8 @@ const effects = [
 
     // 10: Różowe serca
     {
-        id: 10,
+        key: "pink_hearts",
+        name: "Pink Love",
         spawnCount: () => 1,
         create: (x, y, size) => new Particle(x, y, size, {
             speedY: -1.5,
@@ -278,6 +289,8 @@ const effects = [
 
     // 11: Cyjanowe linie, bardzo szybkie
     {
+        key: "teleportation",
+        name: "Teleportation",
         id: 11,
         spawnCount: () => 2,
         create: (x, y, size) => new Particle(x, y, 2, {
@@ -291,6 +304,8 @@ const effects = [
 
     // 12: Neonowe zielone kółka
     {
+        key: "poison",
+        name: "Poison",
         id: 12,
         spawnCount: () => 1,
         create: (x, y, size) => new Particle(x, y, size * Math.random(), {
@@ -302,6 +317,7 @@ const effects = [
         })
     },
 
+    /*
     // 13: Konfetti tęczowe
     {
         id: 13,
@@ -421,7 +437,7 @@ const effects = [
             speedX: 0,
             fadeSpeed: 0.1,
             color: "rgba(255,255,255,0.5)",
-            shape: "square" 
+            shape: "square"
         })
     },
 
@@ -482,14 +498,22 @@ const effects = [
             shape: "square"
         })
     }
+    */
 ];
 
 export const EFFECTS = effects;
 export const EFFECTS_COUNT = effects.length;
+export const EFFECT_KEYS = effects.map(e => e.key);
+export const EFFECTS_BY_KEY = Object.fromEntries(
+    EFFECTS.map(e => [e.key, e])
+);
+
 export function handleEffects(ctx, player) {
-    const effect = EFFECTS[player.selectedEffect];
-    
-    if (!effect) return;
+    const effect = EFFECTS_BY_KEY[player.selectedEffect];
+
+    if (!effect) {
+        return;
+    }
 
     const count = effect.spawnCount();
 
