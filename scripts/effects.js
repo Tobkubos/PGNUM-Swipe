@@ -537,3 +537,7 @@ export function handleEffects(ctx, player) {
         }
     }
 }
+
+export function deleteAllParticles(){
+    particles.length = 0;
+}

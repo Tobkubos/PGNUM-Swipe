@@ -143,8 +143,8 @@ const classicSkins = [
         }
     },
         {
-        key: "test",
-        name: "test",
+        key: "rainbow_dash",
+        name: "Rainbow Dash",
         category: "classic",
         draw(ctx, p) {
             const { x, y, size, cx, cy } = getPlayerVars(p);

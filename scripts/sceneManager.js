@@ -31,6 +31,7 @@ var Ui = [
 ];
 
 export function SceneSwitchManager() {
+	deleteAllParticles();
 	if (state.playerScene === state.scenes.Game) {
 		Ui.forEach(element => {
 			element.style.display = "none";
@@ -81,6 +82,8 @@ export function SceneSwitchManager() {
 }
 
 import { currentUserState } from "../db/DatabaseConfig.js";
+import { deleteAllParticles } from "./effects.js";
+
 export function updateUI() {
 	const statusDiv = document.getElementById("user-status");
 	const loginBtn = document.querySelector(".login-btn");

@@ -1,7 +1,7 @@
 //----------------------------------------------------
 import { Player } from "./scripts/player.js";
-import { EFFECTS, EFFECTS_COUNT, handleEffects } from "./scripts/effects.js";
-import { handleSkins, SKIN_CATEGORIES, SKINS, SKINS_COUNT } from "./scripts/skins.js";
+import { EFFECTS, handleEffects, EFFECTS_BY_KEY } from "./scripts/effects.js";
+import { handleSkins, SKIN_CATEGORIES, SKINS, SKINS_BY_KEY } from "./scripts/skins.js";
 import { checkScreenSizeForOptimalGameplayMenu, checkScreenSizeForOptimalGameplayGame, checkScreenSizeForOptimalSkinsPreview } from "./utils/resizer.js";
 import { ObstacleManager } from "./scripts/obstaclesManager.js";
 import { SceneSwitchManager, state } from "./scripts/sceneManager.js";
@@ -9,7 +9,7 @@ import { DB_addNewEffectToCollection, DB_addNewSkinToCollection, currentUserStat
 import { clearTreasureAnimations } from "./scripts/treasureShaker.js";
 import { canvas, ctx } from "./scripts/canvasManager.js";
 import { lerp } from "./scripts/movementHandler.js";
-import { updateSkinMenuUI  } from "./scripts/uiManager.js";
+import { rewardPreviewNames, updateSkinMenuUI} from "./scripts/uiManager.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -23,9 +23,9 @@ if ("serviceWorker" in navigator) {
 
 //----------------------------------------------------
 
-export const player = new Player(0, 0, 50, "default", 0);
-const previewPlayer = new Player(0, 0, 50, "default", 0);
-const obstacleManager = new ObstacleManager();
+export const player = new Player(0, 0, 50, "default", "none");
+const previewPlayer = new Player(0, 0, 50, "default", "none");
+export const obstacleManager = new ObstacleManager();
 const buffer = 10;
 const COLUMNS = 3;
 const ROWS = 3;
@@ -43,7 +43,6 @@ export function getCurrentSkinCategoryIndex() {
 export function nextSkinCategory() {
 	currentSkinCategoryIndex = (currentSkinCategoryIndex + 1) % SKIN_CATEGORIES.length;
 	currentSkinPage = 0;
-
 }
 
 export function previousSkinCategory() {
@@ -196,61 +195,97 @@ function game(correction = 1) {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
 	//check collision
-	for (let obs of obstacleManager.obstacles) {
-		if (obstacleManager.isColliding(player, obs, squareSize)) {
-			let isReward = Math.random();
-			console.log("Game Over!");
-			player.lane = 1;
-			const currentScore = obstacleManager.score;
-			obstacleManager.reset();
-
-			DB_updateUserHighscore(currentScore);
-
-
-			if (currentUserState.user != null && currentUserState.data != null && isReward > 0.1) {
-				let isSkinOrEffect = Math.random();
-
-				const notUnlockedSkinsYet = SKINS
-					.map(s => s.key)
-					.filter(k => !currentUserState.data.unlockedSkins.includes(k));
-
-				const notUnlockedEffectsYet = EFFECTS
-					.map(e => e.key)
-					.filter(k => !currentUserState.data.unlockedEffects.includes(k));
-
-				const notUnlockedAll = notUnlockedEffectsYet + notUnlockedEffectsYet;
-
-				if (isSkinOrEffect > 0.9) {
-					//random skin
-					if (notUnlockedSkinsYet.length > 0) {
-						const randomSkin = notUnlockedSkinsYet[Math.floor(Math.random() * notUnlockedSkinsYet.length)];
-						DB_addNewSkinToCollection(randomSkin);
-						previewPlayer.selectedSkin = randomSkin;
-						previewPlayer.selectedEffect = player.selectedEffect;
-					}
-				} else {
-					//random effect	
-					if (notUnlockedEffectsYet.length > 0) {
-						const randomEffect = notUnlockedEffectsYet[Math.floor(Math.random() * notUnlockedEffectsYet.length)];
-						DB_addNewEffectToCollection(randomEffect);
-						previewPlayer.selectedSkin = player.selectedSkin;
-						previewPlayer.selectedEffect = randomEffect;
-					}
-				}
-				state.playerScene = state.scenes.Reward;
-				clearTreasureAnimations();
-			} else {
-				state.playerScene = state.scenes.GameOver;
-			}
-			SceneSwitchManager();
-		}
+	if (checkCollision(squareSize)) {
+		//save highscore
+		const currentScore = obstacleManager.score;
+		DB_updateUserHighscore(currentScore);
+		//reset
+		resetPlayerAndObstacles()
+		//rollReward
+		rollRandomReward()
+		SceneSwitchManager();
 	}
-
 	handleEffects(ctx, player);
 	handleSkins(ctx, player);
 
 	obstacleManager.update(canvas.clientHeight, correction);
 	obstacleManager.draw(ctx, gridStartX, squareSize);
+}
+
+
+
+function checkCollision(squareSize) {
+	for (let obs of obstacleManager.obstacles) {
+		if (obstacleManager.isColliding(player, obs, squareSize)) {
+			return true
+		}
+	}
+	return false;
+}
+
+function rollRandomReward() {
+	const { notUnlockedSkinsYet, notUnlockedEffectsYet, all } = checkNotUnlocked();
+
+	let isReward = Math.random();
+
+	if (currentUserState.user == null || currentUserState.data == null || isReward < 0.9) {
+		state.playerScene = state.scenes.GameOver;
+		return;
+	}
+
+	if (all.length === 0) {
+		state.playerScene = state.scenes.GameOver;
+		return;
+	}
+
+	let isSkinOrEffect = Math.random();
+
+	if (isSkinOrEffect > 0.8) {
+		// skin
+		const randomSkin = notUnlockedSkinsYet[Math.floor(Math.random() * notUnlockedSkinsYet.length)];
+		DB_addNewSkinToCollection(randomSkin);
+
+		const skinObj = SKINS_BY_KEY[randomSkin];
+		rewardPreviewNames("New Skin Unlocked!", skinObj?.name ?? randomSkin);
+
+		previewPlayer.selectedSkin = randomSkin;
+		previewPlayer.selectedEffect = player.selectedEffect;
+	} else {
+		// effect
+		const randomEffect = notUnlockedEffectsYet[Math.floor(Math.random() * notUnlockedEffectsYet.length)];
+		DB_addNewEffectToCollection(randomEffect);
+
+		const effectObj = EFFECTS_BY_KEY[randomEffect];
+		rewardPreviewNames("New Effect Unlocked!", effectObj?.name ?? randomEffect);
+
+		previewPlayer.selectedSkin = player.selectedSkin;
+		previewPlayer.selectedEffect = randomEffect;
+	}
+
+	state.playerScene = state.scenes.Reward;
+	clearTreasureAnimations();
+}
+
+
+function checkNotUnlocked() {
+	const notUnlockedSkinsYet = SKINS
+		.map(s => s.key)
+		.filter(k => !currentUserState.data.unlockedSkins.includes(k));
+
+	const notUnlockedEffectsYet = EFFECTS
+		.map(e => e.key)
+		.filter(k => !currentUserState.data.unlockedEffects.includes(k));
+
+	return {
+		notUnlockedSkinsYet,
+		notUnlockedEffectsYet,
+		all: [...notUnlockedSkinsYet, ...notUnlockedEffectsYet]
+	};
+}
+
+function resetPlayerAndObstacles() {
+	player.lane = 1;
+	obstacleManager.reset();
 }
 
 function gameOver() {
@@ -265,8 +300,8 @@ function rewardPreview() {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	previewPlayer.baseSize = playerInMenuSize;
 	previewPlayer.setPlayerPosition(
-		canvas.clientWidth / 2 - player.baseSize / 2,
-		canvas.clientHeight / 2 - player.baseSize / 2
+		canvas.clientWidth / 2 - previewPlayer.baseSize / 2,
+		canvas.clientHeight / 2 - previewPlayer.baseSize / 2
 	);
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 

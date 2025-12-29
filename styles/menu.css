@@ -212,8 +212,9 @@
 
 #skins-header,
 #effects-header,
+#reward-preview-header-info,
 #skins-header-category {
-    position: fixed;
+    position: absolute;
     top: 50px;
     width: 100%;
     text-align: center;
@@ -221,8 +222,17 @@
     font-family: 'Poppins', sans-serif;
 }
 
+#reward-name{
+    position: absolute;
+    top: 100px;
+    width: 100%;
+    text-align: center;
+    font-size: 3rem;
+    font-family: 'Poppins', sans-serif;
+}
+
 #skins-footer-page {
-    position: fixed;
+    position: absolute;
     left: 0%;
     bottom: 75px;
     width: 100%;
@@ -236,28 +246,28 @@
 }
 
 .change-skin-category-previous {
-    position: fixed;
+    position: absolute;
     left: 0%;
     top: 120px;
     transform: translateY(-50%) rotateY(180deg);
 }
 
 .change-skin-category-next {
-    position: fixed;
+    position: absolute;
     right: 0%;
     top: 120px;
     transform: translateY(-50%);
 }
 
 .change-skin-page-previous {
-    position: fixed;
+    position: absolute;
     left: 25%;
     bottom: 50px;
     transform: translateY(-50%) rotateY(180deg);
 }
 
 .change-skin-page-next {
-    position: fixed;
+    position: absolute;
     right: 25%;
     bottom: 50px;
     transform: translateY(-50%);

@@ -1,9 +1,9 @@
 import { state } from "./sceneManager.js";
 import { SceneSwitchManager } from "./sceneManager.js";
 import { DB_loginAndCreateProfile, currentUserState, DB_saveSelectedSkin, DB_logoutUser, DB_saveSelectedEffect, DB_getTop10Scores } from "../db/DatabaseConfig.js";
-import { player, skinHitboxes } from "../main.js";
+import { player, skinHitboxes, obstacleManager } from "../main.js";
 import { canvas } from "./canvasManager.js";
-import { EFFECT_KEYS, EFFECTS_BY_KEY } from "./effects.js";
+import { deleteAllParticles, EFFECT_KEYS, EFFECTS_BY_KEY } from "./effects.js";
 import { nextSkinCategory, previousSkinCategory, previousSkinPage, nextSkinPage } from "../main.js";
 //----------------------------------------------------
 //start button
@@ -11,6 +11,7 @@ document.querySelector(".start-btn").addEventListener("click", () => {
     state.playerScene = state.scenes.Game;
     console.log("Game Started");
     SceneSwitchManager();
+    obstacleManager.reset();
 });
 
 const pausePanel = document.getElementById("pause-panel");
@@ -240,10 +241,17 @@ canvas.addEventListener("click", (e) => {
 
 function updateEffectDisplay() {
     if (!effectIdDisplay) return;
-
+    deleteAllParticles()
     const currentEffectObj = EFFECTS_BY_KEY[player.selectedEffect];
     const displayName = currentEffectObj ? currentEffectObj.name : player.selectedEffect;
-    effectIdDisplay.innerText = `Effect: ${displayName}`;
+    effectIdDisplay.innerText = displayName;
+}
+
+const rewardType = document.querySelector("#reward-preview-header-info")
+const rewardName = document.querySelector("#reward-name")
+export function rewardPreviewNames(type, name){
+    rewardType.innerHTML = type
+    rewardName.innerHTML = name
 }
 
 function previousEffect() {

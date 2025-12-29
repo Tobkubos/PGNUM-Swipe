@@ -45,8 +45,8 @@ function DB_setupAuthListener() {
                     username: user.displayName,
                     highScore: 0,
                     coins: 0,
-                    unlockedSkins: [],
-                    unlockedEffects: [],
+                    unlockedSkins: ["default"],
+                    unlockedEffects: ["none"],
                     savedSelectedSkin: "default",
                     savedSelectedEffect: "none",
                     createdAt: new Date().toISOString()
@@ -108,8 +108,8 @@ export async function DB_loginAndCreateProfile() {
                 username: user.displayName,
                 highScore: 0,
                 coins: 0,
-                unlockedSkins: [],
-                unlockedEffects: [],
+                unlockedSkins: ["default"],
+                unlockedEffects: ["none"],
                 savedSelectedSkin: "default",
                 savedSelectedEffect: "none",
                 createdAt: new Date().toISOString()

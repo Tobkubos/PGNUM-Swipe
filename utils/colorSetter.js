@@ -1,5 +1,4 @@
 import { font, background, backgroundDarker, hexToRgba } from './colors.js';
-import { ObstacleManager } from '../scripts/obstaclesManager.js';
 import { themes } from './colors.js';
 
 document.querySelectorAll('.menu-btn').forEach(btn => {
@@ -13,7 +12,7 @@ const toast = document.querySelector('.toast')
 toast.style.background = hexToRgba(backgroundDarker, 0.9)
 toast.style.color = font
 
-document.querySelectorAll('.menu-game-name, .menu-info-score, .menu-info-highscore, .popup-header-info, .popup-content, .reward-status, #skins-header, #effects-header, #skins-header-category, #effect-id, #skins-footer-page, .shake-progress-bar').forEach(obj => {
+document.querySelectorAll('.menu-game-name, .menu-info-score, .menu-info-highscore, .popup-header-info, .popup-content, .reward-status, #skins-header, #effects-header, #skins-header-category, #effect-id, #skins-footer-page, .shake-progress-bar, #reward-preview-header-info, #reward-name').forEach(obj => {
     obj.style.color = font;
 });
 
