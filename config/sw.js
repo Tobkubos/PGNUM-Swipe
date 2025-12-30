@@ -15,7 +15,7 @@ const ASSETS = [
   "../scripts/obstaclesManager.js",
 
   "../scripts/utils/resizer.js",
-  "../utils/colorSetter.js",
+  "../scripts/utils/colorSetter.js",
 
   "../config/manifest.json",
 
