@@ -1,5 +1,4 @@
-import { font, background, backgroundDarker, hexToRgba } from './colors.js';
-import { themes } from './colors.js';
+import { font, background, backgroundDarker, hexToRgba, themes } from './colors.js';
 
 document.querySelectorAll('.menu-btn').forEach(btn => {
     btn.style.color = font;

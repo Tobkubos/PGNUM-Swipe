@@ -2,14 +2,15 @@
 import { Player } from "./scripts/player.js";
 import { EFFECTS, handleEffects, EFFECTS_BY_KEY } from "./scripts/effects.js";
 import { handleSkins, SKIN_CATEGORIES, SKINS, SKINS_BY_KEY } from "./scripts/skins.js";
-import { checkScreenSizeForOptimalGameplayMenu, checkScreenSizeForOptimalGameplayGame, checkScreenSizeForOptimalSkinsPreview } from "./utils/resizer.js";
+import { checkScreenSizeForOptimalGameplayMenu, checkScreenSizeForOptimalGameplayGame, checkScreenSizeForOptimalSkinsPreview } from "./scripts/utils/resizer.js";
 import { ObstacleManager } from "./scripts/obstaclesManager.js";
 import { SceneSwitchManager, state } from "./scripts/sceneManager.js";
 import { DB_addNewEffectToCollection, DB_addNewSkinToCollection, currentUserState, DB_updateUserHighscore } from "./db/DatabaseConfig.js";
 import { clearTreasureAnimations } from "./scripts/treasureShaker.js";
-import { canvas, ctx } from "./scripts/canvasManager.js";
+import { canvas, ctx } from "./scripts/UI/ui_other.js";
 import { lerp } from "./scripts/movementHandler.js";
-import { rewardPreviewNames, updateSkinMenuUI} from "./scripts/uiManager.js";
+import { updateSkinMenuUI } from "./scripts/UI/ui_skinSelector.js";
+import { rewardPreviewNames } from "./scripts/UI/ui_other.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -224,11 +225,17 @@ function checkCollision(squareSize) {
 }
 
 function rollRandomReward() {
+
+	if (currentUserState.user == null || currentUserState.data == null) {
+		state.playerScene = state.scenes.GameOver;
+		return;
+	}
+
 	const { notUnlockedSkinsYet, notUnlockedEffectsYet, all } = checkNotUnlocked();
 
 	let isReward = Math.random();
 
-	if (currentUserState.user == null || currentUserState.data == null || isReward < 0.9) {
+	if (isReward < 0.9) {
 		state.playerScene = state.scenes.GameOver;
 		return;
 	}

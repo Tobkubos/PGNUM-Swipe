@@ -265,3 +265,12 @@ export async function DB_getTop10Scores() {
         return [];
     }
 }
+
+
+export function isLogged() {
+    if (currentUserState.data == null || currentUserState.user == null) {
+        showToast("Unlock by logging in OPTIONS!");
+        return false;
+    }
+    return true;
+}

@@ -1,4 +1,4 @@
-import { canvas, ctx, off, offCtx } from "../scripts/canvasManager.js"
+import { canvas, ctx, off, offCtx } from "../UI/ui_other.js"
 
 export function checkScreenSizeForOptimalGameplayMenu(canvas) {
     var squareSize = Math.max(1, Math.floor(canvas.clientWidth / 3));

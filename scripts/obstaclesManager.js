@@ -1,7 +1,7 @@
-import { updateScoreText } from "./uiManager.js";
-import { canvas } from "./canvasManager.js";
-import { getColorIndex, setColors } from "../utils/colorSetter.js";
-import { gameBackground } from "../utils/colorSetter.js";
+import { updateScoreText } from "./UI/ui_menu.js";
+import { canvas } from "./UI/ui_other.js";
+import { getColorIndex, setColors } from "./utils/colorSetter.js";
+import { gameBackground } from "./utils/colorSetter.js";
 
 //możliwe typy przeszkód: 1 -pojedyńcza kolumna, 2 - podwójna kolumna (wszystkie kombinacje 3 kolumn)
 // x1
@@ -33,7 +33,6 @@ export class ObstacleManager {
 	update(canvasHeight, correction = 1) {
 		const limitY = canvasHeight ? canvasHeight + 100 : 1000;
 
-		// update wszystkich przeszkód
 		for (let i = this.obstacles.length - 1; i >= 0; i--) {
 			let obs = this.obstacles[i];
 			obs.update(correction);

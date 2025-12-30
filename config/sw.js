@@ -10,7 +10,6 @@ const ASSETS = [
   "../styles/gameplay.css",
   "../styles/popups.css",
 
-  "../scripts/canvasManager.js",
   "../scripts/sceneManager.js",
   "../scripts/uiManager.js",
   "../scripts/player.js",
