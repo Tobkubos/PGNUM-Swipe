@@ -110,12 +110,12 @@ const classicSkins = [
             const half = size / 2;
 
             ctx.fillStyle = "white";
-            ctx.fillRect(x, y, half, half); 
-            ctx.fillRect(x + half, y + half, half, half); 
+            ctx.fillRect(x, y, half, half);
+            ctx.fillRect(x + half, y + half, half, half);
 
             ctx.fillStyle = "black";
-            ctx.fillRect(x + half, y, half, half); 
-            ctx.fillRect(x, y + half, half, half); 
+            ctx.fillRect(x + half, y, half, half);
+            ctx.fillRect(x, y + half, half, half);
         }
     },
     {
@@ -142,7 +142,7 @@ const classicSkins = [
             ctx.shadowBlur = 0;
         }
     },
-        {
+    {
         key: "rainbow_dash",
         name: "Rainbow Dash",
         category: "classic",
@@ -175,7 +175,7 @@ const imageSkins = [
             }
         }
     },
-        {
+    {
         key: "devil",
         name: "Devil Face",
         category: "image",
@@ -192,7 +192,7 @@ const imageSkins = [
             }
         }
     },
-        {
+    {
         key: "eyeball",
         name: "Bloody Eyeball",
         category: "image",
@@ -209,7 +209,7 @@ const imageSkins = [
             }
         }
     },
-        {
+    {
         key: "ghost",
         name: "Ghost",
         category: "image",
@@ -226,7 +226,7 @@ const imageSkins = [
             }
         }
     },
-        {
+    {
         key: "pumpkin",
         name: "Pumpkin",
         category: "image",
@@ -243,7 +243,7 @@ const imageSkins = [
             }
         }
     },
-        {
+    {
         key: "spider",
         name: "Spider",
         category: "image",
@@ -260,13 +260,30 @@ const imageSkins = [
             }
         }
     },
-        {
+    {
         key: "braindead",
         name: "Braindead",
         category: "image",
         img: (() => {
             const img = new Image();
             img.src = "./icons/skins/zombie.png";
+            return img;
+        })(),
+        draw(ctx, p) {
+            const { x, y, size } = getPlayerVars(p);
+
+            if (this.img.complete && this.img.naturalWidth > 0) {
+                ctx.drawImage(this.img, x, y, size, size);
+            }
+        }
+    },
+    {
+        key: "stone",
+        name: "Stone",
+        category: "image",
+        img: (() => {
+            const img = new Image();
+            img.src = "./icons/skins/Stone.png";
             return img;
         })(),
         draw(ctx, p) {
@@ -285,7 +302,7 @@ export const SKINS = [
 ];
 export const SKINS_COUNT = SKINS.length;
 export const SKIN_CATEGORIES = [
-	...new Set(SKINS.map(s => s.category))
+    ...new Set(SKINS.map(s => s.category))
 ];
 
 export const SKINS_BY_KEY = Object.fromEntries(

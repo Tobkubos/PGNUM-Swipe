@@ -10,6 +10,7 @@ import {
 import { updateUI } from "../scripts/sceneManager.js";
 import { player } from "../main.js";
 import { SKINS_BY_KEY } from "../scripts/skins.js";
+import { showToast } from "../scripts/UI/ui_other.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAZvIq7NCMfETcFTx0W0nENSsORxyQuSII",
