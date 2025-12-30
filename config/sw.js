@@ -11,7 +11,6 @@ const ASSETS = [
   "../styles/popups.css",
 
   "../scripts/sceneManager.js",
-  "../scripts/uiManager.js",
   "../scripts/player.js",
   "../scripts/obstaclesManager.js",
 
