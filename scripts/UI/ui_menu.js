@@ -1,13 +1,15 @@
-import { state, SceneSwitchManager  } from "../sceneManager.js";
+import { state, SceneSwitchManager } from "../sceneManager.js";
 import { DB_loginAndCreateProfile, DB_logoutUser, DB_getTop10Scores } from "../../db/DatabaseConfig.js";
 import { obstacleManager } from "../../main.js";
 //----------------------------------------------------
 //start button
 document.querySelector(".start-btn").addEventListener("click", () => {
-    state.playerScene = state.scenes.Game;
-    console.log("Game Started");
-    SceneSwitchManager();
-    obstacleManager.reset();
+    setTimeout(() => {
+        state.playerScene = state.scenes.Game;
+        console.log("Game Started");
+        SceneSwitchManager();
+        obstacleManager.reset();
+    }, 1000);
 });
 
 const pausePanel = document.getElementById("pause-panel");

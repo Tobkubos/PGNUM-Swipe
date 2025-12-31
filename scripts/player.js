@@ -6,9 +6,13 @@ export class Player {
         this.selectedSkin = selectedSkin;
         this.selectedEffect = selectedEffect;
         this.lane = 1; // 0 = Lewy, 1 = Środkowy, 2 = Prawy
+        this.isDead = false;
+        this.deathTimer = 0; // ms left
+        this.deathDuration = 0; // ms total
     }
 
     move(direction) {
+        if(this.isDead) return;
         this.lane += direction;
 
         if (this.lane < 0) this.lane = 0;
@@ -18,5 +22,11 @@ export class Player {
     setPlayerPosition(x, y) {
         this.x = x;
         this.y = y;
+    }
+
+    die(duration = 800){
+        this.isDead = true;
+        this.deathDuration = duration;
+        this.deathTimer = duration;
     }
 }

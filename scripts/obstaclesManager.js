@@ -1,3 +1,4 @@
+import { player } from "../main.js";
 import { updateScoreText } from "./UI/ui_menu.js";
 import { canvas } from "./UI/ui_other.js";
 import { getColorIndex, setColors } from "./utils/colorSetter.js";
@@ -39,8 +40,11 @@ export class ObstacleManager {
 
 			if (obs.y > limitY) {
 				this.obstacles.splice(i, 1);
-				this.score++;
-				updateScoreText(this.score);
+
+				if (player.isDead == false) {
+					this.score++;
+					updateScoreText(this.score);
+				}
 				// zmiana koloru co x pkt
 				if (this.score % this.difficultyStep === 0) {
 					const idx = getColorIndex(this.score, 5);

@@ -32,6 +32,7 @@ var Ui = [
 
 export function SceneSwitchManager() {
 	deleteAllParticles();
+
 	if (state.playerScene === state.scenes.Game) {
 		Ui.forEach(element => {
 			element.style.display = "none";
@@ -84,14 +85,14 @@ export function SceneSwitchManager() {
 import { currentUserState } from "../db/DatabaseConfig.js";
 import { deleteAllParticles } from "./effects.js";
 
-export function updateUI() {
-	const statusDiv = document.getElementById("user-status");
-	const loginBtn = document.querySelector(".login-btn");
-	const scoreEl = document.querySelector(".menu-info-highscore");
-	const logoutBtn = document.querySelector(".logout-btn");
-	const lockOverlay = document.querySelectorAll(".lock-overlay");
-	const lockedOpacity = document.querySelectorAll(".menu-btn.locked");
+const statusDiv = document.getElementById("user-status");
+const loginBtn = document.querySelector(".login-btn");
+const scoreEl = document.querySelector(".menu-info-highscore");
+const logoutBtn = document.querySelector(".logout-btn");
+const lockOverlay = document.querySelectorAll(".lock-overlay");
+const lockedOpacity = document.querySelectorAll(".menu-btn.locked");
 
+export function updateUI() {
 	if (statusDiv) {
 		statusDiv.innerText = currentUserState.user
 			? `Logged as: ${currentUserState.user.displayName}`
@@ -115,6 +116,12 @@ export function updateUI() {
 		lockedOpacity.forEach(element => {
 			element.style.opacity = currentUserState.user ? 1 : 0.5;
 		});
+	}
+}
+
+export function updateHighscoreLOCAL(newHighscoreLOCAL) {
+	if (scoreEl) {
+		scoreEl.innerText = newHighscoreLOCAL ?? 0;
 	}
 }
 

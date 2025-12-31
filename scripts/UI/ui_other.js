@@ -1,5 +1,3 @@
-import { currentUserState } from "../../db/DatabaseConfig.js"
-
 const rewardType = document.querySelector("#reward-preview-header-info")
 const rewardName = document.querySelector("#reward-name")
 

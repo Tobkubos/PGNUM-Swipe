@@ -31,6 +31,7 @@ const buffer = 10;
 const COLUMNS = 3;
 const ROWS = 3;
 const SKINS_PER_PAGE = 9;
+export const localHighscore = 0;
 
 export let skinHitboxes = [];
 
@@ -198,13 +199,16 @@ function game(correction = 1) {
 	//check collision
 	if (checkCollision(squareSize)) {
 		//save highscore
+		shakeScreen()
 		const currentScore = obstacleManager.score;
-		DB_updateUserHighscore(currentScore);
+		DB_updateUserHighscore(currentScore, localHighscore);
 		//reset
-		resetPlayerAndObstacles()
-		//rollReward
-		rollRandomReward()
-		SceneSwitchManager();
+		setTimeout(() => {
+			//rollReward
+			rollRandomReward()
+			SceneSwitchManager();
+			resetPlayerAndObstacles()
+		}, 1000)
 	}
 	handleEffects(ctx, player);
 	handleSkins(ctx, player);
@@ -213,12 +217,12 @@ function game(correction = 1) {
 	obstacleManager.draw(ctx, gridStartX, squareSize);
 }
 
-
-
 function checkCollision(squareSize) {
+	if(player.isDead == true) return false;
 	for (let obs of obstacleManager.obstacles) {
 		if (obstacleManager.isColliding(player, obs, squareSize)) {
-			return true
+			player.die();
+			return true;
 		}
 	}
 	return false;
@@ -235,7 +239,7 @@ function rollRandomReward() {
 
 	let isReward = Math.random();
 
-	if (isReward < 0.9) {
+	if (isReward < 0.1) {
 		state.playerScene = state.scenes.GameOver;
 		return;
 	}
@@ -292,6 +296,7 @@ function checkNotUnlocked() {
 
 function resetPlayerAndObstacles() {
 	player.lane = 1;
+	player.isDead = false;
 	obstacleManager.reset();
 }
 
@@ -301,6 +306,24 @@ function gameOver() {
 
 function reward() {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+}
+
+function shakeScreen(duration = 900, magnitude = 12) {
+	let start = performance.now();
+
+	function loop(now) {
+		const elapsed = now - start;
+		if (elapsed > duration) {
+			canvas.style.transform = "translate(0px, 0px)";
+			return;
+		}
+		const x = (Math.random() - 0.5) * magnitude * 2;
+		const y = (Math.random() - 0.5) * magnitude * 2;
+
+		canvas.style.transform = `translate(${x}px, ${y}px)`;
+		requestAnimationFrame(loop);
+	}
+	requestAnimationFrame(loop);
 }
 
 function rewardPreview() {

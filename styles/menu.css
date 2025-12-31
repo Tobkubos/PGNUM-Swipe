@@ -5,7 +5,7 @@
 
 .menu-game-name {
     position: absolute;
-    top: 10%;
+    top: 50px;
     font-size: 4rem;
     width: 100%;
     text-align: center;
@@ -54,7 +54,7 @@
 
 .menu-info-score {
     position: absolute;
-    top: 22%;
+    top: 170px;
     font-size: 15px;
     width: 100%;
     text-align: center;
@@ -62,11 +62,12 @@
 
 .menu-info-highscore {
     position: absolute;
-    top: 25%;
+    top: 195px;
     font-size: 30px;
     width: 100%;
     text-align: center;
 }
+
 
 .menu-btn {
     position: absolute;
@@ -210,6 +211,15 @@
     font-family: 'Poppins', sans-serif;
 }
 
+#effects-number {
+    position: absolute;
+    top: 15%;
+    width: 100%;
+    font-size: 32px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
+
 #skins-header,
 #effects-header,
 #reward-preview-header-info,
@@ -222,7 +232,7 @@
     font-family: 'Poppins', sans-serif;
 }
 
-#reward-name{
+#reward-name {
     position: absolute;
     top: 100px;
     width: 100%;
