@@ -7,7 +7,7 @@ import {
     getFirestore, doc, getDoc, setDoc, updateDoc, query, collection, orderBy, limit, getDocs, onSnapshot, arrayUnion
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-import { updateUI } from "../scripts/sceneManager.js";
+import { updateHighscoreLOCAL, updateUI } from "../scripts/sceneManager.js";
 import { player } from "../main.js";
 import { SKINS_BY_KEY } from "../scripts/skins.js";
 import { showToast } from "../scripts/UI/ui_other.js";
@@ -59,8 +59,11 @@ function DB_setupAuthListener() {
 
             currentUserState.user = user;
             currentUserState.data = userData;
-            player.selectedSkin = userData.savedSelectedSkin && SKINS_BY_KEY[userData.savedSelectedSkin] ? userData.savedSelectedSkin : "default";
-            player.selectedEffect = userData.savedSelectedEffect || 0;
+            // ensure saved selected skin is actually unlocked before applying
+            const savedSkin = userData.savedSelectedSkin;
+            const isSkinValid = savedSkin && SKINS_BY_KEY[savedSkin] && Array.isArray(userData.unlockedSkins) && userData.unlockedSkins.includes(savedSkin);
+            player.selectedSkin = isSkinValid ? savedSkin : "default";
+            player.selectedEffect = userData.savedSelectedEffect || "none";
 
             if (typeof currentUserState.unsubscribe === "function") {
                 currentUserState.unsubscribe();
@@ -122,7 +125,10 @@ export async function DB_loginAndCreateProfile() {
 
         currentUserState.user = user;
         currentUserState.data = userData;
-        player.selectedSkin = userData.savedSelectedSkin && SKINS_BY_KEY[userData.savedSelectedSkin] ? userData.savedSelectedSkin : "default";
+        // ensure saved selected skin is actually unlocked before applying
+        const savedSkin = userData.savedSelectedSkin;
+        const isSkinValid = savedSkin && SKINS_BY_KEY[savedSkin] && Array.isArray(userData.unlockedSkins) && userData.unlockedSkins.includes(savedSkin);
+        player.selectedSkin = isSkinValid ? savedSkin : "default";
         player.selectedEffect = userData.savedSelectedEffect || "none";
 
     } catch (error) {
@@ -145,24 +151,29 @@ export async function DB_logoutUser() {
     }
 }
 
-export async function DB_updateUserHighscore(newHighScore) {
-    if (currentUserState.data == null || newHighScore < currentUserState.data.highScore) return;
+export async function DB_updateUserHighscore(newHighScore, localHighscore) {
+    if (currentUserState.data == null && newHighScore > localHighscore) {
+        updateHighscoreLOCAL(newHighScore)
+        return;
+    }
 
-    try {
-        const user = auth.currentUser;
-        if (!user) return false;
+    if (currentUserState.data != null && newHighScore > currentUserState.data.highScore) {
+        try {
+            const user = auth.currentUser;
+            if (!user) return false;
 
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
+            const userRef = doc(db, "users", user.uid);
+            const userSnap = await getDoc(userRef);
 
-        if (userSnap.exists()) {
-            await updateDoc(userRef, { highScore: newHighScore });
-            return true;
+            if (userSnap.exists()) {
+                await updateDoc(userRef, { highScore: newHighScore });
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error("Błąd aktualizacji wyniku:", error);
+            return false;
         }
-        return false;
-    } catch (error) {
-        console.error("Błąd aktualizacji wyniku:", error);
-        return false;
     }
 }
 
@@ -212,7 +223,8 @@ export async function DB_addNewSkinToCollection(skinKey) {
         if (!SKINS_BY_KEY[skinKey]) return false;
 
         const userRef = doc(db, "users", user.uid);
-        await updateDoc(userRef, {unlockedSkins: arrayUnion(skinKey)
+        await updateDoc(userRef, {
+            unlockedSkins: arrayUnion(skinKey)
         });
 
         return true;
