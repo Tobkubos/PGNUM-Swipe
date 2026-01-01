@@ -1,8 +1,9 @@
 import { SceneSwitchManager, state } from "../sceneManager.js";
 import { sceneTransitionAnimationCanvas, transitionCtx } from "../UI/ui_other.js";
 import { backgroundDarker, font } from "./colors.js";
+import { correction } from "./timeManager.js";
 
-let speed = 7;
+let speed = 5;
 export function animateSceneTransition(newSceneState) {
     const canvas = sceneTransitionAnimationCanvas;
     canvas.style.display = "block";
@@ -27,7 +28,7 @@ export function animateSceneTransition(newSceneState) {
     function loop() {
         // ---- FAZA 1 ----
         if (phase == 0) {
-            progress += speed;
+            progress += speed * correction;
 
             if (progress >= canvas.height + speed) {
                 progress = 0;
@@ -44,7 +45,7 @@ export function animateSceneTransition(newSceneState) {
         }
         // ---- FAZA 2 ----
         else if (phase === 1) {
-            progress += speed;
+            progress += speed * correction;
 
             if (progress >= canvas.height + speed) {
                 transitionCtx.clearRect(0, 0, canvas.width, canvas.height);
@@ -56,12 +57,4 @@ export function animateSceneTransition(newSceneState) {
         requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);
-}
-
-function easeInSine(t) {
-  return 1 - Math.cos((t * Math.PI) / 2);
-}
-
-function easeOutSine(t) {
-  return Math.sin((t * Math.PI) / 2);
 }
