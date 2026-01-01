@@ -149,13 +149,13 @@ function skinsPreview() {
 	});
 }
 
-function effectsPreview() {
+function effectsPreview(correction = 1) {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	player.baseSize = playerInMenuSize;
 	player.setPlayerPosition(canvas.clientWidth / 2 - player.baseSize / 2, canvas.clientHeight / 2 - player.baseSize / 2);
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-	handleEffects(ctx, player);
+	handleEffects(ctx, player, correction);
 	handleSkins(ctx, player);
 
 	if (!currentUserState.data?.unlockedEffects.includes(player.selectedEffect)) {
@@ -363,7 +363,7 @@ function gameLoop(timestamp) {
 			skinsPreview();
 			break;
 		case state.scenes.EffectSelect:
-			effectsPreview();
+			effectsPreview(correction);
 			break;
 		case state.scenes.Pause:
 			pause();

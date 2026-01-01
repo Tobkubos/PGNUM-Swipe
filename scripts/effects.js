@@ -25,12 +25,12 @@ class Particle {
         Object.assign(this, config);
     }
 
-    update() {
-        this.speedY += this.gravity;
-        this.x += this.speedX;
-        this.y += this.speedY;
-        this.opacity -= this.fadeSpeed;
-        this.rotation += this.rotationSpeed;
+    update(correction = 1) {
+        this.speedY += this.gravity * correction;
+        this.x += this.speedX * correction;
+        this.y += this.speedY * correction;
+        this.opacity -= this.fadeSpeed * correction;
+        this.rotation += this.rotationSpeed * correction;
 
         if (this.growth) {
             this.size += this.growth;
@@ -508,7 +508,7 @@ export const EFFECTS_BY_KEY = Object.fromEntries(
     EFFECTS.map(e => [e.key, e])
 );
 
-export function handleEffects(ctx, player) {
+export function handleEffects(ctx, player, correction = 1) {
     const effect = EFFECTS_BY_KEY[player.selectedEffect];
 
     if (!effect) {
@@ -529,7 +529,7 @@ export function handleEffects(ctx, player) {
 
     for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
-        p.update();
+        p.update(correction);
         p.draw(ctx);
 
         if (p.opacity <= 0) {

@@ -7,8 +7,6 @@ export class Player {
         this.selectedEffect = selectedEffect;
         this.lane = 1; // 0 = Lewy, 1 = Środkowy, 2 = Prawy
         this.isDead = false;
-        this.deathTimer = 0; // ms left
-        this.deathDuration = 0; // ms total
     }
 
     move(direction) {
@@ -24,9 +22,7 @@ export class Player {
         this.y = y;
     }
 
-    die(duration = 800){
+    die(){
         this.isDead = true;
-        this.deathDuration = duration;
-        this.deathTimer = duration;
     }
 }
