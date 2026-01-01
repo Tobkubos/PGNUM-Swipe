@@ -3,7 +3,7 @@ import { updateScoreText } from "./UI/ui_menu.js";
 import { canvas } from "./UI/ui_other.js";
 import { getColorIndex, setColors } from "./utils/colorSetter.js";
 import { gameBackground } from "./utils/colorSetter.js";
-import { getCorrection } from "./utils/timeManager.js";
+import { correction } from "./utils/timeManager.js";
 
 //możliwe typy przeszkód: 1 -pojedyńcza kolumna, 2 - podwójna kolumna (wszystkie kombinacje 3 kolumn)
 // x1
@@ -163,7 +163,6 @@ export class Obstacle {
 	}
 
 	update() {
-		let correction = getCorrection()
 		this.timer += correction;
 
 		if (this.state === "warning") {

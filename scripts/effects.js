@@ -1,6 +1,6 @@
 // scripts/effects.js
 
-import { getCorrection } from "./utils/timeManager.js";
+import { correction } from "./utils/timeManager.js";
 
 const particles = [];
 
@@ -28,7 +28,6 @@ class Particle {
     }
 
     update() {
-        let correction = getCorrection()
         this.speedY += this.gravity * correction;
         this.x += this.speedX * correction;
         this.y += this.speedY * correction;
