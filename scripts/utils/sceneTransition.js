@@ -4,9 +4,16 @@ import { backgroundDarker, font } from "./colors.js";
 import { correction } from "./timeManager.js";
 
 let speed = 5;
+let isTransitioning = false;
 export function animateSceneTransition(newSceneState) {
     const canvas = sceneTransitionAnimationCanvas;
+
+    if (!canvas) return;
+    if (isTransitioning) return;
+    isTransitioning = true;
+
     canvas.style.display = "block";
+    canvas.style.pointerEvents = "all";
 
     let progress = 0;
     let phase = 0;
@@ -50,6 +57,8 @@ export function animateSceneTransition(newSceneState) {
             if (progress >= canvas.height + speed) {
                 transitionCtx.clearRect(0, 0, canvas.width, canvas.height);
                 canvas.style.display = "none";
+                canvas.style.pointerEvents = "none";
+                isTransitioning = false;
                 return;
             }
         }
