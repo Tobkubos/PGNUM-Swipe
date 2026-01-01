@@ -33,11 +33,11 @@ class Particle {
         this.rotation += this.rotationSpeed * correction;
 
         if (this.growth) {
-            this.size += this.growth;
+            this.size += this.growth * correction;
         }
 
         if (this.wobble) {
-            this.x += Math.sin(this.y * 0.05) * 0.5;
+            this.x += (Math.sin(this.y * 0.05) * 0.5) * correction;
         }
     }
 

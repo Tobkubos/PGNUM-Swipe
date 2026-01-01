@@ -73,12 +73,12 @@ export function previousSkinPage() {
 }
 //----------------------------------------------------
 
-function menuAnimationAndSkinPreview() {
+function menuAnimationAndSkinPreview(correction = 1) {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	player.baseSize = playerInMenuSize;
 	player.setPlayerPosition(canvas.clientWidth / 2 - player.baseSize / 2, canvas.clientHeight / 2 - player.baseSize / 2);
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-	handleEffects(ctx, player);
+	handleEffects(ctx, player, correction);
 	handleSkins(ctx, player);
 }
 
@@ -210,7 +210,7 @@ function game(correction = 1) {
 			resetPlayerAndObstacles()
 		}, 1000)
 	}
-	handleEffects(ctx, player);
+	handleEffects(ctx, player, correction);
 	handleSkins(ctx, player);
 
 	obstacleManager.update(canvas.clientHeight, correction);
@@ -326,7 +326,7 @@ function shakeScreen(duration = 900, magnitude = 12) {
 	requestAnimationFrame(loop);
 }
 
-function rewardPreview() {
+function rewardPreview(correction = 1) {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	previewPlayer.baseSize = playerInMenuSize;
 	previewPlayer.setPlayerPosition(
@@ -335,7 +335,7 @@ function rewardPreview() {
 	);
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-	handleEffects(ctx, previewPlayer);
+	handleEffects(ctx, previewPlayer, correction);
 	handleSkins(ctx, previewPlayer);
 }
 
@@ -375,7 +375,7 @@ function gameLoop(timestamp) {
 			reward();
 			break;
 		case state.scenes.RewardPreview:
-			rewardPreview();
+			rewardPreview(correction);
 	}
 	requestAnimationFrame(gameLoop);
 }
