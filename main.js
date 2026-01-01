@@ -12,6 +12,7 @@ import { lerp } from "./scripts/movementHandler.js";
 import { updateSkinMenuUI } from "./scripts/UI/ui_skinSelector.js";
 import { rewardPreviewNames } from "./scripts/UI/ui_other.js";
 import { calculateCorrection } from "./scripts/utils/timeManager.js";
+import { animateSceneTransition } from "./scripts/utils/sceneTransition.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -206,9 +207,8 @@ function game() {
 		//reset
 		setTimeout(() => {
 			//rollReward
-			rollRandomReward(currentScore)
-			SceneSwitchManager();
-			resetPlayerAndObstacles()
+			rollRandomReward(currentScore);
+			resetPlayerAndObstacles();
 		}, 1000)
 	}
 	handleEffects(ctx, player);
@@ -232,7 +232,7 @@ function checkCollision(squareSize) {
 function rollRandomReward(currentScore) {
 
 	if (currentUserState.user == null || currentUserState.data == null) {
-		state.playerScene = state.scenes.GameOver;
+		animateSceneTransition(state.scenes.GameOver);
 		return;
 	}
 
@@ -247,12 +247,12 @@ function rollRandomReward(currentScore) {
 	RewardChance = 1;
 
 	if (Math.random() >= RewardChance) {
-		state.playerScene = state.scenes.GameOver;
+		animateSceneTransition(state.scenes.GameOver);
 		return;
 	}
 
 	if (all.length === 0) {
-		state.playerScene = state.scenes.GameOver;
+		animateSceneTransition(state.scenes.GameOver);
 		return;
 	}
 
@@ -288,7 +288,7 @@ function rollRandomReward(currentScore) {
 		previewPlayer.selectedEffect = randomEffect;
 	}
 
-	state.playerScene = state.scenes.Reward;
+	animateSceneTransition(state.scenes.Reward);
 	clearTreasureAnimations();
 }
 

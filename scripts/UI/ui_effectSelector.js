@@ -2,6 +2,7 @@ import { state, SceneSwitchManager } from "../sceneManager.js";
 import { currentUserState, DB_saveSelectedEffect, isLogged  } from "../../db/DatabaseConfig.js";
 import { player } from "../../main.js";
 import { deleteAllParticles, EFFECT_KEYS, EFFECTS_BY_KEY } from "../effects.js";
+import { animateSceneTransition } from "../utils/sceneTransition.js";
 
 const effectBtn = document.querySelector(".effects-btn");
 const closeEffectCustomizationBtn = document.querySelector(".close-effect-customization-btn");
@@ -29,7 +30,6 @@ function updateEffectDisplay() {
 
 
 closeEffectCustomizationBtn?.addEventListener("click", () => {
-    state.playerScene = state.scenes.Menu;
     if (currentUserState.data?.unlockedEffects.includes(player.selectedEffect)) {
         console.log("mam taki efekt odblokowany")
         DB_saveSelectedEffect(player.selectedEffect)
@@ -39,14 +39,13 @@ closeEffectCustomizationBtn?.addEventListener("click", () => {
         player.selectedEffect = currentUserState.data.savedSelectedEffect
         DB_saveSelectedEffect(currentUserState.data.savedSelectedEffect)
     }
-    SceneSwitchManager();
+    animateSceneTransition(state.scenes.Menu);
 });
 
 effectBtn?.addEventListener("click", () => {
     if (!isLogged()) return;
-    state.playerScene = state.scenes.EffectSelect;
+    animateSceneTransition(state.scenes.EffectSelect);
     updateEffectDisplay(); 
-    SceneSwitchManager();
 });
 
 previousEffectBtn?.addEventListener("click", () => {

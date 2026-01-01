@@ -57,11 +57,22 @@ body {
     }
 }
 
-canvas {
-    display: block;
+#gameCanvas, #transitionCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+}
+
+#gameCanvas {
     z-index: 2;
+}
+
+#transitionCanvas {
+    z-index: 99999;
+    pointer-events: none;
+    display: none;
 }
 
 #ui-layer {

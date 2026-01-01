@@ -3,6 +3,7 @@ import { currentUserState, DB_saveSelectedSkin, isLogged  } from "../../db/Datab
 import { player, skinHitboxes } from "../../main.js";
 import { canvas} from "./ui_other.js";
 import { nextSkinCategory, previousSkinCategory, previousSkinPage, nextSkinPage } from "../../main.js";
+import { animateSceneTransition } from "../utils/sceneTransition.js";
 
 const skinBtn = document.querySelector(".skins-btn");
 const closeSkinCustomizationBtn = document.querySelector(".close-skin-customization-btn");
@@ -57,13 +58,11 @@ uiSkinPageNextBtn?.addEventListener("click", nextSkinPage);
 
 skinBtn.addEventListener("click", () => {
     if (!isLogged()) return;
-    state.playerScene = state.scenes.SkinSelect;
-    SceneSwitchManager();
+    animateSceneTransition(state.scenes.SkinSelect);
 });
 
 closeSkinCustomizationBtn?.addEventListener("click", () => {
-    state.playerScene = state.scenes.Menu;
-    SceneSwitchManager();
+    animateSceneTransition(state.scenes.Menu);
 });
 
 canvas.addEventListener("click", (e) => {

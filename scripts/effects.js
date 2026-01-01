@@ -136,7 +136,6 @@ class Particle {
 }
 
 const effects = [
-    // 0: Brak efektu
     {
         key: "none",
         name: "No effect",
@@ -144,7 +143,6 @@ const effects = [
         create: () => null
     },
 
-    // 1: Biały kwadrat, wolny
     {
         key: "simple_squares",
         name: "White squares",
@@ -158,7 +156,6 @@ const effects = [
         })
     },
 
-    // 2: Kolorowe HSL, szybkie, rosnące
     {
         key: "rocket",
         name: "Rocket",
@@ -172,7 +169,6 @@ const effects = [
         })
     },
 
-    // 3: Random HSL, statyczne, znikające
     {
         key: "rainbow_squares",
         name: "Rainbow Squares",
@@ -186,7 +182,6 @@ const effects = [
         })
     },
 
-    // 4: Kod binarny (0/1), zielony
     {
         key: "falling_digits",
         name: "IT Lover",
@@ -201,7 +196,6 @@ const effects = [
         })
     },
 
-    // 5: Niebieskie kółka (bąbelki), w górę
     {
         key: "bubles",
         name: "Bubbles",
@@ -216,7 +210,6 @@ const effects = [
         })
     },
 
-    // 6: Żółta eksplozja
     {
         key: "yellow_explosion",
         name: "Yellow Explosive",
@@ -230,7 +223,6 @@ const effects = [
         })
     },
 
-    // 7: Czarne kółko z fioletową obwódką
     {
         key: "void",
         name: "The Void",
@@ -246,13 +238,12 @@ const effects = [
         })
     },
 
-    // 8: Białe kółko, sinusoida (wobble)
     {
         key: "wobble_snow",
         name: "Wobbling snow",
-        spawnCount: () => 1,
+        spawnCount: () => Math.round(Math.random()),
         create: (x, y, size) => new Particle(x, y, size, {
-            speedY: 2,
+            speedY: 1.5,
             speedX: 0, // Ruch X obsługiwany przez wobble
             wobble: true,
             fadeSpeed: 0.01,
@@ -261,7 +252,6 @@ const effects = [
         })
     },
 
-    // 9: Prostokąty RGB, losowa wielkość
     {
         key: "neon_rider",
         name: "Neon Rider",
@@ -275,7 +265,6 @@ const effects = [
         })
     },
 
-    // 10: Różowe serca
     {
         key: "pink_hearts",
         name: "Pink Love",
@@ -289,7 +278,6 @@ const effects = [
         })
     },
 
-    // 11: Cyjanowe linie, bardzo szybkie
     {
         key: "teleportation",
         name: "Teleportation",
@@ -304,7 +292,6 @@ const effects = [
         })
     },
 
-    // 12: Neonowe zielone kółka
     {
         key: "poison",
         name: "Poison",
@@ -317,190 +304,7 @@ const effects = [
             color: "#39ff14",
             shape: "circle"
         })
-    },
-
-    /*
-    // 13: Konfetti tęczowe
-    {
-        id: 13,
-        spawnCount: () => 2,
-        create: (x, y, size) => new Particle(x, y, size * 0.6, {
-            speedY: -3,
-            speedX: (Math.random() - 0.5) * 4,
-            gravity: 0.2,
-            fadeSpeed: 0.04,
-            rotationSpeed: 0.2,
-            color: `hsl(${Math.random() * 360}, 100%, 50%)`,
-            shape: "square"
-        })
-    },
-
-    // 14: Dym (szary, rosnący)
-    {
-        id: 14,
-        spawnCount: () => 1,
-        create: (x, y, size) => new Particle(x, y, size * 2, {
-            speedY: 1,
-            speedX: (Math.random() - 0.5),
-            fadeSpeed: 0.015,
-            growth: 0.5,
-            color: "rgba(100, 100, 100, 0.2)",
-            shape: "circle"
-        })
-    },
-
-    // 15: Biała siatka pikseli
-    {
-        id: 15,
-        spawnCount: () => 1,
-        create: (x, y, size) => new Particle(x, y, size, {
-            speedY: 0,
-            speedX: 0,
-            fadeSpeed: 0.05,
-            color: "white",
-            shape: "square" // pixel_grid to w zasadzie kwadrat w starej implementacji
-        })
-    },
-
-    // 16: Chaotyczne linie
-    {
-        id: 16,
-        spawnCount: () => 2,
-        create: (x, y, size) => new Particle(x, y, size, {
-            speedY: (Math.random() - 0.5) * 5,
-            speedX: (Math.random() - 0.5) * 5,
-            fadeSpeed: 0.08,
-            color: "#00ffff",
-            shape: "line_random"
-        })
-    },
-
-    // 17: Żółta gwiazda, obracająca się
-    {
-        id: 17,
-        spawnCount: () => 1,
-        create: (x, y, size) => new Particle(x, y, size, {
-            speedY: 0,
-            speedX: 0,
-            fadeSpeed: 0.02,
-            rotationSpeed: 0.1,
-            color: "yellow",
-            shape: "star"
-        })
-    },
-
-    // 18: Nutka muzyczna
-    {
-        id: 18,
-        spawnCount: () => 1,
-        create: (x, y, size) => new Particle(x, y, size, {
-            speedY: -1,
-            wobble: true, // Zastępuje speedX = sin(y)
-            fadeSpeed: 0.01,
-            color: "black",
-            shape: "note"
-        })
-    },
-
-    // 19: Ciemnoczerwone kółka (krew?)
-    {
-        id: 19,
-        spawnCount: () => 1,
-        create: (x, y, size) => new Particle(x, y, size, {
-            speedY: 0,
-            speedX: (Math.random() - 0.5) * 2,
-            gravity: 0.3,
-            fadeSpeed: 0.01,
-            color: "#8a0303",
-            shape: "circle"
-        })
-    },
-
-    // 20: Fioletowa spirala
-    {
-        id: 20,
-        spawnCount: () => 1,
-        create: (x, y, size) => new Particle(x, y, size, {
-            speedY: (Math.random() - 0.5) * 2,
-            speedX: (Math.random() - 0.5) * 2,
-            fadeSpeed: 0.02,
-            rotationSpeed: 0.1,
-            color: "violet",
-            shape: "spiral"
-        })
-    },
-
-    // 21: Duch (klon) - półprzezroczysty kwadrat
-    {
-        id: 21,
-        spawnCount: () => 1,
-        create: (x, y, size) => new Particle(x, y, size, {
-            speedY: 0,
-            speedX: 0,
-            fadeSpeed: 0.1,
-            color: "rgba(255,255,255,0.5)",
-            shape: "square"
-        })
-    },
-
-    // 22: Złote monety
-    {
-        id: 22,
-        spawnCount: () => 1,
-        create: (x, y, size) => new Particle(x, y, size, {
-            speedY: -4,
-            speedX: (Math.random() - 0.5) * 2,
-            gravity: 0.2,
-            fadeSpeed: 0.01,
-            color: "gold",
-            shape: "circle",
-            stroke: true,
-            borderColor: "#B8860B"
-        })
-    },
-
-    // 23: Matrix code (japońskie znaki)
-    {
-        id: 23,
-        spawnCount: () => 1,
-        create: (x, y, size) => new Particle(x, y, size, {
-            speedY: 2,
-            speedX: 0,
-            fadeSpeed: 0.02,
-            color: "#00ff00",
-            shape: "text",
-            text: String.fromCharCode(0x30A0 + Math.random() * 96)
-        })
-    },
-
-    // 24: Różowe płatki
-    {
-        id: 24,
-        spawnCount: () => 1,
-        create: (x, y, size) => new Particle(x, y, size, {
-            speedY: 1,
-            speedX: Math.sin(Math.random() * 10),
-            wobble: true,
-            fadeSpeed: 0.01,
-            rotationSpeed: 0.05,
-            color: "pink",
-            shape: "petal"
-        })
-    },
-
-    // 25: Niebieski deszcz
-    {
-        id: 25,
-        spawnCount: () => 2,
-        create: (x, y, size) => new Particle(x, y, size * 0.8, {
-            speedY: 5,
-            speedX: (Math.random() - 0.5),
-            fadeSpeed: 0.06,
-            color: "blue",
-            shape: "square"
-        })
     }
-    */
 ];
 
 export const EFFECTS = effects;
