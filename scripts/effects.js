@@ -1,5 +1,7 @@
 // scripts/effects.js
 
+import { getCorrection } from "./utils/timeManager.js";
+
 const particles = [];
 
 class Particle {
@@ -25,7 +27,8 @@ class Particle {
         Object.assign(this, config);
     }
 
-    update(correction = 1) {
+    update() {
+        let correction = getCorrection()
         this.speedY += this.gravity * correction;
         this.x += this.speedX * correction;
         this.y += this.speedY * correction;
@@ -508,7 +511,7 @@ export const EFFECTS_BY_KEY = Object.fromEntries(
     EFFECTS.map(e => [e.key, e])
 );
 
-export function handleEffects(ctx, player, correction = 1) {
+export function handleEffects(ctx, player) {
     const effect = EFFECTS_BY_KEY[player.selectedEffect];
 
     if (!effect) {
@@ -529,7 +532,7 @@ export function handleEffects(ctx, player, correction = 1) {
 
     for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
-        p.update(correction);
+        p.update();
         p.draw(ctx);
 
         if (p.opacity <= 0) {

@@ -11,6 +11,7 @@ import { canvas, ctx } from "./scripts/UI/ui_other.js";
 import { lerp } from "./scripts/movementHandler.js";
 import { updateSkinMenuUI } from "./scripts/UI/ui_skinSelector.js";
 import { rewardPreviewNames } from "./scripts/UI/ui_other.js";
+import { calculateCorrection } from "./scripts/utils/timeManager.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -73,12 +74,12 @@ export function previousSkinPage() {
 }
 //----------------------------------------------------
 
-function menuAnimationAndSkinPreview(correction = 1) {
+function menuAnimationAndSkinPreview() {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	player.baseSize = playerInMenuSize;
 	player.setPlayerPosition(canvas.clientWidth / 2 - player.baseSize / 2, canvas.clientHeight / 2 - player.baseSize / 2);
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-	handleEffects(ctx, player, correction);
+	handleEffects(ctx, player);
 	handleSkins(ctx, player);
 }
 
@@ -149,13 +150,13 @@ function skinsPreview() {
 	});
 }
 
-function effectsPreview(correction = 1) {
+function effectsPreview() {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	player.baseSize = playerInMenuSize;
 	player.setPlayerPosition(canvas.clientWidth / 2 - player.baseSize / 2, canvas.clientHeight / 2 - player.baseSize / 2);
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-	handleEffects(ctx, player, correction);
+	handleEffects(ctx, player);
 	handleSkins(ctx, player);
 
 	if (!currentUserState.data?.unlockedEffects.includes(player.selectedEffect)) {
@@ -178,7 +179,7 @@ function effectsPreview(correction = 1) {
 	}
 }
 
-function game(correction = 1) {
+function game() {
 	const { squareSize, playerSize } = checkScreenSizeForOptimalGameplayGame(
 		canvas,
 		buffer
@@ -210,10 +211,10 @@ function game(correction = 1) {
 			resetPlayerAndObstacles()
 		}, 1000)
 	}
-	handleEffects(ctx, player, correction);
+	handleEffects(ctx, player);
 	handleSkins(ctx, player);
 
-	obstacleManager.update(canvas.clientHeight, correction);
+	obstacleManager.update(canvas.clientHeight);
 	obstacleManager.draw(ctx, gridStartX, squareSize);
 }
 
@@ -326,7 +327,7 @@ function shakeScreen(duration = 900, magnitude = 12) {
 	requestAnimationFrame(loop);
 }
 
-function rewardPreview(correction = 1) {
+function rewardPreview() {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	previewPlayer.baseSize = playerInMenuSize;
 	previewPlayer.setPlayerPosition(
@@ -335,35 +336,27 @@ function rewardPreview(correction = 1) {
 	);
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-	handleEffects(ctx, previewPlayer, correction);
+	handleEffects(ctx, previewPlayer);
 	handleSkins(ctx, previewPlayer);
 }
 
 function pause() { }
 //----------------------------------------------------
 // Game Loop
-let lastTime = 0;
 function gameLoop(timestamp) {
-	if (!timestamp) timestamp = 0;
-
-	const deltaTime = timestamp - lastTime;
-	lastTime = timestamp;
-	let correction = deltaTime / (1000 / 60);
-
-	if (isNaN(correction) || correction > 5) correction = 1;
-
+	calculateCorrection(timestamp);
 	switch (state.playerScene) {
 		case state.scenes.Menu:
-			menuAnimationAndSkinPreview(correction);
+			menuAnimationAndSkinPreview();
 			break;
 		case state.scenes.Game:
-			game(correction);
+			game();
 			break;
 		case state.scenes.SkinSelect:
 			skinsPreview();
 			break;
 		case state.scenes.EffectSelect:
-			effectsPreview(correction);
+			effectsPreview();
 			break;
 		case state.scenes.Pause:
 			pause();
@@ -375,8 +368,8 @@ function gameLoop(timestamp) {
 			reward();
 			break;
 		case state.scenes.RewardPreview:
-			rewardPreview(correction);
+			rewardPreview();
 	}
 	requestAnimationFrame(gameLoop);
 }
-gameLoop();
+requestAnimationFrame(gameLoop);

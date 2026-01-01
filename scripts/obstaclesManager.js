@@ -3,6 +3,7 @@ import { updateScoreText } from "./UI/ui_menu.js";
 import { canvas } from "./UI/ui_other.js";
 import { getColorIndex, setColors } from "./utils/colorSetter.js";
 import { gameBackground } from "./utils/colorSetter.js";
+import { getCorrection } from "./utils/timeManager.js";
 
 //możliwe typy przeszkód: 1 -pojedyńcza kolumna, 2 - podwójna kolumna (wszystkie kombinacje 3 kolumn)
 // x1
@@ -31,12 +32,12 @@ export class ObstacleManager {
 		this.difficultyStep = 10;
 	}
 
-	update(canvasHeight, correction = 1) {
+	update(canvasHeight) {
 		const limitY = canvasHeight ? canvasHeight + 100 : 1000;
 
 		for (let i = this.obstacles.length - 1; i >= 0; i--) {
 			let obs = this.obstacles[i];
-			obs.update(correction);
+			obs.update();
 
 			if (obs.y > limitY) {
 				this.obstacles.splice(i, 1);
@@ -161,7 +162,8 @@ export class Obstacle {
 		this.y = this.warningY;
 	}
 
-	update(correction = 1) {
+	update() {
+		let correction = getCorrection()
 		this.timer += correction;
 
 		if (this.state === "warning") {
