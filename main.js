@@ -206,7 +206,7 @@ function game() {
 		//reset
 		setTimeout(() => {
 			//rollReward
-			rollRandomReward()
+			rollRandomReward(currentScore)
 			SceneSwitchManager();
 			resetPlayerAndObstacles()
 		}, 1000)
@@ -229,7 +229,7 @@ function checkCollision(squareSize) {
 	return false;
 }
 
-function rollRandomReward() {
+function rollRandomReward(currentScore) {
 
 	if (currentUserState.user == null || currentUserState.data == null) {
 		state.playerScene = state.scenes.GameOver;
@@ -238,9 +238,15 @@ function rollRandomReward() {
 
 	const { notUnlockedSkinsYet, notUnlockedEffectsYet, all } = checkNotUnlocked();
 
-	let isReward = Math.random();
+	let RewardChance = 0.01;
+	if (currentScore >= 20) RewardChance = 0.10;
+	if (currentScore >= 40) RewardChance = 0.15;
+	if (currentScore >= 60) RewardChance = 0.25;
+	if (currentScore >= 80) RewardChance = 0.29;
+	if (currentScore > 100) RewardChance = 0.35;
+	RewardChance = 1;
 
-	if (isReward < 0.1) {
+	if (Math.random() >= RewardChance) {
 		state.playerScene = state.scenes.GameOver;
 		return;
 	}
@@ -250,9 +256,17 @@ function rollRandomReward() {
 		return;
 	}
 
-	let isSkinOrEffect = Math.random();
+	let type = "";
+	if (notUnlockedSkinsYet.length == 0 && notUnlockedEffectsYet.length > 0) {
+		type = "effect";
+	} else if (notUnlockedEffectsYet.length == 0 && notUnlockedSkinsYet.length > 0) {
+		type = "skin";
+	} else {
+		if (Math.random() < 0.5) type = "skin";
+		else type = "effect";
+	}
 
-	if (isSkinOrEffect > 0.8) {
+	if (type === "skin") {
 		// skin
 		const randomSkin = notUnlockedSkinsYet[Math.floor(Math.random() * notUnlockedSkinsYet.length)];
 		DB_addNewSkinToCollection(randomSkin);
@@ -262,7 +276,7 @@ function rollRandomReward() {
 
 		previewPlayer.selectedSkin = randomSkin;
 		previewPlayer.selectedEffect = player.selectedEffect;
-	} else {
+	} else if (type === "effect") {
 		// effect
 		const randomEffect = notUnlockedEffectsYet[Math.floor(Math.random() * notUnlockedEffectsYet.length)];
 		DB_addNewEffectToCollection(randomEffect);
