@@ -354,7 +354,7 @@ function gameLoop(timestamp) {
 
 	switch (state.playerScene) {
 		case state.scenes.Menu:
-			menuAnimationAndSkinPreview();
+			menuAnimationAndSkinPreview(correction);
 			break;
 		case state.scenes.Game:
 			game(correction);
