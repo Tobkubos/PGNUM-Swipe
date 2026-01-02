@@ -244,7 +244,7 @@ function rollRandomReward(currentScore) {
 	if (currentScore >= 60) RewardChance = 0.25;
 	if (currentScore >= 80) RewardChance = 0.29;
 	if (currentScore > 100) RewardChance = 0.35;
-	RewardChance = 1;
+	//RewardChance = 1;
 
 	if (Math.random() >= RewardChance) {
 		animateSceneTransition(state.scenes.GameOver);
