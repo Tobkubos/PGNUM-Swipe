@@ -1,4 +1,4 @@
-import { SceneSwitchManager, state} from "./sceneManager.js";
+import { SceneSwitchManager, state} from "../sceneManager.js";
 // SHAKE
 let shakeProgress = 0;
 

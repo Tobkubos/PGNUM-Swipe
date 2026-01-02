@@ -1,4 +1,5 @@
-import { state, SceneSwitchManager } from "../sceneManager.js";
+import { obstacleManager } from "../../main.js";
+import { state } from "../sceneManager.js";
 import { animateSceneTransition } from "../utils/sceneTransition.js";
 
 const restartGameBtn = document.querySelector(".restart-game-btn")
@@ -6,6 +7,7 @@ const goToMenu = document.querySelectorAll(".go-to-menu-btn")
 
 restartGameBtn?.addEventListener("click", () => {
         animateSceneTransition(state.scenes.Game);
+        obstacleManager.reset();
     console.log("Restarted");
 });
 

@@ -1,18 +1,19 @@
 //----------------------------------------------------
-import { Player } from "./scripts/player.js";
-import { EFFECTS, handleEffects, EFFECTS_BY_KEY } from "./scripts/effects.js";
-import { handleSkins, SKIN_CATEGORIES, SKINS, SKINS_BY_KEY } from "./scripts/skins.js";
+import { Player } from "./scripts/player/player.js";
+import { EFFECTS, handleEffects, EFFECTS_BY_KEY } from "./scripts/player/effects.js";
+import { handleSkins, SKIN_CATEGORIES, SKINS, SKINS_BY_KEY } from "./scripts/player/skins.js";
 import { checkScreenSizeForOptimalGameplayMenu, checkScreenSizeForOptimalGameplayGame, checkScreenSizeForOptimalSkinsPreview } from "./scripts/utils/resizer.js";
 import { ObstacleManager } from "./scripts/obstaclesManager.js";
-import { SceneSwitchManager, state } from "./scripts/sceneManager.js";
+import { state } from "./scripts/sceneManager.js";
 import { DB_addNewEffectToCollection, DB_addNewSkinToCollection, currentUserState, DB_updateUserHighscore } from "./db/DatabaseConfig.js";
-import { clearTreasureAnimations } from "./scripts/treasureShaker.js";
+import { clearTreasureAnimations } from "./scripts/utils/treasureShaker.js";
 import { canvas, ctx } from "./scripts/UI/ui_other.js";
-import { lerp } from "./scripts/movementHandler.js";
+import { lerp } from "./scripts/player/movementHandler.js";
 import { updateSkinMenuUI } from "./scripts/UI/ui_skinSelector.js";
 import { rewardPreviewNames } from "./scripts/UI/ui_other.js";
 import { calculateCorrection } from "./scripts/utils/timeManager.js";
 import { animateSceneTransition } from "./scripts/utils/sceneTransition.js";
+import { shakeScreen } from "./scripts/utils/screenShake.js";
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
@@ -292,7 +293,6 @@ function rollRandomReward(currentScore) {
 	clearTreasureAnimations();
 }
 
-
 function checkNotUnlocked() {
 	const notUnlockedSkinsYet = SKINS
 		.map(s => s.key)
@@ -323,23 +323,6 @@ function reward() {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 }
 
-function shakeScreen(duration = 900, magnitude = 12) {
-	let start = performance.now();
-
-	function loop(now) {
-		const elapsed = now - start;
-		if (elapsed > duration) {
-			canvas.style.transform = "translate(0px, 0px)";
-			return;
-		}
-		const x = (Math.random() - 0.5) * magnitude * 2;
-		const y = (Math.random() - 0.5) * magnitude * 2;
-
-		canvas.style.transform = `translate(${x}px, ${y}px)`;
-		requestAnimationFrame(loop);
-	}
-	requestAnimationFrame(loop);
-}
 
 function rewardPreview() {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);

@@ -1,6 +1,6 @@
 // scripts/effects.js
 
-import { correction } from "./utils/timeManager.js";
+import { correction } from "../utils/timeManager.js";
 
 const particles = [];
 

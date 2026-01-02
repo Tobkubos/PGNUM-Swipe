@@ -9,7 +9,7 @@ import {
 
 import { updateHighscoreLOCAL, updateUI } from "../scripts/sceneManager.js";
 import { player } from "../main.js";
-import { SKINS_BY_KEY } from "../scripts/skins.js";
+import { SKINS_BY_KEY } from "../scripts/player/skins.js";
 import { showToast } from "../scripts/UI/ui_other.js";
 
 const firebaseConfig = {

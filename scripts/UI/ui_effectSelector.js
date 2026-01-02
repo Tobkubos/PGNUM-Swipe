@@ -1,7 +1,7 @@
-import { state, SceneSwitchManager } from "../sceneManager.js";
+import { state } from "../sceneManager.js";
 import { currentUserState, DB_saveSelectedEffect, isLogged  } from "../../db/DatabaseConfig.js";
 import { player } from "../../main.js";
-import { deleteAllParticles, EFFECT_KEYS, EFFECTS_BY_KEY } from "../effects.js";
+import { deleteAllParticles, EFFECT_KEYS, EFFECTS_BY_KEY } from "../player/effects.js";
 import { animateSceneTransition } from "../utils/sceneTransition.js";
 
 const effectBtn = document.querySelector(".effects-btn");

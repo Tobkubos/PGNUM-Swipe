@@ -1,3 +1,7 @@
+
+import { currentUserState } from "../db/DatabaseConfig.js";
+import { deleteAllParticles } from "./player/effects.js";
+
 const menuElement = document.getElementById("menu");
 const gameplayElement = document.getElementById("gameplay");
 const skinElement = document.getElementById("skins");
@@ -82,8 +86,6 @@ export function SceneSwitchManager() {
 	}
 }
 
-import { currentUserState } from "../db/DatabaseConfig.js";
-import { deleteAllParticles } from "./effects.js";
 
 const statusDiv = document.getElementById("user-status");
 const loginBtn = document.querySelector(".login-btn");

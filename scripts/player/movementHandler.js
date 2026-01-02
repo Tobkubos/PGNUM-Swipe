@@ -1,5 +1,5 @@
-import { state } from "./sceneManager.js";
-import { player } from "../main.js";
+import { state } from "../sceneManager.js";
+import { player } from "../../main.js";
 
 let touchStartX = 0;
 let touchEndX = 0;
