@@ -36,12 +36,12 @@ export const currentUserState = {
 
 
 window.addEventListener('online', () => {
-    showToast("Back online! Syncing data...", 300);
+    showToast("Back online! Syncing data...", 2000);
     updateUI();
 });
 
 window.addEventListener('offline', () => {
-    showToast("lost internet connection!!!", 300);
+    showToast("lost internet connection!!!", 2000);
     updateUI();
 });
 
