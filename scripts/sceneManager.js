@@ -1,6 +1,7 @@
 
 import { currentUserState } from "../db/DatabaseConfig.js";
 import { deleteAllParticles } from "./player/effects.js";
+import { showToast } from "./UI/ui_other.js";
 
 const menuElement = document.getElementById("menu");
 const gameplayElement = document.getElementById("gameplay");

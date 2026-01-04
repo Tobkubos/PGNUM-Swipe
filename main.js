@@ -15,9 +15,7 @@ import { calculateCorrection } from "./scripts/utils/timeManager.js";
 import { animateSceneTransition } from "./scripts/utils/sceneTransition.js";
 import { shakeScreen } from "./scripts/utils/screenShake.js";
 
-
 //----------------------------------------------------
-
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker

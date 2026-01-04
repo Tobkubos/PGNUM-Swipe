@@ -17,7 +17,7 @@ export function rewardPreviewNames(type, name){
 }
 
 let toastTimeout;
-export function showToast(text) {
+export function showToast(text, time = 1000) {
     const toast = document.getElementById("toast");
     if (!toast) return;
 
@@ -27,6 +27,6 @@ export function showToast(text) {
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => {
         toast.classList.remove("show");
-    }, 1000);
+    }, time);
 }
 

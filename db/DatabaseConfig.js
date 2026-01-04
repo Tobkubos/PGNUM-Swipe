@@ -34,6 +34,17 @@ export const currentUserState = {
     unsubscribe: null
 };
 
+
+window.addEventListener('online', () => {
+    showToast("Back online! Syncing data...", 300);
+    updateUI();
+});
+
+window.addEventListener('offline', () => {
+    showToast("lost internet connection!!!", 300);
+    updateUI();
+});
+
 function DB_setupAuthListener() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -77,7 +88,7 @@ function DB_setupAuthListener() {
             }
             currentUserState.user = null;
             currentUserState.data = null;
-            console.log("Brak zalogowanego użytkownika");
+            //console.log("Brak zalogowanego użytkownika");
         }
         updateUI();
     });
@@ -90,7 +101,7 @@ function DB_listenToUserData(userId) {
     const unsubscribe = onSnapshot(userRef, (docSnap) => {
         if (docSnap.exists()) {
             currentUserState.data = docSnap.data();
-            console.log("Aktualne dane użytkownika:", currentUserState.user.displayName, currentUserState.data);
+            //console.log("Aktualne dane użytkownika:", currentUserState.user.displayName, currentUserState.data);
             updateUI();
         }
     });
@@ -99,6 +110,10 @@ function DB_listenToUserData(userId) {
 }
 
 export async function DB_loginAndCreateProfile() {
+    if (!navigator.onLine) {
+        showToast("Login impossible. No internet connection.");
+        return;
+    }
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
@@ -132,21 +147,21 @@ export async function DB_loginAndCreateProfile() {
         player.selectedEffect = userData.savedSelectedEffect || "none";
 
     } catch (error) {
-        //console.error("Błąd logowania:", error);
+        //console.error("login error:", error);
     }
 }
 
 export async function DB_logoutUser() {
     try {
         await signOut(auth);
-        console.log("Wylogowano");
+        //console.log("Wylogowano");
         currentUserState.user = null;
         currentUserState.data = null;
         player.selectedSkin = "default";
         player.selectedEffect = "none";
         return true;
     } catch (error) {
-        console.error("Błąd wylogowania", error);
+        //console.error("Błąd wylogowania", error);
         return false;
     }
 }
@@ -171,7 +186,7 @@ export async function DB_updateUserHighscore(newHighScore, localHighscore) {
             }
             return false;
         } catch (error) {
-            console.error("Błąd aktualizacji wyniku:", error);
+            //console.error("Błąd aktualizacji wyniku:", error);
             return false;
         }
     }
@@ -183,7 +198,7 @@ export async function DB_saveSelectedSkin(skinKey) {
         if (!user) return false;
 
         if (!SKINS_BY_KEY[skinKey]) {
-            console.warn("Nieznany skin:", skinKey);
+            //console.warn("Nieznany skin:", skinKey);
             return false;
         }
 
@@ -191,7 +206,7 @@ export async function DB_saveSelectedSkin(skinKey) {
         await updateDoc(userRef, { savedSelectedSkin: skinKey });
         return true;
     } catch (e) {
-        console.error("Błąd zapisu skina", e);
+        //console.error("Błąd zapisu skina", e);
         return false;
     }
 }
@@ -210,7 +225,7 @@ export async function DB_saveSelectedEffect(effectKey) {
         }
         return false;
     } catch (error) {
-        console.error("Błąd aktualizacji efektu", error);
+        //console.error("Błąd aktualizacji efektu", error);
         return false;
     }
 }
@@ -229,7 +244,7 @@ export async function DB_addNewSkinToCollection(skinKey) {
 
         return true;
     } catch (e) {
-        console.error("Błąd dodania skina", e);
+        //console.error("Błąd dodania skina", e);
         return false;
     }
 }
@@ -248,7 +263,7 @@ export async function DB_addNewEffectToCollection(effectKey) {
         }
         return false;
     } catch (error) {
-        console.error("Błąd dodania efektu", error);
+        //console.error("Błąd dodania efektu", error);
         return false;
     }
 }
@@ -274,7 +289,7 @@ export async function DB_getTop10Scores() {
 
         return top10;
     } catch (err) {
-        console.error("Błąd pobierania TOP10:", err);
+        //console.error("Błąd pobierania TOP10:", err);
         return [];
     }
 }
