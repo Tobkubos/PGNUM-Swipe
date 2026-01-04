@@ -14,17 +14,18 @@ import { rewardPreviewNames } from "./scripts/UI/ui_other.js";
 import { calculateCorrection } from "./scripts/utils/timeManager.js";
 import { animateSceneTransition } from "./scripts/utils/sceneTransition.js";
 import { shakeScreen } from "./scripts/utils/screenShake.js";
+
+
 //----------------------------------------------------
 
 if ("serviceWorker" in navigator) {
-	window.addEventListener("load", () => {
-		navigator.serviceWorker
-			.register("./config/sw.js")
-			.then((reg) => console.log("Service Worker zarejestrowany!", reg))
-			.catch((err) => console.log("Błąd Service Workera:", err));
-	});
+    window.addEventListener("load", () => {
+        navigator.serviceWorker
+            .register("./sw.js")
+            .then((reg) => console.log("Service Worker zarejestrowany!", reg))
+            .catch((err) => console.log("Błąd Service Workera:", err));
+    });
 }
-
 //----------------------------------------------------
 
 export const player = new Player(0, 0, 50, "default", "none");

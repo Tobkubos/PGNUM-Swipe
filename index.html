@@ -5,13 +5,13 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<title>Swipe the game</title>
-	<link rel="stylesheet" href="styles/style.css" />
-	<link rel="stylesheet" href="styles/popups.css" />
-	<link rel="stylesheet" href="styles/menu.css" />
-	<link rel="stylesheet" href="styles/gameplay.css" />
-	<link rel="stylesheet" href="styles/toast.css" />
-	<link rel="manifest" href="config/manifest.json" />
-	<link rel="icon" href="icons/icon-192.png">
+	<link rel="stylesheet" href="CSS/style.css" />
+	<link rel="stylesheet" href="CSS/popups.css" />
+	<link rel="stylesheet" href="CSS/menu.css" />
+	<link rel="stylesheet" href="CSS/gameplay.css" />
+	<link rel="stylesheet" href="CSS/toast.css" />
+	<link rel="manifest" href="manifest.json" />
+	<link rel="icon" href="images/icon-192.png">
 </head>
 
 <body>
@@ -22,41 +22,41 @@
 				<h1 class="menu-info-score">Highscore</h1>
 				<h1 class="menu-info-highscore">0</h1>
 				<button class="menu-btn start-btn">
-					<img src="icons/play.png" alt="" class="btn-icon" />
+					<img src="images/play.png" alt="" class="btn-icon" />
 					<span>Start</span>
 				</button>
 
 				<button class="menu-btn highscore-btn small-btn">
-					<img src="icons/trophy.png" alt="" class="btn-icon small-icon" />
+					<img src="images/trophy.png" alt="" class="btn-icon small-icon" />
 					<span>Highscores</span>
 				</button>
 
 				<button class="menu-btn options-btn small-btn">
-					<img src="icons/gear.png" alt="" class="btn-icon small-icon" />
+					<img src="images/gear.png" alt="" class="btn-icon small-icon" />
 					<span>Options</span>
 				</button>
 
 				<button class="menu-btn skins-btn small-btn locked">
-					<img src="icons/star.png" alt="" class="btn-icon small-icon" />
+					<img src="images/star.png" alt="" class="btn-icon small-icon" />
 					<span>Skins</span>
-					<img src="icons/lock.png" class="lock-overlay" alt="locked" />
+					<img src="images/lock.png" class="lock-overlay" alt="locked" />
 				</button>
 
 				<button class="menu-btn effects-btn small-btn locked">
-					<img src="icons/star.png" alt="" class="btn-icon small-icon" />
+					<img src="images/star.png" alt="" class="btn-icon small-icon" />
 					<span>Effects</span>
-					<img src="icons/lock.png" class="lock-overlay" alt="locked" />
+					<img src="images/lock.png" class="lock-overlay" alt="locked" />
 				</button>
 
 				<button class="menu-btn how-to-play-btn small-btn">
-					<img src="icons/question-sign.png" alt="" class="btn-icon small-icon" />
+					<img src="images/question-sign.png" alt="" class="btn-icon small-icon" />
 					<span>How to Play</span>
 				</button>
 
 				<div id="how-to-play-panel" style="display:none;">
 					<div id="how-to-play-content-panel">
 						<button class="close-how-to-play close-btn">
-							<img src="icons/close.png" alt="" class="btn-icon small-icon" />
+							<img src="images/close.png" alt="" class="btn-icon small-icon" />
 						</button>
 						<div class="popup-header-info">How to play?</div>
 						<span class="popup-content">Its easy for everyone! Just swipe your finger from left to right to
@@ -67,7 +67,7 @@
 				<div id="highscores-panel" style="display:none;">
 					<div id="highscores-content-panel">
 						<button class="close-highscores close-btn">
-							<img src="icons/close.png" alt="" class="btn-icon small-icon" />
+							<img src="images/close.png" alt="" class="btn-icon small-icon" />
 						</button>
 						<div class="popup-header-info">Highscores</div>
 						<div class="popup-header-info small-header">Login to join score table!</div>
@@ -79,16 +79,16 @@
 				<div id="options-panel" style="display:none;">
 					<div id="options-content-panel">
 						<button class="close-options close-btn">
-							<img src="icons/close.png" alt="" class="btn-icon small-icon" />
+							<img src="images/close.png" alt="" class="btn-icon small-icon" />
 						</button>
 						<div class="popup-header-info">Options</div>
 						<div class="popup-content">Use Google account to Login to save progress or load your data.</div>
 						<button class="menu-btn login-btn">
-							<img src="icons/google.svg" alt="" class="btn-icon" />
+							<img src="images/google.svg" alt="" class="btn-icon" />
 						</button>
 
 						<button class="menu-btn logout-btn" style="display:none;">
-							<img src="icons/logout.png" alt="" class="btn-icon" />
+							<img src="images/logout.png" alt="" class="btn-icon" />
 						</button>
 						<div id="user-status" class="popup-content">Data unlinked - not logged in</div>
 					</div>
@@ -98,14 +98,14 @@
 			<div id="gameplay" style="display:none;">
 				<div id="score-display">0</div>
 				<button class="menu-btn pause-btn small-btn">
-					<img src="icons/pause.png" alt="" class="btn-icon small-icon" />
+					<img src="images/pause.png" alt="" class="btn-icon small-icon" />
 					<span>Pause</span>
 				</button>
 				<div id="pause-panel" style="display:none;">
 					<div id="pause-content-panel">
 						<div class="popup-header-info">Game paused</div>
 						<button class="close-pause-btn close-btn menu-btn">
-							<img src="icons/play.png" alt="" class="btn-icon small-icon" />
+							<img src="images/play.png" alt="" class="btn-icon small-icon" />
 							<span>Resume</span>
 						</button>
 					</div>
@@ -116,19 +116,19 @@
 				<h1 id="skins-header">Skin wardrobe</h1>
 				<h1 id="skins-header-category">current category</h1>
 				<button class="close-skin-customization-btn">
-					<img src="icons/close.png" alt="" class="btn-icon small-icon" />
+					<img src="images/close.png" alt="" class="btn-icon small-icon" />
 				</button>
 				<button class="change-skin-page-previous menu-btn ">
-					<img src="icons/play.png" alt="" class="btn-icon small-icon" />
+					<img src="images/play.png" alt="" class="btn-icon small-icon" />
 				</button>
 				<button class="change-skin-page-next menu-btn ">
-					<img src="icons/play.png" alt="" class="btn-icon small-icon" />
+					<img src="images/play.png" alt="" class="btn-icon small-icon" />
 				</button>
 				<button class="change-skin-category-previous menu-btn ">
-					<img src="icons/play.png" alt="" class="btn-icon small-icon" />
+					<img src="images/play.png" alt="" class="btn-icon small-icon" />
 				</button>
 				<button class="change-skin-category-next menu-btn ">
-					<img src="icons/play.png" alt="" class="btn-icon small-icon" />
+					<img src="images/play.png" alt="" class="btn-icon small-icon" />
 				</button>
 				<div id="all-skins-container"></div>
 				<h1 id="skins-footer-page">page number / page max in category</h1>
@@ -138,13 +138,13 @@
 				<h1 id="effects-header">Effect wardrobe</h1>
 				<h1 id="effects-number">1 / 2137</h1>
 				<button class="close-effect-customization-btn">
-					<img src="icons/close.png" alt="" class="btn-icon small-icon" />
+					<img src="images/close.png" alt="" class="btn-icon small-icon" />
 				</button>
 				<button class="change-previous menu-btn ">
-					<img src="icons/play.png" alt="" class="btn-icon small-icon" />
+					<img src="images/play.png" alt="" class="btn-icon small-icon" />
 				</button>
 				<button class="change-next menu-btn ">
-					<img src="icons/play.png" alt="" class="btn-icon small-icon" />
+					<img src="images/play.png" alt="" class="btn-icon small-icon" />
 				</button>
 				<div id="effect-id"></div>
 			</div>
@@ -155,11 +155,11 @@
 						<div class="popup-header-info">Game Over!</div>
 
 						<button class="menu-btn go-to-menu-btn">
-							<img src="icons/back.png" alt="" class="btn-icon small-icon" />
+							<img src="images/back.png" alt="" class="btn-icon small-icon" />
 							<span>Menu</span>
 						</button>
 						<button class="menu-btn restart-game-btn">
-							<img src="icons/restart.png" alt="" class="btn-icon small-icon" />
+							<img src="images/restart.png" alt="" class="btn-icon small-icon" />
 							<span>Restart</span>
 						</button>
 						<div id="game-score" class="popup-content"></div>
@@ -172,7 +172,7 @@
 					<div id="reward-content-panel">
 						<div class="popup-header-info">Game Over!</div>
 						<div class="reward-status">You found a treasure in this run! Shake to open!</div>
-						<img src="icons/treasure-chest.png" alt="" class="treasure-icon" />
+						<img src="images/treasure-chest.png" alt="" class="treasure-icon" />
 						<div class="shake-progress-bar">0%</div>
 					</div>
 				</div>
@@ -182,7 +182,7 @@
 				<div id="reward-preview-header-info">New Skin / Effect Unlocked!</div>
 				<div id="reward-name">Skin / Effect name!</div>
 				<button class="menu-btn go-to-menu-btn bottom-btn">
-					<img src="icons/back.png" alt="" class="btn-icon" />
+					<img src="images/back.png" alt="" class="btn-icon" />
 					<span>Menu</span>
 				</button>
 			</div>
@@ -198,6 +198,7 @@
 	<script src="db/DatabaseConfig.js" type="module"></script>
 	<script src="scripts/UI/ui_effectSelector.js" type="module"></script>
 	<script src="scripts/UI/ui_game.js" type="module"></script>
+	<script src="sw.js" type="module"></script>
 </body>
 
 </html>

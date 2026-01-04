@@ -164,7 +164,7 @@ const imageSkins = [
         category: "image",
         img: (() => {
             const img = new Image();
-            img.src = "./icons/skins/Skibidi_Toilet.png";
+            img.src = "./images/skins/Skibidi_Toilet.png";
             return img;
         })(),
         draw(ctx, p) {
@@ -181,7 +181,7 @@ const imageSkins = [
         category: "image",
         img: (() => {
             const img = new Image();
-            img.src = "./icons/skins/devil.png";
+            img.src = "./images/skins/devil.png";
             return img;
         })(),
         draw(ctx, p) {
@@ -198,7 +198,7 @@ const imageSkins = [
         category: "image",
         img: (() => {
             const img = new Image();
-            img.src = "./icons/skins/eyeball.png";
+            img.src = "./images/skins/eyeball.png";
             return img;
         })(),
         draw(ctx, p) {
@@ -215,7 +215,7 @@ const imageSkins = [
         category: "image",
         img: (() => {
             const img = new Image();
-            img.src = "./icons/skins/ghost.png";
+            img.src = "./images/skins/ghost.png";
             return img;
         })(),
         draw(ctx, p) {
@@ -232,7 +232,7 @@ const imageSkins = [
         category: "image",
         img: (() => {
             const img = new Image();
-            img.src = "./icons/skins/pumpkin.png";
+            img.src = "./images/skins/pumpkin.png";
             return img;
         })(),
         draw(ctx, p) {
@@ -249,7 +249,7 @@ const imageSkins = [
         category: "image",
         img: (() => {
             const img = new Image();
-            img.src = "./icons/skins/spider.png";
+            img.src = "./images/skins/spider.png";
             return img;
         })(),
         draw(ctx, p) {
@@ -266,7 +266,7 @@ const imageSkins = [
         category: "image",
         img: (() => {
             const img = new Image();
-            img.src = "./icons/skins/zombie.png";
+            img.src = "./images/skins/zombie.png";
             return img;
         })(),
         draw(ctx, p) {
@@ -283,7 +283,7 @@ const imageSkins = [
         category: "image",
         img: (() => {
             const img = new Image();
-            img.src = "./icons/skins/Stone.png";
+            img.src = "./images/skins/Stone.png";
             return img;
         })(),
         draw(ctx, p) {
