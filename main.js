@@ -25,6 +25,8 @@ if ("serviceWorker" in navigator) {
             .then((reg) => console.log("Service Worker zarejestrowany!", reg))
             .catch((err) => console.log("Błąd Service Workera:", err));
     });
+
+	requestAnimationFrame(gameLoop);
 }
 //----------------------------------------------------
 
@@ -370,4 +372,3 @@ function gameLoop(timestamp) {
 	}
 	requestAnimationFrame(gameLoop);
 }
-requestAnimationFrame(gameLoop);
