@@ -244,7 +244,7 @@ const effects = [
         spawnCount: () => Math.round(Math.random()),
         create: (x, y, size) => new Particle(x, y, size, {
             speedY: 1.5,
-            speedX: 0, // Ruch X obsługiwany przez wobble
+            speedX: 0,
             wobble: true,
             fadeSpeed: 0.01,
             color: "white",

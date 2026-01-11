@@ -14,6 +14,7 @@ import { correction } from "./utils/timeManager.js";
 // x1 x3
 const patterns = [[0], [1], [2], [0, 1], [1, 2], [0, 2]];
 
+//zarządzanie przeszkodami
 export class ObstacleManager {
 	constructor() {
 		this.obstacles = [];
@@ -32,6 +33,7 @@ export class ObstacleManager {
 		this.difficultyStep = 10;
 	}
 
+	//aktualizacja przeszkód
 	update(canvasHeight) {
 		const limitY = canvasHeight ? canvasHeight + 100 : 1000;
 
@@ -75,6 +77,7 @@ export class ObstacleManager {
 		}
 	}
 
+	//losowe miejsce ostrzeżenia 
 	spawnRandomWarning() {
 		const randomIndex = Math.floor(Math.random() * patterns.length);
 		const selectedPattern = patterns[randomIndex];
@@ -107,6 +110,7 @@ export class ObstacleManager {
 		setColors(gameBackground, this.obstacles, this, 0);
 	}
 
+	//czy jest nakładanie się obiektów
 	obstaclesOverlap(rect1, rect2) {
 		return !(
 			rect1.x > rect2.x + rect2.width ||
@@ -116,6 +120,7 @@ export class ObstacleManager {
 		);
 	}
 
+	//czy jest kolizja
 	isColliding(player, obstacle, squareSize) {
 		if (obstacle.state !== "fall") return false;
 		const playerRect = {
@@ -143,6 +148,7 @@ export class ObstacleManager {
 	}
 }
 
+//obiekt - przeszkoda
 export class Obstacle {
 	constructor(activeLanes, speed, color, acceleration) {
 		this.activeLanes = activeLanes;
@@ -207,8 +213,9 @@ export class Obstacle {
 		});
 	}
 
+	//funkcja rysująca ostrzeżenia przed spadającym obiektem
 	drawWarning(ctx, size) {
-		const blink = Math.sin(this.timer * 0.3) > 0; // miganie
+		const blink = Math.sin(this.timer * 0.3) > 0;
 		if (!blink) return;
 
 		ctx.fillStyle = "#ffcc00";
@@ -220,6 +227,7 @@ export class Obstacle {
 		ctx.fill();
 	}
 
+	//wyrysowanie piły
 	drawSaw(ctx, cx, cy, r) {
 		const teeth = 12;
 		const toothDepth = r * 0.25;

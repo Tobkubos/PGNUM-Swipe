@@ -220,6 +220,7 @@ function game() {
 	obstacleManager.draw(ctx, gridStartX, squareSize);
 }
 
+//sprawdz kolizje
 function checkCollision(squareSize) {
 	if(player.isDead == true) return false;
 	for (let obs of obstacleManager.obstacles) {
@@ -231,6 +232,7 @@ function checkCollision(squareSize) {
 	return false;
 }
 
+//wylosuj losową nagrodę (jeżeli można)
 function rollRandomReward(currentScore) {
 
 	if (currentUserState.user == null || currentUserState.data == null) {
