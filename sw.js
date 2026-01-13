@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Swipe the Game v1';
+const CACHE_NAME = 'Swipe the Game v2';
 const ASSETS = [
     "./",
     "./index.html",
