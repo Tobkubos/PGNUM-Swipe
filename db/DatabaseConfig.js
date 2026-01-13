@@ -7,7 +7,7 @@ import {
     getFirestore, doc, getDoc, setDoc, updateDoc, query, collection, orderBy, limit, getDocs, onSnapshot, arrayUnion
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-import { updateHighscoreLOCAL, updateUI } from "../scripts/sceneManager.js";
+import { updateHighscoreLOCAL, updateUI } from "../scripts/UI/ui_menu.js";
 import { player } from "../main.js";
 import { SKINS_BY_KEY } from "../scripts/player/skins.js";
 import { showToast } from "../scripts/UI/ui_other.js";

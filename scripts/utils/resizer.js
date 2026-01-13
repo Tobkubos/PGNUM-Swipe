@@ -32,15 +32,19 @@ export function checkScreenSizeForOptimalSkinsPreview(canvas, buffer) {
 }
 
 function resize() {
-    const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
 
-    canvas.width = Math.round(rect.width * dpr);
-    canvas.height = Math.round(rect.height * dpr);
+    const physWidth = Math.round(rect.width * dpr);
+    const physHeight = Math.round(rect.height * dpr);
+
+    canvas.width = physWidth;
+    canvas.height = physHeight;
+
+    off.width = physWidth;
+    off.height = physHeight;
+
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    off.width = canvas.width;
-    off.height = canvas.height;
     offCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 window.addEventListener("resize", resize);

@@ -7,7 +7,7 @@ import { ObstacleManager } from "./scripts/obstaclesManager.js";
 import { state } from "./scripts/sceneManager.js";
 import { DB_addNewEffectToCollection, DB_addNewSkinToCollection, currentUserState, DB_updateUserHighscore } from "./db/DatabaseConfig.js";
 import { clearTreasureAnimations } from "./scripts/utils/treasureShaker.js";
-import { canvas, ctx } from "./scripts/UI/ui_other.js";
+import { canvas, ctx, off, offCtx } from "./scripts/UI/ui_other.js";
 import { lerp } from "./scripts/player/movementHandler.js";
 import { updateSkinMenuUI } from "./scripts/UI/ui_skinSelector.js";
 import { rewardPreviewNames } from "./scripts/UI/ui_other.js";
@@ -17,12 +17,12 @@ import { shakeScreen } from "./scripts/utils/screenShake.js";
 
 //----------------------------------------------------
 if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker
-            .register("./sw.js")
-            .then((reg) => console.log("Service Worker zarejestrowany!", reg))
-            .catch((err) => console.log("Błąd Service Workera:", err));
-    });
+	window.addEventListener("load", () => {
+		navigator.serviceWorker
+			.register("./sw.js")
+			.then((reg) => console.log("Service Worker zarejestrowany!", reg))
+			.catch((err) => console.log("Błąd Service Workera:", err));
+	});
 
 	requestAnimationFrame(gameLoop);
 }
@@ -82,15 +82,14 @@ function menuAnimationAndSkinPreview() {
 	player.baseSize = playerInMenuSize;
 	player.setPlayerPosition(canvas.clientWidth / 2 - player.baseSize / 2, canvas.clientHeight / 2 - player.baseSize / 2);
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-	handleEffects(ctx, player);
-	handleSkins(ctx, player);
+	handleEffects(offCtx, player);
+	handleSkins(offCtx, player);
 }
 
 function skinsPreview() {
 	var size = checkScreenSizeForOptimalSkinsPreview(canvas, 15);
 	const padding = 20;
 
-	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 	skinHitboxes = [];
 
 	const activeCategory = getCurrentSkinCategory();
@@ -137,16 +136,16 @@ function skinsPreview() {
 		player.baseSize = size;
 		player.selectedSkin = skin.key;
 
-		handleSkins(ctx, player);
+		handleSkins(offCtx, player);
 
 		if (currentUserState.data?.unlockedSkins && !currentUserState.data.unlockedSkins.includes(skin.key)) {
-			ctx.fillStyle = "rgba(0,0,0,0.5)";
-			ctx.fillRect(x, y, size, size);
-			ctx.fillStyle = "white";
-			ctx.textAlign = "center";
-			ctx.textBaseline = "middle";
-			ctx.font = "16px Poppins";
-			ctx.fillText("LOCKED", x + size / 2, y + size / 2);
+			offCtx.fillStyle = "rgba(0,0,0,0.5)";
+			offCtx.fillRect(x, y, size, size);
+			offCtx.fillStyle = "white";
+			offCtx.textAlign = "center";
+			offCtx.textBaseline = "middle";
+			offCtx.font = "16px Poppins";
+			offCtx.fillText("LOCKED", x + size / 2, y + size / 2);
 		}
 
 		Object.assign(player, old);
@@ -157,28 +156,27 @@ function effectsPreview() {
 	var playerInMenuSize = checkScreenSizeForOptimalGameplayMenu(canvas);
 	player.baseSize = playerInMenuSize;
 	player.setPlayerPosition(canvas.clientWidth / 2 - player.baseSize / 2, canvas.clientHeight / 2 - player.baseSize / 2);
-	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-	handleEffects(ctx, player);
-	handleSkins(ctx, player);
+	handleEffects(offCtx, player);
+	handleSkins(offCtx, player);
 
 	if (!currentUserState.data?.unlockedEffects.includes(player.selectedEffect)) {
-		ctx.save();
-		ctx.fillStyle = "rgba(0,0,0,0.6)";
+		offCtx.save();
+		offCtx.fillStyle = "rgba(0,0,0,0.6)";
 		const overlaySize = player.baseSize * 2;
 		const overlayX = player.x - (overlaySize - player.baseSize) / 2;
 		const overlayY = player.y - (overlaySize - player.baseSize) / 2;
-		ctx.fillRect(overlayX, overlayY, overlaySize, overlaySize);
-		ctx.fillStyle = "white";
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.font = `${Math.max(12, Math.floor(player.baseSize / 2.5))}px Poppins`;
-		ctx.fillText(
+		offCtx.fillRect(overlayX, overlayY, overlaySize, overlaySize);
+		offCtx.fillStyle = "white";
+		offCtx.textAlign = "center";
+		offCtx.textBaseline = "middle";
+		offCtx.font = `${Math.max(12, Math.floor(player.baseSize / 2.5))}px Poppins`;
+		offCtx.fillText(
 			"LOCKED",
 			overlayX + overlaySize / 2,
 			overlayY + overlaySize / 2
 		);
-		ctx.restore();
+		offCtx.restore();
 	}
 }
 
@@ -213,16 +211,16 @@ function game() {
 			resetPlayerAndObstacles();
 		}, 1000)
 	}
-	handleEffects(ctx, player);
-	handleSkins(ctx, player);
+	handleEffects(offCtx, player); 
+    handleSkins(offCtx, player);
 
 	obstacleManager.update(canvas.clientHeight);
-	obstacleManager.draw(ctx, gridStartX, squareSize);
+	obstacleManager.draw(offCtx, gridStartX, squareSize);
 }
 
 //sprawdz kolizje
 function checkCollision(squareSize) {
-	if(player.isDead == true) return false;
+	if (player.isDead == true) return false;
 	for (let obs of obstacleManager.obstacles) {
 		if (obstacleManager.isColliding(player, obs, squareSize)) {
 			player.die();
@@ -248,7 +246,8 @@ function rollRandomReward(currentScore) {
 	if (currentScore >= 60) RewardChance = 0.25;
 	if (currentScore >= 80) RewardChance = 0.29;
 	if (currentScore > 100) RewardChance = 0.35;
-	//RewardChance = 1;
+	//for presentation purposes
+	RewardChance = 1;
 
 	if (Math.random() >= RewardChance) {
 		animateSceneTransition(state.scenes.GameOver);
@@ -319,7 +318,6 @@ function resetPlayerAndObstacles() {
 }
 
 function gameOver() {
-	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 }
 
 function reward() {
@@ -334,10 +332,9 @@ function rewardPreview() {
 		canvas.clientWidth / 2 - previewPlayer.baseSize / 2,
 		canvas.clientHeight / 2 - previewPlayer.baseSize / 2
 	);
-	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-	handleEffects(ctx, previewPlayer);
-	handleSkins(ctx, previewPlayer);
+	handleEffects(offCtx, previewPlayer);
+	handleSkins(offCtx, previewPlayer);
 }
 
 function pause() { }
@@ -345,6 +342,7 @@ function pause() { }
 // Game Loop
 function gameLoop(timestamp) {
 	calculateCorrection(timestamp);
+	offCtx.clearRect(0, 0, canvas.width, canvas.height);
 	switch (state.playerScene) {
 		case state.scenes.Menu:
 			menuAnimationAndSkinPreview();
@@ -369,6 +367,9 @@ function gameLoop(timestamp) {
 			break;
 		case state.scenes.RewardPreview:
 			rewardPreview();
+			break;
 	}
+	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+	ctx.drawImage(off, 0, 0, canvas.clientWidth, canvas.clientHeight);
 	requestAnimationFrame(gameLoop);
 }

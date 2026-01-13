@@ -1,5 +1,5 @@
 import { state, SceneSwitchManager } from "../sceneManager.js";
-import { DB_loginAndCreateProfile, DB_logoutUser, DB_getTop10Scores } from "../../db/DatabaseConfig.js";
+import { DB_loginAndCreateProfile, DB_logoutUser, DB_getTop10Scores, currentUserState } from "../../db/DatabaseConfig.js";
 import { obstacleManager } from "../../main.js";
 import { animateSceneTransition } from "../utils/sceneTransition.js";
 //----------------------------------------------------
@@ -109,3 +109,43 @@ if (title && !title.querySelector("span")) {
         title.appendChild(span);
     });
 }
+
+
+const statusDiv = document.getElementById("user-status");
+const scoreEl = document.querySelector(".menu-info-highscore");
+const lockOverlay = document.querySelectorAll(".lock-overlay");
+const lockedOpacity = document.querySelectorAll(".menu-btn.locked");
+
+export function updateUI() {
+	if (statusDiv) {
+		statusDiv.innerText = currentUserState.user
+			? `Logged as: ${currentUserState.user.displayName}`
+			: "Data unlinked - not logged in";
+	}
+	if (loginBtn) {
+		loginBtn.style.display = currentUserState.user ? "none" : "block";
+	}
+	if (scoreEl) {
+		scoreEl.innerText = currentUserState.data?.highScore ?? 0;
+	}
+	if (logoutBtn) {
+		logoutBtn.style.display = currentUserState.user ? "block" : "none";
+	}
+	if (lockOverlay) {
+		lockOverlay.forEach(element => {
+			element.style.display = currentUserState.user ? "none" : "block";
+		});
+	}
+	if (lockedOpacity) {
+		lockedOpacity.forEach(element => {
+			element.style.opacity = currentUserState.user ? 1 : 0.5;
+		});
+	}
+}
+
+export function updateHighscoreLOCAL(newHighscoreLOCAL) {
+	if (scoreEl) {
+		scoreEl.innerText = newHighscoreLOCAL ?? 0;
+	}
+}
+
