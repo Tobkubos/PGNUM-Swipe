@@ -1,5 +1,5 @@
 export class Player {
-    constructor(x = 0, y = 0, size = 50, selectedSkin = "", selectedEffect = 0) {
+    constructor(x = 0, y = 0, size = 50, selectedSkin = "default", selectedEffect = "none") {
         this.x = x;
         this.y = y;
         this.baseSize = size;

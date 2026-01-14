@@ -321,7 +321,7 @@ function gameOver() {
 }
 
 function reward() {
-	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+	
 }
 
 
